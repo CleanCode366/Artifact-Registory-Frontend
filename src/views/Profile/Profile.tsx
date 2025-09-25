@@ -153,7 +153,7 @@ const Profile = () => {
 //       const fetchPosts = async () => {
 //         try {
 //           const token = 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsImV4cCI6MTc1NzAwOTIxMSwidXNlciI6Im5pbmpha2Fua2FpMUBnbWFpbC5jb20iLCJpYXQiOjE3NTY5MjI4MTF9.uJltW2Slu-R147-ZU0hLM3mpjctlRJcHEwCBrtbO1_0'
-//           const response = await fetch('http://localhost/post/userProfile', {
+//           const response = await fetch('https://inscriptions.cdacb.in/post/userProfile', {
 //             method: 'POST',
 //             headers: {
 //               'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const Profile = () => {
 //       const fetchAllPosts = async () => {
 //         try {
 //           const token = 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsImV4cCI6MTc1NzAwOTIxMSwidXNlciI6Im5pbmpha2Fua2FpMUBnbWFpbC5jb20iLCJpYXQiOjE3NTY5MjI4MTF9.uJltW2Slu-R147-ZU0hLM3mpjctlRJcHEwCBrtbO1_0'
-//           const response = await fetch('http://localhost/post/getAllUserPost', {
+//           const response = await fetch('https://inscriptions.cdacb.in/post/getAllUserPost', {
 //             method: 'POST',
 //             headers: {
 //               'Content-Type': 'application/json',
@@ -197,7 +197,7 @@ const Profile = () => {
 //       const fetchAllComments = async () => {
 //         try {
 //           const token = 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsImV4cCI6MTc1NzAwOTIxMSwidXNlciI6Im5pbmpha2Fua2FpMUBnbWFpbC5jb20iLCJpYXQiOjE3NTY5MjI4MTF9.uJltW2Slu-R147-ZU0hLM3mpjctlRJcHEwCBrtbO1_0'
-//           const response = await fetch('http://localhost/post/getCommentByUser', {
+//           const response = await fetch('https://inscriptions.cdacb.in/post/getCommentByUser', {
 //             method: 'POST',
 //             headers: {
 //               'Content-Type': 'application/json',
