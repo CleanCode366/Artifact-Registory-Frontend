@@ -155,7 +155,7 @@ const detectStoneInscription = async (file: File): Promise<boolean> => {
   formData.append('file', file);
 
   try {
-    const response = await fetch(`${backendDetectUrl}/predict`, {
+    const response = await fetch(`${backendDetectUrl}/predict/`, {
       method: 'POST',
       body: formData,
     });

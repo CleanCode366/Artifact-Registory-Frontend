@@ -16,6 +16,7 @@ const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid" }) 
 
   const city = post?.description?.geolocation?.city ?? "Unknown";
   const state = post?.description?.geolocation?.state ?? "Unknown";
+  const display_name = post?.description?.geolocation?.display_name ?? "Unknown";
 
   if (layout === "list") {
     return (
@@ -62,7 +63,7 @@ const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid" }) 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4" />
-                <span>{city}, {state}</span>
+                <span>{display_name} {city}, {state}</span>
               </div>
               
               <NavLink to={post._id} className="text-orange-500 hover:text-orange-400 text-sm font-medium cursor-pointer">
@@ -110,7 +111,7 @@ const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid" }) 
         
         <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">
           <MapPin className="w-4 h-4" />
-          <span>{city}, {state}</span>
+          <span>{display_name} {city}, {state}</span>
         </div>
         
         <div className="flex items-center justify-between">

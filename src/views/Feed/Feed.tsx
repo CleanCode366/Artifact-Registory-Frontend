@@ -12,6 +12,7 @@ export interface Post {
       subject: string;
       geolocation: {
         city: string;
+        display_name?: string;
         [key: string]: any;
       };
       [key: string]: any;
@@ -31,6 +32,7 @@ const Feed = () => {
       subject: string;
       geolocation: {
         city: string;
+        display_name?: string;
         [key: string]: any;
       };
       [key: string]: any;
