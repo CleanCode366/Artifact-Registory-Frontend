@@ -39,9 +39,9 @@ const MainRoutes = {
     {
       path: 'upload',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Upload />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
