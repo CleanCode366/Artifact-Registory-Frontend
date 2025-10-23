@@ -3,7 +3,7 @@ import React from "react";
 // import { jwtDecode } from "jwt-decode";
 // import { redirect } from "react-router-dom";
 
-const redirectURL = import.meta.env.VITE_REDIRECT_URL;
+const redirectURL = window._env_?.VITE_REDIRECT_URL || import.meta.env.VITE_REDIRECT_URL;
 
 const AuthPage: React.FC = () => {
   // const handleLoginSuccess = (credentialResponse: any) => {

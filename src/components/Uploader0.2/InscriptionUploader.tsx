@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react';
 import { Camera, MapPin, ChevronDown } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
-const backendDetectUrl = import.meta.env.VITE_BACKEND_AI_URL;
+const backendDetectUrl = window._env_?.VITE_BACKEND_AI_URL || import.meta.env.VITE_BACKEND_AI_URL;
 
 // Types
 interface GeoInfo {

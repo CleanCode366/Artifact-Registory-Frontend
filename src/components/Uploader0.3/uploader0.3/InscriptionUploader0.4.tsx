@@ -5,9 +5,9 @@ import { Camera, MapPin, Upload, X } from "lucide-react";
 // Real piexifjs import - now properly installed
 import piexifjs from 'piexifjs';
 
-const backendDetectUrl = import.meta.env.VITE_BACKEND_AI_URL;
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
-
+const backendDetectUrl = window._env_?.VITE_BACKEND_AI_URL || import.meta.env.VITE_BACKEND_AI_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
+const webhookUrl = window._env_?.VITE_N8N_WEBHOOK_URL || import.meta.env.VITE_N8N_WEBHOOK_URL;
 // ============================================================================
 // TYPES AND INTERFACES
 // ============================================================================
@@ -383,6 +383,9 @@ const EnhancedInscriptionUploader: React.FC = () => {
     script: [],
     type: "Stone"
   });
+  // Suggestion state for remote description helper
+  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [isFetchingSuggestion, setIsFetchingSuggestion] = useState(false);
 
   // Refs for DOM elements
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -398,6 +401,57 @@ const EnhancedInscriptionUploader: React.FC = () => {
     }
     return null;
   }
+
+  // Fetch description suggestion from webhook using lat/lon
+  const fetchDescriptionSuggestion = async (lat?: string, lon?: string) => {
+    setSuggestion(null);
+    setIsFetchingSuggestion(true);
+    try {
+      let latitude = lat;
+      let longitude = lon;
+
+      // if not provided, try current geoInfo or get fresh location
+      if (!latitude || !longitude) {
+        if (geoInfo?.latitude && geoInfo?.longitude) {
+          latitude = geoInfo.latitude;
+          longitude = geoInfo.longitude;
+        } else {
+          const loc = await getCurrentLocation();
+          latitude = loc.latitude;
+          longitude = loc.longitude;
+        }
+      }
+
+      if (!latitude || !longitude) {
+        throw new Error("No coordinates available for suggestion");
+      }
+
+      const url = `${webhookUrl}?lat=${encodeURIComponent(
+        latitude
+      )}&lon=${encodeURIComponent(longitude)}`;
+
+      console.log("Fetching suggestion from:", url);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Suggestion service returned ${res.status}`);
+
+      // Try parse JSON, fallback to text
+      let text = "";
+      try {
+        const json = await res.json();
+        // common keys
+        text = json.suggestion || json.description || json.text || JSON.stringify(json);
+      } catch {
+        text = await res.text();
+      }
+
+      setSuggestion(text);
+    } catch (err) {
+      console.error("Suggestion fetch error:", err);
+      setSuggestion("Failed to get suggestion.");
+    } finally {
+      setIsFetchingSuggestion(false);
+    }
+  };
 
   // ============================================================================
   // CAMERA FUNCTIONS
@@ -877,6 +931,58 @@ const EnhancedInscriptionUploader: React.FC = () => {
               className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 resize-none"
               rows={3}
             />
+           {/* Suggestion controls */}
+           <div className="flex items-center gap-2 mt-2">
+             <button
+               onClick={() => fetchDescriptionSuggestion()}
+               disabled={isFetchingSuggestion}
+               className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm"
+             >
+               {isFetchingSuggestion ? "Suggesting…" : "Suggest Description"}
+             </button>
+             <button
+               onClick={() => {
+                 // try using geoInfo coords if available
+                 if (geoInfo?.latitude && geoInfo?.longitude) {
+                   fetchDescriptionSuggestion(geoInfo.latitude, geoInfo.longitude);
+                 } else {
+                   fetchDescriptionSuggestion();
+                 }
+               }}
+               className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md text-sm"
+             >
+               Use current location
+             </button>
+             {suggestion && (
+               <button
+                 onClick={async () => {
+                   handleInputChange("description.description", suggestion);
+                   try { await navigator.clipboard.writeText(suggestion); } catch {}
+                 }}
+                 className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
+               >
+                 Use suggestion
+               </button>
+             )}
+           </div>
+
+           {/* Suggestion box */}
+           {suggestion && (
+             <div className="mt-3 p-3 bg-gray-900 border border-gray-700 rounded-md text-sm text-gray-200">
+               <div className="flex justify-between items-start">
+                 <strong className="text-xs text-gray-300">Suggested description</strong>
+                 <button
+                   onClick={() => {
+                     setSuggestion(null);
+                   }}
+                   className="text-xs text-gray-400 hover:text-gray-200"
+                 >
+                   Close
+                 </button>
+               </div>
+               <p className="mt-2 whitespace-pre-wrap text-xs">{suggestion}</p>
+             </div>
+           )}
           </div>
           
           <div>

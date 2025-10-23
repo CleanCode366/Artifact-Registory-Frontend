@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import FilterBar from './FilterBar';
 import DiscoveryCard from './DiscoveryCard';
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 
 export interface Post {

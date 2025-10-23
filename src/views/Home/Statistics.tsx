@@ -2,7 +2,7 @@ import { Award, BookOpen, Globe, Users } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
 
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
 const Statistics: React.FC = () => {
     const statistics = [

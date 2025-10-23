@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { Comment } from "./InscriptionDetailPage";
 import type { User } from "@/types";
 
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
 interface CommentCardProps{
     comments: Comment;

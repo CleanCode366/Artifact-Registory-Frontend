@@ -5,7 +5,7 @@ import ImageGallery from './ImageGallery';
 import ContributionsList from './ContributionsList';
 import { Suspense, use, useEffect, useState } from 'react';
 
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 // Mock data based on your data structure
 
 

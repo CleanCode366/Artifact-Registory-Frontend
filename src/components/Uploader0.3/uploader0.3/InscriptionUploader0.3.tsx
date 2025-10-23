@@ -3,8 +3,8 @@ import type { ChangeEvent } from "react";
 import { Camera, MapPin, Upload, X } from "lucide-react";
 import piexifjs from 'piexifjs';
 // import { getTokenFromCookie } from "@/utils/cookieUtils";
-const backendDetectUrl = import.meta.env.VITE_BACKEND_AI_URL;
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
+const backendDetectUrl = window._env_?.VITE_BACKEND_AI_URL || import.meta.env.VITE_BACKEND_AI_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
 // --- GPS EXIF embedding utilities ---
 const decimalToDMS = (decimal: number): [number, number, number] => {

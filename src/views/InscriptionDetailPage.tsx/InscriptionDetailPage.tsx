@@ -7,8 +7,9 @@ import { useParams } from 'react-router-dom';
 import Model from './Model';
 import ImageCarousel from './ImageCarousel';
 import type { User } from '@/types';
+import ShareModal from '@/components/ShareModal/ShareModal';
 
-const backendApiUrl = import.meta.env.VITE_BACKEND_API_URL;
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
 
 
@@ -307,7 +308,15 @@ const handleRating = async (newRating: number) => {
             {post.description.title || 'Untitled Inscription'}
           </h2>
           <div className="flex items-center gap-2 text-gray-300 mb-4">
-            <MapPin className="w-5 h-5" />
+            <button
+                      onClick={() => handleClick(
+                        post.description.geolocation!.lat!,
+                        post.description.geolocation!.lon
+                      )}
+                      className="text-red-700 hover:bg-red-800 transition-colors font-medium"
+                    >
+                      <MapPin className='w-5 h-5'/>
+            </button>
             <span>{
             post.description.geolocation && post.description.geolocation.display_name
             },{post.description.geolocation && post.description.geolocation.city}, {post.description.geolocation && post.description.geolocation.state || ''}</span>
@@ -318,8 +327,7 @@ const handleRating = async (newRating: number) => {
         {/* Rating and Actions */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
-              {post.rating && <StarRating rating={post.rating} />}
-              <span className="text-gray-300">({post.userrating?.length})</span>
+              {post.rating != 0 && <StarRating rating={post.rating} usersRated={post.userrating?.length}/>}
             </div>
             <div className="flex gap-3">
               <button
@@ -352,9 +360,7 @@ const handleRating = async (newRating: number) => {
               >
                 <MapPin className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
               </button> */}
-              <button className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
-                <Share2 className="w-5 h-5" />
-              </button>
+             <ShareModal />
               
               {/* Update and Delete buttons - only shown if user owns the post */}
               {userDetails && post.user_id === userDetails._id && (
