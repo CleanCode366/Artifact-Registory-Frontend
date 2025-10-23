@@ -5,6 +5,17 @@ import { Camera, MapPin, Upload, X } from "lucide-react";
 // Real piexifjs import - now properly installed
 import piexifjs from 'piexifjs';
 
+declare global {
+  interface Window {
+    _env_?: {
+      VITE_BACKEND_AI_URL?: string;
+      VITE_BACKEND_API_URL?: string;
+      VITE_N8N_WEBHOOK_URL?: string;
+      [key: string]: string | undefined;
+    };
+  }
+}
+
 const backendDetectUrl = window._env_?.VITE_BACKEND_AI_URL || import.meta.env.VITE_BACKEND_AI_URL;
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 const webhookUrl = window._env_?.VITE_N8N_WEBHOOK_URL || import.meta.env.VITE_N8N_WEBHOOK_URL;
@@ -100,7 +111,15 @@ const embedGPSIntoImage = (
     };
     
     try {
-      exifObj = piexifjs.load(imageDataUrl);
+      // Load EXIF and normalize to ensure required sections are present.
+      const loaded = piexifjs.load(imageDataUrl) as any;
+      exifObj = {
+        "0th": (loaded && loaded["0th"]) || {},
+        "Exif": (loaded && loaded["Exif"]) || {},
+        "GPS": (loaded && loaded["GPS"]) || {},
+        "1st": (loaded && loaded["1st"]) || {},
+        "thumbnail": (loaded && loaded["thumbnail"]) || null
+      };
     } catch {
       // Create new EXIF structure if none exists
       exifObj = {
