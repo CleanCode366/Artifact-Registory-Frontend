@@ -2,6 +2,8 @@ import { ThumbsUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Comment } from "./InscriptionDetailPage";
 import type { User } from "@/types";
+import { getCookie } from "@/utils/Auth/auth";
+import { c } from "node_modules/framer-motion/dist/types.d-Cjd591yU";
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -16,18 +18,10 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments }) => {
   const [UserDetails, SetUserDetails] = useState<User>();
   const [isLoading, setIsLoading] = useState(true);
 
-  function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
-  }  
-
   // Like/Dislike API
   const LikeDisLikeAPI = async () => {
     const token = getCookie('token');
+    const xsrfToken = getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864';
     if (!token || !UserDetails?._id) {
       console.error('No token or user');
       return;
@@ -36,10 +30,12 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments }) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("X-XSRF-TOKEN", xsrfToken || "");
 
     const urlencoded = new URLSearchParams();
     urlencoded.append("descriptionId", comments.id || "");
     const requestOptions = {
+      credentials: 'include' as RequestCredentials,
       method: "POST",
       headers: myHeaders,
       body: urlencoded,
@@ -84,6 +80,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments }) => {
           urlencoded.append("descriptionId", comments.id);
 
           const requestOptions = {
+            credentials: 'include' as RequestCredentials,
             method: "POST",
             headers: myHeaders,
             body: urlencoded,

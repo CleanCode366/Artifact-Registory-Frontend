@@ -8,6 +8,7 @@ import Model from './Model';
 import ImageCarousel from './ImageCarousel';
 import type { User } from '@/types';
 import ShareModal from '@/components/ShareModal/ShareModal';
+import { getCookie } from '@/utils/Auth/auth';
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -83,14 +84,7 @@ const InscriptionDetailsPage: React.FC = () => {
   const handleOpen = () => setDisplay(true);
   const handleClose = () => setDisplay(false);
 
-  function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
-  }
+
   const handleClick = (lat: number, lon: number) => {
     const url = `https://www.google.com/maps?q=${lat},${lon}`;
     window.open(url, '_blank');
@@ -103,14 +97,17 @@ const InscriptionDetailsPage: React.FC = () => {
     
     try {
       const token = getCookie('token');
+      const xsrfToken = getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864';
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
       myHeaders.append("Authorization", `Bearer ${token}`);
+      myHeaders.append("X-XSRF-TOKEN", xsrfToken || '');
 
       const urlencoded = new URLSearchParams();
       urlencoded.append("postId", postId as string);
 
       const requestOptions: RequestInit = {
+        credentials: 'include' as RequestCredentials,
         method: 'POST',
         headers: myHeaders,
         body: urlencoded,
@@ -152,10 +149,12 @@ useEffect(() => {
     try {
       const token = getCookie('token');
       const response = await fetch(`${backendApiUrl}post/userProfile`, {
+        credentials: 'include',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864'
         },
         body: JSON.stringify({}),
       });
@@ -177,10 +176,12 @@ useEffect(() => {
       setLoading(true);
       const token = getCookie('token');
       const response = await fetch(`${backendApiUrl}post/getAllPost`, {
+        credentials: 'include',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864'
         },
         body: JSON.stringify({}),
       });
@@ -214,11 +215,13 @@ useEffect(() => {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
       myHeaders.append("Authorization", `Bearer ${token}`);
+      myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
 
       const urlencoded = new URLSearchParams();
       urlencoded.append("postId", postId);
 
       const requestOptions: RequestInit = {
+        credentials: 'include' as RequestCredentials,
         method: "POST",
         headers: myHeaders,
         body: urlencoded,
@@ -248,10 +251,13 @@ const submitRatingToAPI = async (postId: string, rating: number): Promise<string
   const token = getCookie('token');
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
   myHeaders.append("Authorization", `Bearer ${token}`);
+  myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
+
   const urlencoded = new URLSearchParams();
   urlencoded.append("postId", postId);
   urlencoded.append("rating", rating.toString());
   const requestOptions: RequestInit = {
+    credentials: 'include' as RequestCredentials,
     method: 'POST',
     headers: myHeaders,
     body: urlencoded,

@@ -1,4 +1,6 @@
 // StarRating component
+import { getCookie } from "@/utils/Auth/auth";
+import { get } from "http";
 import { Star } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
@@ -62,12 +64,14 @@ const submitRatingToAPI = async (postId: string, rating: number): Promise<string
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
   myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoidXNlciIsImV4cCI6MTc1NzA1MjE5OSwidXNlciI6Im5pbmpha2Fua2FpMUBnbWFpbC5jb20iLCJpYXQiOjE3NTY5NjU3OTl9.58fo0J8OVPL53fZeK0sgVvGzbSxSGg8p0tq0gtKJPwc");
+  myHeaders.append("X-XSRF-TOKEN", getCookie("XSRF-TOKEN") || "");
 
   const urlencoded = new URLSearchParams();
   urlencoded.append("postId", postId);
   urlencoded.append("rating", rating.toString());
 
   const requestOptions: RequestInit = {
+    credentials: 'include' as RequestCredentials,
     method: "POST",
     headers: myHeaders,
     body: urlencoded,

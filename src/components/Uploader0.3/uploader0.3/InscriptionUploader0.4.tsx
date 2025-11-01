@@ -11,7 +11,6 @@ import { PhotoGrid } from "../components/PhotoGrid";
 import { PhotoUploadArea } from "../components/PhotoUploadArea";
 import { StoneCheckStatus } from "../components/StoneCheckStatus";
 import { UploadButton } from "../components/UploadButton";
-import { InfoFooter } from "../components/InfoFooter";
 import InscriptionForm from "../components/InscriptionForm";
 import { useInscriptionUploader } from "../hooks/UseInscriptionUploader";
 import { checkStoneInscription } from "../Services/inscriptionService";

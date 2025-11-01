@@ -1,4 +1,5 @@
 // Model.tsx
+import { getCookie } from "@/utils/Auth/auth";
 import type React from "react";
 import { useState } from "react";
 
@@ -16,15 +17,6 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose }) => {
   const handleInputChange = (e: String) => {
     setInputValue(e as string);
   };
-  
-   function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
-  }
 
   const handlePost = async () => {
   try {  
@@ -36,12 +28,14 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose }) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
 
     const urlencoded = new URLSearchParams();
     urlencoded.append("postId", postId);
     urlencoded.append("discription", inputValue);
 
     const requestOptions: RequestInit = {
+      credentials: 'include' as RequestCredentials,
       method: "POST",
       headers: myHeaders,
       body: urlencoded,

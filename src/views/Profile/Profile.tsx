@@ -4,8 +4,16 @@ import StatsGrid from './StatsGrid';
 import ImageGallery from './ImageGallery';
 import ContributionsList from './ContributionsList';
 import { Suspense, use, useEffect, useState } from 'react';
+import { get } from 'http';
+import { getCookie } from '@/utils/Auth/auth';
 
-const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
+declare global {
+  interface Window {
+    _env_?: { VITE_BACKEND_API_URL?: string };
+  }
+}
+
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL ?? import.meta.env.VITE_BACKEND_API_URL;
 // Mock data based on your data structure
 
 
@@ -28,16 +36,6 @@ const Profile = () => {
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [Comments, setComments] = useState(null);
 
-  // Updated getCookie function
-  function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
-  }
-
   useEffect(() => {
     // Get token at the beginning
     const token = getCookie('token');
@@ -51,10 +49,12 @@ const Profile = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(`${backendApiUrl}post/userProfile`, {
+          credentials: 'include',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
+            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
           },
           body: JSON.stringify({}),
         });
@@ -70,10 +70,12 @@ const Profile = () => {
     const fetchAllPosts = async () => {
       try {
         const response = await fetch(`${backendApiUrl}post/getAllUserPost`, {
+          credentials: 'include',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
+            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
           },
           body: JSON.stringify({}),
         });
@@ -89,10 +91,12 @@ const Profile = () => {
     const fetchAllComments = async () => {
       try {
         const response = await fetch(`${backendApiUrl}post/getCommentByUser`, {
+          credentials: 'include',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
+            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
           },
           body: JSON.stringify({}),
         });
@@ -140,13 +144,6 @@ const Profile = () => {
 
 //   const [isLoadingComments, setIsLoadingComments] = useState(true);
 //   const [Comments, setComments] = useState(null);
-
-
-//   function getCookie(name: String) {
-//     const value = `; ${document.cookie}`;
-//     const parts = value.split(`; ${name}=`);
-//     if (parts.length === 2) return parts.pop().split(";").shift();
-//   }
 
   
 //    useEffect(() => {

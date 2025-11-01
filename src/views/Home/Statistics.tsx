@@ -1,3 +1,4 @@
+import { getCookie } from "@/utils/Auth/auth";
 import { Award, BookOpen, Globe, Users } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -17,10 +18,13 @@ const Statistics: React.FC = () => {
     useEffect(() => {
         const fetchStatistics = async () => {
             try{
+                const xsrfToken = getCookie("XSRF-TOKEN");
                 const response = await fetch(`${backendApiUrl}post/public/getDashboardCounts`, {
+                    credentials: 'include',
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        "X-XSRF-TOKEN": xsrfToken || ""
                     },
                 });
                 const data = await response.json();

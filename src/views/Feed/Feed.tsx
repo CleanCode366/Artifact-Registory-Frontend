@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import FilterBar from './FilterBar';
 import DiscoveryCard from './DiscoveryCard';
+import { getCookie } from '@/utils/Auth/auth';
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 
@@ -43,25 +44,19 @@ const Feed = () => {
   
   const [posts, setPosts] = useState<Post[]>([]);
 
-  function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
-  }
-
   // Fetch posts from API
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const token = getCookie('token');
+        const xsrfToken = getCookie("XSRF-TOKEN");
         const response = await fetch(`${backendApiUrl}post/getAllPost`, {
+          credentials: 'include',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
+            "X-XSRF-TOKEN": xsrfToken || ""
           },
           body: JSON.stringify({}),
         });
