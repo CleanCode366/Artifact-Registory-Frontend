@@ -34,7 +34,7 @@ const Nav: React.FC = () => {
               <img src={logo} alt="company Logo" className="h-11"/>
               <div>
                 <h1 className="text-xl font-bold">Archaeological Inscriptions</h1>
-                <p className="text-sm text-slate-400">C-DAC Bengalore</p>
+                <p className="text-sm text-slate-400">C-DAC Bangalore</p>
               </div>
             </NavLink>
             <div className="hidden md:flex space-x-6">

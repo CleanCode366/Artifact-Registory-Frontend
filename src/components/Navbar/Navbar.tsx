@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
           <img src={logo} alt="company Logo" className="h-11"/>
           <div className="text-sm h-full flex flex-col justify-center">
             <div>Crowd Sourcing Plateform</div>
-            <div>C-DAC Bengalore</div>
+            <div>C-DAC Bangalore</div>
           </div>
         </NavLink>
       </div>

@@ -72,12 +72,12 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
         )}
       </div>
       
-      <FormField
+      {/* <FormField
         label="Script Language (comma separated)"
         value={formData.description.scriptLanguage?.join(", ") || ""}
         onChange={(value) => onChange("description.scriptLanguage", value.split(",").map(s => s.trim()).filter(Boolean))}
         placeholder="Devanagari, Tamil"
-      />
+      /> */}
       
       <FormField
         label="Language (comma separated)"

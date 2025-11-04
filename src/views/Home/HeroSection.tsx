@@ -12,7 +12,7 @@ const HeroSection = () => {
                 </h2>
                 <p className="text-xl text-primary-text/60 max-w-3xl mx-auto mb-8">
                     Join the C-DAC's collaborative platform for archaeological inscriptions. 
-                    Discover, transcribe, translate, and preserve humanity's written heritage.
+                    Discover, transcribe, translate, and preserve Indian's ancient heritage.
                 </p>
                 
                 {/* Search Bar */}

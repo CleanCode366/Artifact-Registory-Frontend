@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import type { Comment } from "./InscriptionDetailPage";
 import type { User } from "@/types";
 import { getCookie } from "@/utils/Auth/auth";
-import { c } from "node_modules/framer-motion/dist/types.d-Cjd591yU";
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -77,7 +76,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments }) => {
           myHeaders.append("Authorization", `Bearer ${token}`);
 
           const urlencoded = new URLSearchParams();
-          urlencoded.append("descriptionId", comments.id);
+          urlencoded.append("descriptionId", comments.id || "");
 
           const requestOptions = {
             credentials: 'include' as RequestCredentials,
