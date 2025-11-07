@@ -108,7 +108,7 @@ export default function Wellcome() {
         <Link to="/login" className="bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl">
           Add New Inscription
         </Link>
-        <Link to="/feed" className="bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl">
+        <Link to="/login" className="bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl">
           Explore Inscriptions
         </Link>
       </div>

@@ -35,9 +35,9 @@ const HomePage: React.FC = () => {
       </FadeInWrapper>
 
       {/* Recent Activity */}
-      <FadeInWrapper>
-        <ReactActivity/>
-      </FadeInWrapper>
+      {/* <FadeInWrapper> */}
+        {/* <ReactActivity/> */}
+      {/* </FadeInWrapper> */}
 
       {/* Why Join Section */}
       <FadeInWrapper>
