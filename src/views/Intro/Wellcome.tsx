@@ -105,10 +105,10 @@ export default function Wellcome() {
       </p>
 
       <div className="flex flex-col gap-4 w-full">
-        <Link to="/login" className="bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl">
+        <Link to="/upload" className="bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl">
           Add New Inscription
         </Link>
-        <Link to="/login" className="bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl">
+        <Link to="/feed" className="bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl">
           Explore Inscriptions
         </Link>
       </div>

@@ -32,9 +32,9 @@ const Profile = () => {
   const [UserDetails, SetUserDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [isLoadingComments, setIsLoadingComments] = useState(true);
-  const [Comments, setComments] = useState(null);
+  const [Comments, setComments] = useState([]);
 
   useEffect(() => {
     // Get token at the beginning
@@ -128,8 +128,8 @@ const Profile = () => {
       <div className="max-w-6xl mx-auto">
         {UserDetails && <ProfileHeader user={UserDetails} />}
         {UserDetails && <StatsGrid stats={UserDetails} />}
-        {posts && <ImageGallery posts={posts} />}
-        {Comments && <ContributionsList comments={Comments} />}
+        {posts.length > 0 && <ImageGallery posts={posts} />}
+        {Comments.length > 0 && <ContributionsList comments={Comments} />}
       </div>
     </div>
   );

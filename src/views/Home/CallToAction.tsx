@@ -15,9 +15,9 @@ const CallToAction: React.FC = () => {
                 <NavLink to="/upload" className="bg-primary px-8 py-4 rounded-xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg">
                     Start Contributing
                 </NavLink>
-                <button className="border border-slate-600 hover:bg-slate-800/50 px-8 py-4 rounded-xl font-semibold text-lg transition-all">
+                {/* <button className="border border-slate-600 hover:bg-slate-800/50 px-8 py-4 rounded-xl font-semibold text-lg transition-all">
                     Learn More
-                </button>
+                </button> */}
                 </div>
             </div>
             </div>

@@ -23,16 +23,16 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
               (e.currentTarget as HTMLImageElement).src = profileImg;
             }}
           /> */}
-          <div className="absolute -bottom-1 -right-1 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+          {/* <div className="absolute -bottom-1 -right-1 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
             6
-          </div>
+          </div> */}
         </div>
         
         <div className="flex-1 text-center sm:text-left">
           <h1 className="text-2xl font-bold text-white mb-2">{user.name}</h1>
           <p className="text-gray-400 mb-4">Archaeology enthusiast & digital volunteer</p>
           
-          <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+          {/* <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
             <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer">
               Edit Profile
             </button>
@@ -40,7 +40,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
               <Share className="w-4 h-4" />
               Share
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
