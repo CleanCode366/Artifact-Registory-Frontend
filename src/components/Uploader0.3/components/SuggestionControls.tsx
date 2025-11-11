@@ -34,7 +34,7 @@ const SuggestionControls: React.FC<SuggestionControlsProps> = ({
         {isFetching ? "Suggesting…" : "Suggest Description"}
       </button>
       
-      <button
+      {/* <button
         onClick={() => {
           if (geoInfo?.latitude && geoInfo?.longitude) {
             onFetch(geoInfo.latitude, geoInfo.longitude);
@@ -45,7 +45,7 @@ const SuggestionControls: React.FC<SuggestionControlsProps> = ({
         className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-md text-sm"
       >
         Use current location
-      </button>
+      </button> */}
       
       {suggestion && (
         <button

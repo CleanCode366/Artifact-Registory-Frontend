@@ -106,8 +106,8 @@ const FeaturedInscriptionsCarousel = () => {
                                 </span> */}
                             </div>
                             </div>
-
-                            <NavLink to={inscription.link} className="bg-gradient-to-r bg-primary px-6 py-3 rounded-lg font-medium transition-all transform hover:scale-105 flex items-center">
+                                {/* {inscription.link} */}
+                            <NavLink to="/feeds" className="bg-gradient-to-r bg-primary px-6 py-3 rounded-lg font-medium transition-all transform hover:scale-105 flex items-center">
                             Explore Details
                             <ChevronRight className="w-5 h-5 ml-2" />
                             </NavLink>

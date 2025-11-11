@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
                     <h5 className="font-semibold mb-4 text-primary-text">Platform</h5>
                     <ul className="space-y-2 text-slate-400">
                         <li><NavLink to="/home" className="hover:text-white transition-colors">Home</NavLink></li>
-                        <li><NavLink to="/explore" className="hover:text-white transition-colors">Explore</NavLink></li>
+                        <li><NavLink to="/feed" className="hover:text-white transition-colors">Explore</NavLink></li>
                         <li><NavLink to="/upload" className="hover:text-white transition-colors">Upload</NavLink></li>
                         {/* <li><NavLink to="/research-tools" className="hover:text-white transition-colors">Research Tools</NavLink></li> */}
                         {/* <li><NavLink to="/api-access" className="hover:text-white transition-colors">API Access</NavLink></li> */}

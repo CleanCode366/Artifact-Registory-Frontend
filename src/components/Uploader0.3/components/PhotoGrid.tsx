@@ -19,7 +19,7 @@ export const PhotoGrid = ({ photos, onReset }: PhotoGridProps) => (
       onClick={onReset}
       className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition"
     >
-      Upload More Photos
+      Reset
     </button>
   </div>
 );
