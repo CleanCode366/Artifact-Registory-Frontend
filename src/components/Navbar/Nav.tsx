@@ -3,11 +3,10 @@ import logo from "@assets/Frame.png"
 import { NavLink, useNavigate } from "react-router-dom";
 import { isAuthenticated, logout } from "@/utils/auth";
 import { getCookie } from "@/utils/Auth/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { clearUserActivityTracking, trackUserActivity } from "./EventManager";
-
-
+import CircularProgess from '@components/Spinner/CircularProgess';
 
 interface NavItem {
   path: string;
@@ -16,12 +15,19 @@ interface NavItem {
 }
 
 const Nav: React.FC = () => {
-    const authenticated = isAuthenticated();
+    const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+    const navigate = useNavigate();
     
- const navigate = useNavigate();
-  
-  
-  
+    useEffect(() => {
+      // determine auth state and update UI; do NOT perform redirects here (routes will handle navigation)
+      setAuthenticated(isAuthenticated());
+    }, []);
+
+    const deleteCookie = (name: any) => {
+      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict; Secure`;
+      navigate('/login', { replace: true });
+    };
+
     const loggoutServer = () => {
       let token = getCookie('token');
       if (!token) {
@@ -30,29 +36,13 @@ const Nav: React.FC = () => {
   
       console.log('logout ho ra hai');
   
-         navigate('/login', { replace: true });
-  
-      // const url = process.env.REACT_APP_SERVER_URL + '/officer/logout';
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // };
-      // axios
-      //   .post(url, null, config)
-      //   .then((resp) => {
-      //     console.log(resp.data.data);
-      //   })
-      //   .catch((error) => {
-      //     console.error('Error logging out:', error);
-      //   });
+      navigate('/login', { replace: true });
     };
   
     useEffect(() => {
       const token = getCookie('token');
       if (!token) {
-        navigate('/login', { replace: true });
-        // logout();
+        setAuthenticated(false);
         return;
       }
       const data_decoded: any = jwtDecode(token);
@@ -64,9 +54,9 @@ const Nav: React.FC = () => {
       const sessionTimeout = idealTime * 60 * 1000;
   
       const handleSessionTimeout = () => {
-      
-        loggoutServer();
-        logout();
+        deleteCookie('token')
+        // loggoutServer();
+        // logout();
       };
       const activityEvents = [
         'mousemove',
@@ -81,14 +71,14 @@ const Nav: React.FC = () => {
         clearUserActivityTracking(activityEvents);
       };
     }, [navigate ]);
-
+  
     const protectedLinks: NavItem[] = [
       { path: "/home", label: "Home", end: true },
       { path: "/feed", label: "Feed", end: true },
       { path: "/upload", label: "Upload", end: true },
       { path: "/profile", label: "Profile", end: true },
     ];
-
+  
     const publicLinks: NavItem[] = [
       // { path: "/login", label: "Login", end: true },
     ];
@@ -123,17 +113,18 @@ const Nav: React.FC = () => {
               ))}
             </div>
             <div className="flex space-x-3">
-              {authenticated && (
+              {authenticated === null ? (
+                <div className="flex items-center"><CircularProgess /></div>
+              ) : authenticated ? (
                   <button
                     onClick={logout}
                     className="bg-primary-dark hover:bg-primary/80 px-4 py-2 rounded-lg font-medium transition-colors"
                   >
                     Logout
                   </button>
-              )}
-              {!authenticated && (
+              ) : (
                   <button
-                    onClick={logout}
+                    onClick={() => navigate('/login')}
                     className="bg-primary-dark hover:bg-primary/80 px-4 py-2 rounded-lg font-medium transition-colors"
                   >
                     login
