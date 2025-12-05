@@ -8,21 +8,21 @@ interface StatsGridProps {
 
 const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
   const statItems = [
-    { icon: Upload, value: stats.imagesUploaded, label: "Images Uploaded", color: "text-orange-500" },
-    { icon: ThumbsUp, value: stats.upvotesReceived, label: "Upvotes Received", color: "text-yellow-500" },
-    { icon: Users, value: stats.followers, label: "Followers", color: "text-blue-500" },
-    { icon: Star, value: stats.points, label: "Points", color: "text-yellow-500" }
+    { icon: Upload, value: stats.imagesUploaded, label: "Images Uploaded", color: "text-[#34D399]" },
+    { icon: ThumbsUp, value: stats.upvotesReceived, label: "Upvotes Received", color: "text-[#51A2FF]" },
+    { icon: Users, value: stats.followers, label: "Followers", color: "text-[#FBBF24]" },
+    { icon: Star, value: stats.points, label: "Points", color: "text-[#A78BFA]" }
   ];
 
   return (
     <div className="mb-6">
-      <h2 className="text-xl font-bold text-white mb-4">Dashboard Stats</h2>
+      <h2 className="text-xl font-bold text-black mb-7">Dashboard Stats</h2>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statItems.map((item, index) => (
-          <div key={index} className="bg-secondary-background  rounded-lg p-4 text-center">
-            <item.icon className={`w-8 h-8 mx-auto mb-2 ${item.color}`} />
-            <div className="text-2xl font-bold text-white mb-1">{item.value}</div>
-            <div className="text-gray-400 text-sm">{item.label}</div>
+          <div key={index} className="bg-secondary-background border border-slate-700/50  rounded-lg p-4 text-center">
+            <item.icon className={`w-8 h-8 mx-auto ${item.color}`} />
+            <div className="text-2xl font-bold text-black mb-1">{item.value}</div>
+            <div className="text-black text-sm">{item.label}</div>
           </div>
         ))}
       </div>

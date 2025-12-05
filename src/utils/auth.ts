@@ -10,15 +10,8 @@ export const isAuthenticated = (): boolean => {
 };
 
 export const logout = (): void => {
-
   // Clear the cookie by setting it to expire
-  // document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=inscriptions.cdacb.in; Secure; SameSite=Lax;';
-
-
-  setTimeout(() => {
-    window.location.reload();
-  }, 1000);
+  document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   // Redirect to login
-  window.location.href = '/home';
+  window.location.href = '/login';
 };

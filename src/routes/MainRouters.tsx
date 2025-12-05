@@ -1,12 +1,13 @@
-import { ProtectedRoute, PublicRoute } from "@/layouts/ProtectedLayOut/ProtectedLayout";
+// import { ProtectedRoute, PublicRoute } from "@/layouts/ProtectedLayOut/ProtectedLayout";
 import HomePage from "@/views/Home/Home";
-import InscriptionDetails from "@/views/InscriptionDetailPage/InscriptionDetails";
+import InscriptionDetails from "@/views/InscriptionDetailPage.tsx/InscriptionDetails";
 import Upload from "@/views/Upload/Upload";
 import BaseLayout from "@layouts/MainLayout/BaseLayout";
 import AuthPage from "@views/Auth/AuthPage";
 import Feed from "@views/Feed/Feed";
 import Gallery from "@views/Gallery/Gallery";
-import Profile from "@views/Profile/Profile";
+// import Profile from "@views/Profile/Profile";
+import Profile1 from "@views/Profile/Profile1";
 import Setting from "@views/Setting/Setting";
 import { Navigate } from "react-router-dom";
 
@@ -31,57 +32,57 @@ const MainRoutes = {
     {
       path: 'Feed',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Feed />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
       path: 'upload',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Upload />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
       path: 'Feed/:id',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <InscriptionDetails />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
       path: 'settings',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Setting />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
       path: 'profile',
       element: (
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
+        // <ProtectedRoute>
+          <Profile1 />
+        // </ProtectedRoute>
       )
     },
     {
       path: 'photos',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Gallery />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
       path: 'login',
       element: (
-        <PublicRoute>
+        // <PublicRoute>
           <AuthPage />
-        </PublicRoute>
+        // </PublicRoute>
       )
     }
   ]

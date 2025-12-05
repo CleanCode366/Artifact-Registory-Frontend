@@ -1,12 +1,9 @@
-import type React from "react";
-import logo from "@assets/Frame.png"
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import logo from "@assets/Frame1.png"
+import { NavLink } from "react-router-dom";
 import { isAuthenticated, logout } from "@/utils/auth";
-import { getCookie } from "@/utils/Auth/auth";
-import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import { clearUserActivityTracking, trackUserActivity } from "./EventManager";
-import CircularProgess from '@components/Spinner/CircularProgess';
+import { Menu } from "lucide-react";
+import meityLogo from "@assets/meitylogo2.png";
 
 interface NavItem {
   path: string;
@@ -14,86 +11,51 @@ interface NavItem {
   end?: boolean;
 }
 
-const Nav: React.FC = () => {
-    const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-    const navigate = useNavigate();
-    
-    useEffect(() => {
-      // determine auth state and update UI; do NOT perform redirects here (routes will handle navigation)
-      setAuthenticated(isAuthenticated());
-    }, []);
+const Nav: React.FC = ({ scrollToSection }) => {
+  const authenticated = isAuthenticated();
 
-    const deleteCookie = (name: any) => {
-      document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict; Secure`;
-      navigate('/login', { replace: true });
+
+  const protectedLinks: NavItem[] = [
+    { path: "/home", label: "Home", end: true },
+    { path: "/feed", label: "Feed", end: true },
+    { path: "/upload", label: "Upload", end: true },
+    { path: "/profile", label: "Profile", end: true },
+  ];
+
+  const publicLinks: NavItem[] = [
+    // { path: "/login", label: "Login", end: true },
+  ];
+
+  const linksToShow = authenticated ? protectedLinks : publicLinks;
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const handleScroll = () => {
+    setScrollPosition(window.scrollY);
+  };
+
+  useEffect(() => {
+    // Add the event listener when the component mounts
+    window.addEventListener('scroll', handleScroll);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
     };
 
-    const loggoutServer = () => {
-      let token = getCookie('token');
-      if (!token) {
-        return;
-      }
-  
-      console.log('logout ho ra hai');
-  
-      navigate('/login', { replace: true });
-    };
-  
-    useEffect(() => {
-      const token = getCookie('token');
-      if (!token) {
-        setAuthenticated(false);
-        return;
-      }
-      const data_decoded: any = jwtDecode(token);
-  
-      const sessionStartTime = new Date(data_decoded.iat * 1000);
-      const sessionEndTime = new Date(data_decoded.exp * 1000);
-      const idealTime =
-        (sessionEndTime.getTime() - sessionStartTime.getTime()) / (1000 * 60);
-      const sessionTimeout = idealTime * 60 * 1000;
-  
-      const handleSessionTimeout = () => {
-        deleteCookie('token')
-        // loggoutServer();
-        // logout();
-      };
-      const activityEvents = [
-        'mousemove',
-        'click',
-        'keydown',
-        'scroll',
-        'touchstart',
-      ];
-      trackUserActivity(activityEvents, sessionTimeout, handleSessionTimeout);
-      
-      return () => {
-        clearUserActivityTracking(activityEvents);
-      };
-    }, [navigate ]);
-  
-    const protectedLinks: NavItem[] = [
-      { path: "/home", label: "Home", end: true },
-      { path: "/feed", label: "Feed", end: true },
-      { path: "/upload", label: "Upload", end: true },
-      { path: "/profile", label: "Profile", end: true },
-    ];
-  
-    const publicLinks: NavItem[] = [
-      // { path: "/login", label: "Login", end: true },
-    ];
+  }, []); // Empty dependency array ensures the effect runs only once on mount and unmount
 
-    const linksToShow = authenticated ? protectedLinks : publicLinks;
-
-    return(
-        <nav className="backdrop-blur-md bg-secondary-background border-b border-slate-700/50 sticky top-0 z-50 text-primary-text">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  return (
+    <div className="navbar-gradient" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <nav className={`top-0 z-50 text-secondary-text navbar-shadow ${scrollPosition > 64 ? "navscrollbehavior" : "w-100C"}`} style={{ backgroundColor: "transparent" }} >
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+
             <NavLink to="/home" className="flex items-center space-x-3">
-              <img src={logo} alt="company Logo" className="h-11"/>
+              {/* <img src={meityLogo} alt="company Logo" className="h-11" /> */}
+              <img src={logo} alt="company Logo" className="h-11" />
               <div>
-                <h1 className="text-xl font-bold">Archaeological Inscriptions</h1>
-                <p className="text-sm text-slate-400">C-DAC Bangalore</p>
+                <h1 className="text-xl font-bold text-primary-text">Archaeological Inscriptions</h1>
+                <p className="text-sm text-primary-text">C-DAC Bangalore</p>
               </div>
             </NavLink>
             <div className="hidden md:flex space-x-6">
@@ -103,8 +65,7 @@ const Nav: React.FC = () => {
                   to={path}
                   end={end}
                   className={({ isActive }) =>
-                    `hover:text-primary-dark transition-colors ${
-                      isActive ? "text-primary-dark font-semibold" : ""
+                    `hover:text-primary-dark transition-colors ${isActive ? "text-primary-dark font-semibold" : ""
                     }`
                   }
                 >
@@ -112,30 +73,47 @@ const Nav: React.FC = () => {
                 </NavLink>
               ))}
             </div>
-            <div className="flex space-x-3">
-              {authenticated === null ? (
-                <div className="flex items-center"><CircularProgess /></div>
-              ) : authenticated ? (
+            <div className="flex justify-between items-center space-x-3">
+              {authenticated ? "" : (<div className="pt-2 navbar-list">
+                <ul className="space-y-2 flex-row text-white footer-links" style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+                  <li className="footer-link-items cursor-pointer" onClick={() => { scrollToSection(0) }}><a className="footer-link-item-anchor transition-colors">Home</a></li>
+                  <li className="footer-link-items cursor-pointer" onClick={() => { scrollToSection(780) }}><a className="footer-link-item-anchor transition-colors">Featured Discoveries</a></li>
+                  <li className="footer-link-items cursor-pointer" onClick={() => { scrollToSection(1500) }}><a className="footer-link-item-anchor transition-colors">How it works</a></li>
+                  <li className="footer-link-items cursor-pointer" onClick={() => { scrollToSection(2000) }}><a className="footer-link-item-anchor transition-colors">Recent Discoveries</a></li>
+                  <li className="footer-link-items cursor-pointer" onClick={() => { scrollToSection(2800) }}><a className="footer-link-item-anchor transition-colors">Community</a></li>
+                  <li className="footer-link-items cursor-pointer" onClick={() => { scrollToSection(3400) }}><a className="footer-link-item-anchor transition-colors">Start</a></li>
+                </ul>
+              </div>)}
+              <div className="ps-4 flex items-center justify-between">
+
+                {authenticated && (
                   <button
                     onClick={logout}
-                    className="bg-primary-dark hover:bg-primary/80 px-4 py-2 rounded-lg font-medium transition-colors"
+                    className="bg-primary-dark cursor-pointer hover:bg-primary/80 px-4 py-2 rounded-lg font-medium transition-colors"
+                    style={{ border: "0.1rem solid white" }}
                   >
                     Logout
                   </button>
-              ) : (
+                )}
+                {!authenticated && (
                   <button
-                    onClick={() => navigate('/login')}
-                    className="bg-primary-dark hover:bg-primary/80 px-4 py-2 rounded-lg font-medium transition-colors"
+                    onClick={logout}
+                    className="bg-primary-light cursor-pointer text-primary-text hover:bg-primary/80 px-4 py-2 rounded-lg font-medium transition-colors"
+                    style={{ border: "0.1rem solid white" }}
+
                   >
-                    login
+                    Login
                   </button>
-              )}
+                )}
+                {/* <Menu size={0} className="hamburger-icon ms-2" /> */}
+              </div>
 
             </div>
           </div>
         </div>
       </nav>
-    )
+    </div>
+  )
 }
 
 export default Nav;

@@ -31,9 +31,9 @@ const Navbar: React.FC = () => {
     <nav className="flex flex-row justify-between bg-secondary-background p-4 text-primary-text px-16">
       <div>
         <NavLink to="/home" end className="flex gap-4 justify-between">
-          <img src={logo} alt="company Logo" className="h-11"/>
+          <img src={logo} alt="company Logo" className="h-11" />
           <div className="text-sm h-full flex flex-col justify-center">
-            <div>Crowd Sourcing Plateform</div>
+            <div>Crowd Sourcing Platform</div>
             <div>C-DAC Bangalore</div>
           </div>
         </NavLink>
@@ -46,15 +46,14 @@ const Navbar: React.FC = () => {
             to={path}
             end={end}
             className={({ isActive }) =>
-              `hover:text-primary-dark ${
-                isActive ? "text-primary-dark font-semibold" : ""
+              `hover:text-primary-dark ${isActive ? "text-primary-dark font-semibold" : ""
               }`
             }
           >
             {label}
           </NavLink>
         ))}
-        
+
         {authenticated && (
           <button
             onClick={logout}

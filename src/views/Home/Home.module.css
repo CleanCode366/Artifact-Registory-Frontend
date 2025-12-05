@@ -1,0 +1,16 @@
+.stats-mob {
+    display: none;
+}
+.stats-pc {
+    display: block;
+}
+
+@media screen and (max-width: 769px) {
+    .stats-mob {
+        display: block;
+    }
+
+    .stats-pc {
+        display: none;
+    }
+}

@@ -1,0 +1,127 @@
+.footer-styling {
+    background: linear-gradient(to right, rgba(0, 1, 71, 1) 0%, rgb(22, 24, 157) 33%, rgb(51, 53, 154) 66%, #000147 100%);
+}
+
+/* Dark mode override for UX4G */
+.ux4g-accessibility-dark-mode .footer-styling {
+    background: #161519 !important;
+}
+
+.footer-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-link-items {
+    display: table-cell;
+    position: relative;
+    padding: 0;
+}
+
+.footer-link-items a {
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+}
+
+.footer-link-items a:after {
+    background: none repeat scroll 0 0 transparent;
+    bottom: -10;
+    content: "";
+    display: block;
+    height: 2px;
+    left: 50%;
+    position: absolute;
+    background: #fff;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+}
+
+.footer-link-items a:hover:after {
+    width: 100%;
+    left: 0;
+}
+
+.navbar-list {
+    display: flex;
+    align-items: center;
+}
+
+.header-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+}
+
+.header-link-items {
+    position: relative;
+    padding: 0;
+}
+
+.header-link-items a {
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+}
+
+.header-link-items a:after {
+    background: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 4px;
+    left: 50%;
+    position: absolute;
+    background: #fff;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+}
+
+.header-link-items a:hover:after {
+    width: 100%;
+    left: 0;
+}
+
+@media screen and (max-height: 769px) {
+    .footer-links {
+        margin-top: 40px;
+    }
+
+}
+
+@media screen and (max-width: 769px) {
+    .navbar-list {
+        display: none;
+    }
+
+    /* .footer-logo-section {
+        transform: translateY(5rem)!important;
+        border: 2px solid red !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        style={{ display: "flex", flexDirection: "column", alignItems: "center" }} 
+    } */
+
+
+}
+
+@media screen and (max-width: 769px) {
+
+    .footer-logo-section {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .footer-logo-caption {
+        text-align: center;
+    }
+
+
+}

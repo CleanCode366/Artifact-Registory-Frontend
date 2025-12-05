@@ -1,0 +1,18 @@
+.image-gallery-slide img {
+    border-radius: 10px !important;
+    object-fit: contain;
+    
+}
+
+.image-gallery-slide .image-gallery-image{
+    width: 100%;
+    min-height: 8rem!important;
+    object-fit: contain;
+    overflow: hidden;
+}
+/* Fullscreen mode: display images in their original size */
+/* .custom-image-gallery .image-gallery-fullscreen img {
+    object-fit: contain;
+    width: auto;
+    height: auto;
+} */

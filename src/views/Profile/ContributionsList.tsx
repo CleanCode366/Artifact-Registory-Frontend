@@ -3,17 +3,17 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export interface Comment {
-    _id: string;
-    postId: string;
-    userId: string;
-    username: string;
-    userImageUrl?: string;
-    postImageUrl?: string;
-    createdAt: Date;
-    updatedAt: Date;
-    description: string;
-    upvote: number;
-    userVote: string[];
+  _id: string;
+  postId: string;
+  userId: string;
+  username: string;
+  userImageUrl?: string;
+  postImageUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  description: string;
+  upvote: number;
+  userVote: string[];
 }
 
 interface ContributionsListProps {
@@ -59,8 +59,8 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
     return (
       <Link to="/profile/contributions">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-white">My Contributions</h2>
-          <button 
+          <h2 className="text-xl font-bold text-black">My Contributions</h2>
+          <button
             onClick={() => setViewAll(!viewAll)}
             className="text-orange-500 hover:text-orange-400 text-sm font-medium outline-none focus:outline-none cursor-pointer"
           >
@@ -72,7 +72,7 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
           {displayPosts.map((post) => (
             <div key={post._id} className="bg-secondary-background rounded-lg p-4">
               <div className="flex gap-4">
-                <img 
+                <img
                   // src={post.postImageUrl || '/default-profile.png'} 
                   src={post.postImageUrl || ''}
                   // src={post.userImageUrl || '/default-profile.png'} 
@@ -81,17 +81,17 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
                 />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-white font-medium text-sm leading-tight">{post.description}</h3>
+                    <h3 className="text-black font-medium text-sm leading-tight">{post.description}</h3>
                     <div className="flex items-center gap-1 text-yellow-500 text-xs ml-2">
                       <Heart className="w-3 h-3 fill-current" />
                       {post.upvote}
                     </div>
                   </div>
-                  
+
                   <p className="text-gray-400 text-xs mb-2 line-clamp-2">
                     {post.description}
                   </p>
-                  
+
                   <div className="flex flex-wrap gap-2 text-xs">
                     <span className="text-orange-400">{post.description}</span>
                     <span className="text-gray-500">•</span>
@@ -111,8 +111,8 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-white">My Contributions</h2>
-        <button 
+        <h2 className="text-xl font-bold text-black">My Contributions</h2>
+        <button
           onClick={() => setViewAll(!viewAll)}
           className="text-orange-500 hover:text-orange-400 text-sm font-medium"
         >
@@ -130,15 +130,15 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
                 {post.upvote}
               </div>
             </div>
-            
+
             <div className="text-gray-400 text-sm mb-2">
               {/* Added {post.description.subject} • {formatDate(post.createdAt)} */}
             </div>
-            
+
             <p className="text-gray-300 text-sm mb-3 line-clamp-3">
               {post.description}
             </p>
-            
+
             <div className="flex flex-wrap gap-2 text-xs">
               {/* <span className="bg-gray-700 text-orange-400 px-2 py-1 rounded">{post.topic}</span> */}
               {/* <span className="bg-gray-700 text-blue-400 px-2 py-1 rounded">{post.script.join(', ')}</span> */}

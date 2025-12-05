@@ -34,7 +34,6 @@ export interface PostDescription {
     city: string;
     region: string;
     state?: string;
-    display_name?: string;
   };
 }
 

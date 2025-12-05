@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
   /* Primary colors */
@@ -8,7 +8,9 @@
   --color-primary-light: #f08d1a;
   --color-primary-text: #FFFFFF;
   --color-primary-text-dark: #000000;
-  --color-primary-background: #161616;
+  /* Set both background-color and background-image for better compatibility */
+  --color-primary-background-color: #FFFFFF;
+  /* --color-primary-background-image: radial-gradient(circle at center, rgba(255, 255, 255, 1) 51%, rgba(255, 255, 255, 1) 21%, rgba(237, 221, 83, 1) 100%); */
   --color-primary-background-dark: #0d0d0d;
   --color-primary-background-light: #1f1f1f;
 
@@ -18,16 +20,298 @@
   --color-secondary-light: #4a4a4a;
   --color-secondary-text: #B0B0B0;
   --color-secondary-text-dark: #8d8d8d;
-  --color-secondary-background: #323232;
+  --color-secondary-background: none;
   --color-secondary-background-dark: #1f1f1f;
   --color-secondary-background-light: #4a4a4a;
+
 }
+
+
+.borderRed {
+  border: 2px solid red;
+}
+
+.navbar-gradient {
+  background: linear-gradient(to right, rgba(0, 1, 71, 1) 0%, rgb(22, 24, 157) 33%, rgb(51, 53, 154) 66%, #000147 100%);
+}
+
+.floating-navbar {
+  border-radius: 30px;
+}
+
+.card-shadow {
+  border: 2px solid grey;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.parallax-bg {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-size: auto;
+  background-position: top;
+  border-radius: 30px
+}
+
+.card-styling {
+  background: #fff7dc;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid #ffeca8;
+  cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.footer-link-hover {
+  text-decoration: underline;
+  text-decoration-color: white;
+}
+
+.card-styling:hover,
+:focus {
+  transition: all 0.3s ease-in-out;
+  background: #ffde71;
+}
+
 
 /* Hide scrollbars globally */
 * {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 *::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
+  /* Chrome/Safari */
+}
+
+.navscrollbehavior {
+  position: fixed;
+  /* transition: translateY(2rem) 2s; */
+
+  /* transform:  animation: transform 0.3s ease-in-out forwards; */
+  /* top:1.5rem; */
+  width: 90%;
+  /* margin: 1rem auto 0 auto; */
+  border-radius: 1.5rem;
+  /* transition: background-color 1s ease; */
+  /* display: flex;
+  justify-content: center; */
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
+  background: inherit;
+  /* background: linear-gradient(to right, #000147, #1BADD9); */
+  /* background: #0A0032; */
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
+
+  animation: navbarFloatingDown 0.7s ease-in-out forwards;
+}
+
+.w-100C {
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: #000147;
+  /* Default button color */
+}
+
+.nav-focus-styling:focus {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.hamburger-icon {
+  display: none !important;
+}
+
+.mobile-navbar {
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  z-index: 999;
+  background: linear-gradient(to right, rgba(0, 1, 71, 1) 0%, rgb(22, 24, 157) 33%, rgb(51, 53, 154) 66%, #000147 100%);
+  overflow: hidden;
+  animation: mobile-navbar-slide-right 0.3s ease-in-out;
+}
+
+/* Closing animation */
+.mobile-navbar-closing {
+  animation: mobile-navbar-slide-left 0.3s ease-in-out;
+}
+
+.navbar-logos {
+  display: flex !important;
+}
+
+.navbar-logos-mob {
+  display: none !important;
+}
+
+/* Opening animation - slide in from left */
+@keyframes mobile-navbar-slide-right {
+  from {
+    transform: translateX(-30rem);
+  }
+
+  to {
+    transform: translateX(0rem);
+  }
+}
+
+/* Closing animation - slide out to left */
+@keyframes mobile-navbar-slide-left {
+  from {
+    transform: translateX(0rem);
+  }
+
+  to {
+    transform: translateX(-30rem);
+  }
+}
+
+@keyframes navbarFloatingDown {
+  from {
+    transform: translateY(0rem);
+  }
+
+  to {
+    transform: translateY(2rem);
+  }
+}
+
+@keyframes spiny {
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.cdacSpinner {
+  animation: spiny 2s linear infinite !important;
+}
+
+.footer-links-container-mob {
+  display: none !important;
+}
+
+.footer-links-container-pc {
+  display: inline-block !important;
+}
+
+.navbar-list-mob {
+  display: none !important;
+}
+
+.parallax-bg-pc {
+  display: block;
+}
+
+.parallax-bg-mob {
+  display: none;
+}
+
+.profile-stats-pc {
+  display: block
+}
+
+.profile-stats-mob {
+  display: none
+}
+
+.view-card-instruction-mob {
+  display: none;
+}
+
+@media screen and (max-width: 769px) {
+  .navbar-list {
+    display: none !important;
+  }
+
+  .view-card-instruction-mob {
+    display: block;
+    font-size: 0.7rem !important;
+
+  }
+
+  .navbar-list-mob {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .navbarCdacLogo {
+    display: inline;
+  }
+
+  .navscrollbehavior {
+    border-radius: 0rem;
+    width: 100%;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .communitycards {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hamburger-icon {
+    display: inline-block !important;
+  }
+
+  .footer-links-container-pc {
+    display: none !important;
+  }
+
+  .footer-links-container-mob {
+    display: flex !important;
+  }
+
+  .navbar-logos {
+    display: none !important;
+  }
+
+  .navbar-logos-mob {
+    display: flex !important;
+  }
+
+  .hide-these-mobile-view {
+    display: none !important;
+  }
+
+  .parallax-bg-pc {
+    display: none;
+  }
+
+  .parallax-bg-mob {
+    display: block;
+  }
+
+  .profile-stats-pc {
+    display: none
+  }
+
+  .profile-stats-mob {
+    display: block
+  }
+
+  .post-rating-like-share {
+    flex-direction: column;
+    /* align-items: center; */
+  }
+
+  .post-rating-like-share>div {
+    margin-bottom: 1rem;
+  }
+
 }

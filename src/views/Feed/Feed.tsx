@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
-import FilterBar from './FilterBar';
+// import { Search } from 'lucide-react';
+// import FilterBar from './FilterBar';
 import DiscoveryCard from './DiscoveryCard';
-import { getCookie } from '@/utils/Auth/auth';
-const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
+import dummyPosts from "@/Db/feeds";
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 
 export interface Post {
@@ -13,7 +12,6 @@ export interface Post {
       subject: string;
       geolocation: {
         city: string;
-        display_name?: string;
         [key: string]: any;
       };
       [key: string]: any;
@@ -33,7 +31,6 @@ const Feed = () => {
       subject: string;
       geolocation: {
         city: string;
-        display_name?: string;
         [key: string]: any;
       };
       [key: string]: any;
@@ -44,19 +41,25 @@ const Feed = () => {
   
   const [posts, setPosts] = useState<Post[]>([]);
 
+  function getCookie(name: string): string | null {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop()?.split(';').shift() || null;
+    }
+    return null;
+  }
+
   // Fetch posts from API
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const token = getCookie('token');
-        // const xsrfToken = getCookie("XSRF-TOKEN");
-        const response = await fetch(`${backendApiUrl}post/getAllPost`, {
-          credentials: 'include',
+        const response = await fetch('http://localhost:8080/post/getAllPost', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
-            "X-XSRF-TOKEN": getCookie('XSRF-TOKEN') || ''
           },
           body: JSON.stringify({}),
         });
@@ -95,8 +98,8 @@ const Feed = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Discover Archaeological Sites</h1>
-          <p className="text-gray-400">Explore ancient inscriptions and historical sites</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-secondary-dark mb-2">Discover Archaeological Sites</h1>
+          <p className="text-secondary-dark">Explore ancient inscriptions and historical sites</p>
         </div>
 
         {/* Filter Bar */}
@@ -117,18 +120,33 @@ const Feed = () => {
         {/* Posts Grid/List */}
         <div className={
           layout === 'grid' 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 "
             : "space-y-4"
         }>
-          {posts.map((post) => (
+          {/* {dummyPosts.map((post) => ( */}
             <DiscoveryCard 
-              key={post._id} 
-              post={post} 
+              // key={dummyPosts[0]._id} 
+              post={dummyPosts.data[0]} 
               layout={layout}
             />
-          ))
+            <DiscoveryCard 
+              // key={dummyPosts[0]._id} 
+              post={dummyPosts.data[1]} 
+              layout={layout}
+            />
+            <DiscoveryCard 
+              // key={dummyPosts[0]._id} 
+              post={dummyPosts.data[2]} 
+              layout={layout}
+            />
+            <DiscoveryCard 
+              // key={dummyPosts[0]._id} 
+              post={dummyPosts.data[3]} 
+              layout={layout}
+            />
+          {/* )) */}
           
-          }
+          {/* } */}
         </div>
 
         {/* Empty State */}
