@@ -12,6 +12,14 @@ import ContributionsList from './ContributionsList';
  * - Falls back to mockUser / mockPosts on any failure or missing token.
  */
 
+declare global {
+  interface Window {
+    _env_?: { VITE_BACKEND_API_URL?: string };
+  }
+}
+
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL ?? import.meta.env.VITE_BACKEND_API_URL;
+
 const Profile: React.FC = () => {
   const [UserDetails, SetUserDetails] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,7 +87,7 @@ const Profile: React.FC = () => {
       // If token exists, attempt to call backend endpoints; fallback to mocks on any failure
       try {
         // fetch user profile
-        const userResp = await fetchWithTimeout('http://localhost:8080/post/userProfile', {
+        const userResp = await fetchWithTimeout(`${backendApiUrl}post/userProfile`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -87,6 +95,14 @@ const Profile: React.FC = () => {
           },
           body: JSON.stringify({}),
         }, 7000);
+        // const userResp = await fetchWithTimeout('http://localhost:8080/post/userProfile', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        //   body: JSON.stringify({}),
+        // }, 7000);
 
         if (!userResp.ok) throw new Error(`userProfile fetch failed: ${userResp.status}`);
         const userJson = await userResp.json();
@@ -100,7 +116,7 @@ const Profile: React.FC = () => {
 
       try {
         // fetch all posts
-        const postsResp = await fetchWithTimeout('http://localhost:8080/post/getAllUserPost', {
+        const postsResp = await fetchWithTimeout(`${backendApiUrl}post/getAllUserPost`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -108,6 +124,14 @@ const Profile: React.FC = () => {
           },
           body: JSON.stringify({}),
         }, 7000);
+        // const postsResp = await fetchWithTimeout('http://localhost:8080/post/getAllUserPost', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        //   body: JSON.stringify({}),
+        // }, 7000);
 
         if (!postsResp.ok) throw new Error(`getAllUserPost fetch failed: ${postsResp.status}`);
         const postsJson = await postsResp.json();
@@ -121,7 +145,7 @@ const Profile: React.FC = () => {
 
       try {
         // fetch comments
-        const commentsResp = await fetchWithTimeout('http://localhost:8080/post/getCommentByUser', {
+        const commentsResp = await fetchWithTimeout(`${backendApiUrl}post/getCommentByUser`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -129,6 +153,14 @@ const Profile: React.FC = () => {
           },
           body: JSON.stringify({}),
         }, 7000);
+        // const commentsResp = await fetchWithTimeout('http://localhost:8080/post/getCommentByUser', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        //   body: JSON.stringify({}),
+        // }, 7000);
 
         if (!commentsResp.ok) throw new Error(`getCommentByUser fetch failed: ${commentsResp.status}`);
         const commentsJson = await commentsResp.json();
