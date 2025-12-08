@@ -47,7 +47,7 @@ const AuthPage: React.FC = () => {
             border border-gray-300 rounded-full text-gray-700 font-medium
             hover:bg-gray-50 hover:shadow-md transition-all duration-200
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-            
+            cursor-pointer
           `}
         >
           {/* Google Icon */}

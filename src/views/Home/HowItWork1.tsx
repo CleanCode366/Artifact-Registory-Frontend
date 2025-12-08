@@ -22,41 +22,42 @@ const HowItWork = () => {
     return (
         <>
             <div className="parallax-bg-pc">
-                <Parallax blur={0} bgImage={banner2} bgImageAlt="the cat" strength={600} style={{ borderRadius: "30px" }}>
-                    <section className="py-20 bg-secondary-background/30"
+                {/* <Parallax blur={0} bgImage={banner2} bgImageAlt="the cat" strength={600} style={{ borderRadius: "30px" }}> */}
+                <section className="py-20 bg-secondary-background/30">
+                    {/* <section className="py-20 bg-secondary-background/30"
                         style={{ background: "linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%,rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.7) 100%)" }}
-                    >
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="text-center mb-16">
-                                <h3 className="text-3xl font-bold mb-4 text-white">How Our Platform Works</h3>
-                                <p className="text-white text-lg">Collaborative archaeology made simple</p>
-                            </div>
-                            <div className="grid md:grid-cols-3 gap-8">
-                                {cardContents.map((content, index) => (
-                                    <InfoCard key={index} content={content} />
-                                ))}
+                    > */}
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <h3 className="text-3xl font-bold mb-4 text-black">How Our Platform Works</h3>
+                            {/* <h3 className="text-3xl font-bold mb-4 text-white">How Our Platform Works</h3> */}
+                            <p className="text-black text-lg">Collaborative archaeology made simple</p>
+                            {/* <p className="text-white text-lg">Collaborative archaeology made simple</p> */}
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-8">
+                            {cardContents.map((content, index) => (
+                                <InfoCard key={index} content={content} />
+                            ))}
 
-                            </div>
                         </div>
-                    </section>
-                </Parallax >
-            </div>
+                    </div>
+                </section>
+                {/* </Parallax > */}
+            </div >
             <div className="parallax-bg-mob">
-                <Parallax blur={0} bgImage={''} bgImageAlt="the cat" strength={600} style={{ borderRadius: "30px" }}>
-                    <section className="py-20 bg-secondary-background/30">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="text-center mb-16">
-                                <h3 className="text-3xl font-bold mb-4 text-black">How Our Platform Works</h3>
-                                <p className="text-black text-lg">Collaborative archaeology made simple</p>
-                            </div>
-                            <div className="flex items-center justify-center flex-col gap-8">
-                                {cardContents.map((content, index) => (
-                                    <InfoCard key={index} content={content} />
-                                ))}
-                            </div>
+                <section className="py-20 bg-secondary-background/30">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16">
+                            <h3 className="text-3xl font-bold mb-4 text-black">How Our Platform Works</h3>
+                            <p className="text-black text-lg">Collaborative archaeology made simple</p>
                         </div>
-                    </section>
-                </Parallax >
+                        <div className="flex items-center justify-center flex-col gap-8">
+                            {cardContents.map((content, index) => (
+                                <InfoCard key={index} content={content} />
+                            ))}
+                        </div>
+                    </div>
+                </section>
             </div>
         </>
     )

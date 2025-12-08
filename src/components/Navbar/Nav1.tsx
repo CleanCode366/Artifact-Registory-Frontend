@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import logo from "@assets/Frame1.png"
 import { NavLink } from "react-router-dom";
 import { isAuthenticated, logout } from "@/utils/auth";
-import { Home, LogIn, LogOut, Menu, Newspaper, Upload, X, type LucideIcon } from "lucide-react";
+import { Home, LogIn, LogOut, Menu, Upload, X } from "lucide-react";
 import meityLogo from "@assets/meitylogo2.png";
 import DynamicFeedOutlinedIcon from '@mui/icons-material/DynamicFeedOutlined';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
@@ -18,8 +18,8 @@ interface NavProps {
 }
 
 const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
-    // const authenticated = isAuthenticated();
-    const [authenticated, ToggleAuthenticated] = useState(false);
+    const authenticated = isAuthenticated();
+    // const [authenticated, ToggleAuthenticated] = useState(false);
     const [mobileNavbarOpen, setMobileNavbarOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
 
@@ -134,8 +134,8 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
                                     <div className="ps-4 flex items-center justify-between">
                                         {authenticated && (
                                             <button
-                                                // onClick={logout}
-                                                onClick={() => ToggleAuthenticated(false)}
+                                                onClick={logout}
+                                                // onClick={() => ToggleAuthenticated(false)}
                                                 className="flex items-center gap-2 bg-primary-dark text-white border-2 border-white cursor-pointer hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
                                             >
                                                 <LogOut />Logout
@@ -143,8 +143,8 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
                                         )}
                                         {!authenticated && (
                                             <button
-                                                // onClick={logout}
-                                                onClick={() => ToggleAuthenticated(true)}
+                                                onClick={logout}
+                                                // onClick={() => ToggleAuthenticated(true)}
                                                 className="flex items-center gap-2 bg-primary-light border-2 border-white cursor-pointer text-primary-text hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
                                             >
                                                 <LogIn />
