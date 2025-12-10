@@ -5,6 +5,7 @@ import { Camera, MapPin, Upload, X } from "lucide-react";
 import styles from "./InscriptionUploader0.3.module.css";
 import { Alert, Box, MenuItem, Select, Slide, Snackbar, TextField, Grid, type SnackbarOrigin } from "@mui/material";
 import type { TransitionProps } from "@mui/material/transitions";
+import { getEnvConfig } from "../../config/env";
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -275,7 +276,8 @@ const EnhancedInscriptionUploader: React.FC = () => {
       formData.append("file", blob, "inscription.jpg");
 
       // return true;
-      const response = await fetch("http://10.182.6.144:8000/predict/", {
+      const { backendDetectUrl } = getEnvConfig();
+      const response = await fetch(`${backendDetectUrl}predict/`, {
         method: "POST",
         body: formData,
       });
@@ -638,7 +640,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
                     className="flex justify-center items-center gap-2 px-4 py-3 bg-primary transition-all transform hover:scale-105 shadow-lg cursor-pointer text-white rounded-lg font-medium transition"
                     style={{ width: "100%" }}
                   >
-                    <Camera size={20}/>
+                    <Camera size={20} />
                     Take Photo
                   </button>
                   <button
@@ -646,7 +648,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
                     className="flex justify-center items-center gap-2 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition cursor-pointer"
                     style={{ width: "100%" }}
                   >
-                    <Upload size={20}/>
+                    <Upload size={20} />
                     Upload Image
                   </button>
                 </div>
