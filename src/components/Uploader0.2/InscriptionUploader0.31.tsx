@@ -6,6 +6,8 @@ import styles from "./InscriptionUploader0.3.module.css";
 import { Alert, Box, MenuItem, Select, Slide, Snackbar, TextField, Grid, type SnackbarOrigin } from "@mui/material";
 import type { TransitionProps } from "@mui/material/transitions";
 
+const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
+
 // Types
 interface GeoInfo {
   hasGPS: boolean;
@@ -458,7 +460,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
 
       form.append("post", new Blob([JSON.stringify(postData)], { type: "application/json" }));
 
-      const response = await fetch("http://localhost:8080/post/addPostWithFile", {
+      const response = await fetch(`${backendApiUrl}/post/addPostWithFile`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`
