@@ -30,7 +30,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
                 showBullets={true}
                 useBrowserFullscreen={true}
                 // thumbnailPosition={"left"}
-                showPlayButton={true}
+                // showPlayButton={true}
             />
         </div>
     );
