@@ -508,7 +508,7 @@ const InscriptionDetailsPage: React.FC = () => {
         fetchUserDetails();
         fetchComments();
         fetchPostDetails();
-    }, [postId]);
+    }, [postId, comments]);
 
 
     // #KEEEP THIS

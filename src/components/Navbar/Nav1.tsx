@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import logo from "@assets/Frame1.png"
-import { NavLink } from "react-router-dom";
-import { isAuthenticated, logout } from "@/utils/auth";
+import { NavLink, useNavigate } from "react-router-dom";
+import { getCookie, isAuthenticated, logout } from "@/utils/auth";
 import { Home, LogIn, LogOut, Menu, Upload, X } from "lucide-react";
 import meityLogo from "@assets/meitylogo2.png";
 import DynamicFeedOutlinedIcon from '@mui/icons-material/DynamicFeedOutlined';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import { clearUserActivityTracking, trackUserActivity } from "./EventManager";
+import { jwtDecode } from "jwt-decode";
+
+
 interface NavItem {
     path: string;
     label: string;
@@ -18,10 +22,11 @@ interface NavProps {
 }
 
 const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
-    const authenticated = isAuthenticated();
-    // const [authenticated, ToggleAuthenticated] = useState(false);
+    // const authenticated = isAuthenticated();
+    const [authenticated, setAuthenticated] = useState<boolean | null>(null);;
     const [mobileNavbarOpen, setMobileNavbarOpen] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const navigate = useNavigate();
 
     const protectedLinks: NavItem[] = [
         { path: "/home", label: "Home", end: true, icon: <Home /> },
@@ -45,7 +50,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
             setTimeout(() => {
                 setMobileNavbarOpen(false);
                 setIsClosing(false);
-            }, 300); 
+            }, 300);
         } else {
             setMobileNavbarOpen(true);
         }
@@ -62,10 +67,44 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
+        const token = getCookie('token');
+        if (!token) {
+            setAuthenticated(false);
+            return;
+        }
+        const data_decoded: any = jwtDecode(token);
+
+        const sessionStartTime = new Date(data_decoded.iat * 1000);
+        const sessionEndTime = new Date(data_decoded.exp * 1000);
+        const idealTime =
+            (sessionEndTime.getTime() - sessionStartTime.getTime()) / (1000 * 60);
+        const sessionTimeout = idealTime * 60 * 1000;
+
+        const handleSessionTimeout = () => {
+            deleteCookie('token')
+            // loggoutServer();
+            // logout();
+        };
+        const activityEvents = [
+            'mousemove',
+            'click',
+            'keydown',
+            'scroll',
+            'touchstart',
+        ];
+        trackUserActivity(activityEvents, sessionTimeout, handleSessionTimeout);
+
         return () => {
+            clearUserActivityTracking(activityEvents);
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [mobileNavbarOpen, openMobileNavbarHandler, setMobileNavbarOpen]);
+
+    }, [mobileNavbarOpen, openMobileNavbarHandler, setMobileNavbarOpen, navigate]);
+    
+    const deleteCookie = (name: any) => {
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict; Secure`;
+        navigate('/login', { replace: true });
+    };
 
     return (
         <>
