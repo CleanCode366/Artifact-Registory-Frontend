@@ -60,7 +60,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments, currentUser }) => {
     setLikes(prevLikes => prevLikes + (newLikedState ? 1 : -1));
 
     try {
-      const response = await fetch(`${backendApiUrl}/post/addVote`, requestOptions);
+      const response = await fetch(`${backendApiUrl}post/addVote`, requestOptions);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
