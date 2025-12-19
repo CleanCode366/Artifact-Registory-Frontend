@@ -16,7 +16,7 @@ interface ModelProps {
     onDescriptionAdded?: (createdComment: any) => void;
 }
 
-const Model: React.FC<ModelProps> = ({ postId, display, onClose, onPostSuccess, onPostError }) => {
+const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAdded, onPostSuccess, onPostError }) => {
 
     const [inputValue, setInputValue] = useState("");
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -34,52 +34,105 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onPostSuccess, 
         return null;
     }
 
-    const handlePost = async () => {
-        try {
-            const token = getCookie("token");
-            const form = new FormData();
-            form.append("postId", postId);
-            form.append("description", inputValue);
+    // const handlePost = async () => {
+    //     try {
+    //         const token = getCookie("token");
+    //         const form = new FormData();
+    //         form.append("postId", postId);
+    //         form.append("description", inputValue);
 
-            const myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-            myHeaders.append("Authorization", `Bearer ${token}`);
+    //         const myHeaders = new Headers();
+    //         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    //         myHeaders.append("Authorization", `Bearer ${token}`);
 
-            const urlencoded = new URLSearchParams();
-            urlencoded.append("postId", postId);
-            urlencoded.append("discription", inputValue);
+    //         const urlencoded = new URLSearchParams();
+    //         urlencoded.append("postId", postId);
+    //         urlencoded.append("discription", inputValue);
 
-            const requestOptions: RequestInit = {
-                method: "POST",
-                headers: myHeaders,
-                body: urlencoded,
-                redirect: "follow"
-            };
+    //         const requestOptions: RequestInit = {
+    //             method: "POST",
+    //             headers: myHeaders,
+    //             body: urlencoded,
+    //             redirect: "follow"
+    //         };
 
-            const response = await fetch(`${backendApiUrl}post/addPoastDiscription`, requestOptions);
+    //         const response = await fetch(`${backendApiUrl}post/addPoastDiscription`, requestOptions);
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`${response.status} - ${errorText}`);
-            }
+    //         if (!response.ok) {
+    //             const errorText = await response.text();
+    //             throw new Error(`${response.status} - ${errorText}`);
+    //         }
 
-            const data = await response.json();
-            console.log("Server response:", data);
+    //         const data = await response.json();
+    //         console.log("Server response:", data);
 
-            onPostSuccess("Description uploaded successfully!");
-            onClose();
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error("Upload failed:", error.message);
-                onPostError("Upload failed: " + error.message);
-            } else {
-                console.error("Unknown error:", error);
-                onPostError("An unknown error occurred.");
-            }
-        } finally {
-            setInputValue("");
-        }
-    };
+    //         onPostSuccess("Description uploaded successfully!");
+    //         onClose();
+    //     } catch (error) {
+    //         if (error instanceof Error) {
+    //             console.error("Upload failed:", error.message);
+    //             onPostError("Upload failed: " + error.message);
+    //         } else {
+    //             console.error("Unknown error:", error);
+    //             onPostError("An unknown error occurred.");
+    //         }
+    //     } finally {
+    //         setInputValue("");
+    //     }
+    // };
+
+      const handlePost = async () => {
+    try {
+      const token = getCookie("token");
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+      myHeaders.append("Authorization", `Bearer ${token}`);
+      myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '');
+
+      const urlencoded = new URLSearchParams();
+      urlencoded.append("postId", postId);
+      // keep spelling used by backend if required; adjust if backend expects "description"
+      urlencoded.append("discription", inputValue);
+
+      const requestOptions: RequestInit = {
+        credentials: 'include' as RequestCredentials,
+        method: "POST",
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: "follow"
+      };
+
+      const response = await fetch(`${backendApiUrl}post/addPoastDiscription`, requestOptions);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`${response.status} - ${errorText}`);
+      }
+
+      // assume server returns the created comment/object
+      const data = await response.json();
+      console.log("Server response:", data);
+
+      // give parent the created object so it can update UI immediately
+      onDescriptionAdded?.(data ?? { description: inputValue, postId });
+
+      alert("Description uploaded successfully!");
+      onClose(); // close modal after success
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Upload failed:", error.message);
+        alert("Upload failed: " + error.message);
+      } else {
+        console.error("Unknown error:", error);
+        alert("An unknown error occurred.");
+      }
+    } finally {
+      setInputValue("");
+    }
+
+    console.log("Posting:", inputValue);
+  };
 
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);

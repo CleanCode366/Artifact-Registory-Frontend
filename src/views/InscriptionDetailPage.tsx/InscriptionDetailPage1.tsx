@@ -755,7 +755,7 @@ const InscriptionDetailsPage: React.FC = () => {
         setSnackbarOpen(true);
     };
     const postToRender = post ?? dummyPost;
-    const commentsToRender = comments.length > 0 ? comments : dummyComments;
+    // const commentsToRender = comments.length > 0 ? comments : dummyComments;
 
     return (
         <div className="min-h-screen bg-primary-background">
