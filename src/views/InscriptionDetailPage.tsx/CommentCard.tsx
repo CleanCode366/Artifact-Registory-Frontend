@@ -40,7 +40,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments, currentUser }) => {
     myHeaders.append("X-XSRF-TOKEN", xsrfToken);
 
     const urlencoded = new URLSearchParams();
-    urlencoded.append("descriptionId", comments.id || "");
+    urlencoded.append("descriptionId", comments._id || "");
 
     const requestOptions = {
       credentials: 'include' as RequestCredentials,
@@ -81,13 +81,15 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments, currentUser }) => {
     }
   };
 
+
+
   if (!currentUser) {
     return (
-      <div className="border-1 border-gray-700 pb-6 mb-6 last:border-b-0">
+      <div className="border-1 border-solid border-yellow-400 rounded-lg bg-white mb-6 p-2">
         <div className="flex items-start justify-between mb-3">
           <div className="flex-1">
-            <h4 className="text-yellow-400 font-semibold text-lg mb-1">{comments.username}</h4>
-            <p className="text-gray-300 text-base leading-relaxed">
+            <h4 className="text-orange-400 font-semibold text-lg mb-1">{comments.username}</h4>
+            <p className="text-black text-base leading-relaxed">
               {comments.description}
             </p>
           </div>
@@ -110,8 +112,8 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments, currentUser }) => {
             <button
               onClick={LikeDisLikeAPI}
               className={`flex cursor-pointer items-center gap-1 px-3 py-1 rounded-full transition-colors ${isLiked
-                  ? 'text-blue-400 bg-blue-900/30'
-                  : 'text-gray-400 hover:text-blue-400 hover:bg-blue-900/20'
+                ? 'text-blue-400 bg-blue-900/30'
+                : 'text-gray-400 hover:text-blue-400 hover:bg-blue-900/20'
                 }`}
               aria-label={isLiked ? 'Unlike comment' : 'Like comment'}
             >

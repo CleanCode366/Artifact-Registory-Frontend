@@ -963,7 +963,7 @@ const InscriptionDetailsPage: React.FC = () => {
                         {/* {comments.map((comment: Comment) => (
                             <CommentCard key={comment.id ?? comment._id} comments={comment} currentUser={userDetails} />
                         ))} */}
-                        {commentsToRender.map((comment) => (
+                        {commentsToRender.map((comment: Comment) => (
                             <CommentCard
                                 key={comment.id ?? comment._id}
                                 comments={comment}
