@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios';
-import { getCookie } from '@/utils/Auth/auth';
+import { getCookie } from '@/utils/auth';
 import { getEnvConfig } from '@/config/env';
 
 let isRefreshing: boolean = false;
