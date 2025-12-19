@@ -20,7 +20,7 @@ import cdacRoundLogo from '@/assets/cdacroundlogo.png';
 import type { User } from '@/types';
 import ShareModal from '@/components/ShareModal/ShareModal';
 
-const USE_FALLBACK = true;
+const USE_FALLBACK = false;
 
 export interface Comment {
     id?: string;
@@ -461,33 +461,42 @@ const InscriptionDetailsPage: React.FC = () => {
         };
 
         const fetchComments = async () => {
-            if (!postId) return;
-
+            if (!postId) {
+                console.error("No postId found in route params");
+                setComments([]);
+                return;
+            }
             try {
+                setLoading(true);
                 const token = getCookie('token');
-                const headers = new Headers();
-                headers.append("Content-Type", "application/x-www-form-urlencoded");
-                headers.append("Authorization", `Bearer ${token}`);
-                headers.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '');
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+                myHeaders.append("Authorization", `Bearer ${token}`);
+                myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
 
-                const body = new URLSearchParams({ postId });
+                const urlencoded = new URLSearchParams();
+                urlencoded.append("postId", postId);
 
-                const response = await fetch(
-                    `${backendApiUrl}post/getPostDiscription`,
-                    {
-                        credentials: 'include',
-                        method: "POST",
-                        headers,
-                        body,
-                    }
-                );
+                const requestOptions: RequestInit = {
+                    credentials: 'include' as RequestCredentials,
+                    method: "POST",
+                    headers: myHeaders,
+                    body: urlencoded,
+                    redirect: "follow"
+                };
+
+                const response = await fetch(`${backendApiUrl}post/getPostDiscription`, requestOptions)
 
                 const data = await response.json();
-                setComments(Array.isArray(data.data) ? data.data : []);
+                const fetchedComments = Array.isArray(data.data) ? data.data : [];
+                setComments(fetchedComments);
             } catch (error) {
-                console.error("Failed to fetch comments:", error);
+                console.error('Failed to fetch comments:', error);
+            } finally {
+                setLoading(false);
             }
         };
+
 
         fetchUserDetails();
         fetchPostDetails();

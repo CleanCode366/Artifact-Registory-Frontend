@@ -16,7 +16,7 @@ const WellcomeRoutes = {
       element: <Info />
     },
     {
-      path: 'wellcome',
+      path: 'welcome',
       element: <Wellcome />
     }
     
