@@ -9,7 +9,7 @@ const embedGPSIntoImage = (
   timestamp?: Date
 ): string => {
   try {
-    console.log('Attempting to embed GPS coordinates:', { latitude, longitude });
+    // console.log('Attempting to embed GPS coordinates:', { latitude, longitude });
     
     // Load existing EXIF data or create new
     type ExifSection = { [key: number]: any };
@@ -74,7 +74,7 @@ const embedGPSIntoImage = (
     // Insert EXIF data into image
     const newImageDataUrl = piexifjs.insert(exifBytes, imageDataUrl);
     
-    console.log('GPS coordinates embedded successfully');
+    // console.log('GPS coordinates embedded successfully');
     return newImageDataUrl;
   } catch (error) {
     console.error('Error embedding GPS data:', error);

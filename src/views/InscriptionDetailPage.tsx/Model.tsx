@@ -54,7 +54,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose }) => {
     }
 
     const data = await response.json(); // 🔥 get backend response
-    console.log("Server response:", data);
+    // console.log("Server response:", data);
 
     alert("Description uploaded successfully!");
     onClose(); // Close the modal after posting
@@ -71,7 +71,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose }) => {
     onClose(); // Close the modal after attempt
   }
 
-  console.log("Posting:", inputValue);
+  // console.log("Posting:", inputValue);
   };
 
 

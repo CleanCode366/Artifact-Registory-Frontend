@@ -33,7 +33,7 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
 
     handleResize();
     window.addEventListener('resize', handleResize);
-    console.log("displayPosts: ", displayPosts);
+    // console.log("displayPosts: ", displayPosts);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 

@@ -13,23 +13,23 @@ interface VerifyResult {
 
 const verifyGPSInImage = (imageDataUrl: string): VerifyResult => {
   try {
-    console.log('🔍 Starting EXIF metadata extraction...');
+    // console.log('🔍 Starting EXIF metadata extraction...');
 
     // 1️⃣ Validate input format
     if (!imageDataUrl.startsWith('data:image/jpeg;base64,')) {
       console.error('❌ Invalid input — expected a Base64 JPEG DataURL.');
-      console.log('Received data starts with:', imageDataUrl.slice(0, 40));
+      // console.log('Received data starts with:', imageDataUrl.slice(0, 40));
       return { hasGPS: false };
     }
 
     // 2️⃣ Load EXIF data
     const exifObj = piexifjs.load(imageDataUrl);
-    console.log('📸 All EXIF sections found:', Object.keys(exifObj));
+    // console.log('📸 All EXIF sections found:', Object.keys(exifObj));
 
     // 3️⃣ Print each section’s contents
     for (const [section, data] of Object.entries(exifObj)) {
-      console.log(`🔹 Section: ${section}`);
-      console.log(data);
+      // console.log(`🔹 Section: ${section}`);
+      // console.log(data);
     }
 
     // 4️⃣ Extract GPS info if present
@@ -44,7 +44,7 @@ const verifyGPSInImage = (imageDataUrl: string): VerifyResult => {
     const latRef = gps[piexifjs.GPSIFD.GPSLatitudeRef];
     const lonRef = gps[piexifjs.GPSIFD.GPSLongitudeRef];
 
-    console.log('🧭 Raw GPS values:', { lat, lon, latRef, lonRef });
+    // console.log('🧭 Raw GPS values:', { lat, lon, latRef, lonRef });
 
     if (!lat || !lon) {
       console.warn('⚠️ GPS coordinates missing or incomplete.');
@@ -60,10 +60,10 @@ const verifyGPSInImage = (imageDataUrl: string): VerifyResult => {
     const latDecimal = convertToDecimal(lat) * (latRef === 'S' ? -1 : 1);
     const lonDecimal = convertToDecimal(lon) * (lonRef === 'W' ? -1 : 1);
 
-    console.log('✅ GPS coordinates (decimal):', {
-      lat: latDecimal,
-      lon: lonDecimal,
-    });
+    // console.log('✅ GPS coordinates (decimal):', {
+    //   lat: latDecimal,
+    //   lon: lonDecimal,
+    // });
 
     return {
       hasGPS: true,

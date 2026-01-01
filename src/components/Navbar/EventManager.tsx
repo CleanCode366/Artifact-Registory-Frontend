@@ -39,7 +39,7 @@ export const startSessionTimeout = (
   timeoutAction: () => void,
   activityEvents: string[]
 ) => {
-  console.log('l3', timeoutDuration);
+  // console.log('l3', timeoutDuration);
 
   if (timeoutId) clearTimeout(timeoutId);
 
@@ -52,7 +52,7 @@ export const startSessionTimeout = (
 // Store the JWT token and refresh token in cookies
 export const storeJWTToken = (token: string, refreshToken: string) => {
   document.cookie = `token=${token}; path=/; SameSite=Strict; Secure`;
-  console.log("setting karega"+token);
+  // console.log("setting karega"+token);
   
 };
 
@@ -77,11 +77,11 @@ export const getRefreshToken = (): string | null => {
 const extendToken = (): Promise<boolean> => {
   // CRITICAL: Check and set the promise in the same synchronous block
   if (refreshTokenPromise) {
-    console.log('Refresh already in progress, waiting for existing request...');
+    // console.log('Refresh already in progress, waiting for existing request...');
     return refreshTokenPromise;
   }
 
-  console.log('Starting new token refresh request...');
+  // console.log('Starting new token refresh request...');
   isRefreshing = true;
 
   // Set the promise IMMEDIATELY, before any async operations
@@ -110,7 +110,7 @@ const extendToken = (): Promise<boolean> => {
 
       // if (response.status === 201) {
         storeJWTToken(response.data.token, '');
-        console.log('Token refreshed successfully');
+        // console.log('Token refreshed successfully');
       // }
 
       return true;

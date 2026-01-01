@@ -334,7 +334,7 @@ var tickIcon_ts = document.getElementById('tickIcon-ts');
   var SpacingClickState = JSON.parse(localStorage.getItem('ts-clickCount'));
   var SpacingSizeState = localStorage.getItem('ts-spacing');
 
-  console.log( SpacingSizeState);
+  // console.log( SpacingSizeState);
   
   if (SpacingState) {
   

@@ -364,7 +364,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
           reader.readAsDataURL(file);
         });
       } catch (err) {
-        console.log(err);
+        // console.log(err);
         errorMessages.push(`Failed to read file ${idx + 1}.`);
       }
     }

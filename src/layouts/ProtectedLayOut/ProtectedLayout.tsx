@@ -9,32 +9,15 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [authed, setAuthed] = useState(false);
-  const location = useLocation();
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const isAuth = isAuthenticated();
 
-  useEffect(() => {
-    const ok = isAuthenticated();
-    setAuthed(ok);
-    setLoading(false);
-  }, [location.pathname]);
-
-  if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <CircularProgess />
-      </div>
-    );
-  }
-
-  if (!authed) {
+  if (!isAuth) {
     return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
 };
-
 
 // components/PublicRoute.tsx
 
@@ -42,30 +25,14 @@ interface PublicRouteProps {
   children: React.ReactNode;
 }
 
-const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [authed, setAuthed] = useState(false);
+export const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuth = isAuthenticated();
 
-  useEffect(() => {
-    const ok = isAuthenticated();
-    setAuthed(ok);
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <CircularProgess />
-      </div>
-    );
-  }
-
-  if (authed) {
+  if (isAuth) {
     return <Navigate to="/feed" replace />;
   }
-  return <>
-    {children}
-  </>;
+
+  return <>{children}</>;
 };
 
-export { ProtectedRoute, PublicRoute };
+// export { ProtectedRoute, PublicRoute };

@@ -112,7 +112,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
 
       // assume server returns the created comment/object
       const data = await response.json();
-      console.log("Server response:", data);
+      // console.log("Server response:", data);
 
       // give parent the created object so it can update UI immediately
       onDescriptionAdded?.(data ?? { description: inputValue, postId });
@@ -131,7 +131,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
       setInputValue("");
     }
 
-    console.log("Posting:", inputValue);
+    // console.log("Posting:", inputValue);
   };
 
     const handleSnackbarClose = () => {

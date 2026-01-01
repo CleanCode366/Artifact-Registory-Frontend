@@ -280,7 +280,7 @@ const Profile: React.FC = () => {
           body: JSON.stringify({}),
         });
         const data = await response.json();
-        console.log(await data.data);
+        // console.log(await data.data);
         setComments(Array.isArray(data.data) ? data.data : []);
       } catch (error) {
         console.error('Failed to fetch posts:', error);
