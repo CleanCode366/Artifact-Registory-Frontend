@@ -31,7 +31,7 @@ const MainRoutes = {
       )
     },
     {
-      path: 'Feed',
+      path: 'feed',
       element: (
         <ProtectedRoute>
           <Feed />
@@ -47,7 +47,7 @@ const MainRoutes = {
       )
     },
     {
-      path: 'Feed/:id',
+      path: 'feed/:id',
       element: (
         <ProtectedRoute>
           <InscriptionDetails />

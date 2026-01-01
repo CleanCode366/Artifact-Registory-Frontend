@@ -33,7 +33,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
           <h1 className="text-2xl font-bold text-black mb-2">{user.name}</h1>
           <p className="text-black mb-4">Archaeology enthusiast & digital volunteer</p>
 
-          <div className="flex gap-2 justify-center sm:justify-center">
+          {/* <div className="flex gap-2 justify-center sm:justify-center">
             <button className="flex justify-center items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer">
               <SquarePen className="h-4 w-4"/>
               Edit Profile
@@ -42,7 +42,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
               <Share className="w-4 h-4" />
               Share
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

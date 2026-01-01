@@ -4,13 +4,14 @@ import { Parallax } from "react-parallax";
 import banner3 from "@assets/banner3.jpg";
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import VolunteerActivismOutlinedIcon from '@mui/icons-material/VolunteerActivismOutlined';
+import { LogIn } from "lucide-react";
 const CallToAction: React.FC = () => {
     return (
         <>
             <div className="parallax-bg-pc">
                 {/* <Parallax className="my-20" blur={0} bgImage={banner3} bgImageAlt="the cat" strength={600} style={{ borderRadius: "30px" }}> */}
                 <section className="py-20 flex justify-center">
-                {/* <section className="py-20 flex justify-center" style={{
+                    {/* <section className="py-20 flex justify-center" style={{
                     background: "linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%,rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.7) 100%)"
                 }}> */}
                     <div className="backdrop-blur-sm rounded-2xl p-12 border border-slate-700/50 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col justify-between" style={{ background: "white" }}>
@@ -24,10 +25,10 @@ const CallToAction: React.FC = () => {
                                 <VolunteerActivismOutlinedIcon />
                                 Start Contributing
                             </NavLink>
-                            <button className="flex justify-center items-center gap-2 border border-slate-600 hover:bg-slate-800/50 px-8 py-4 rounded-xl font-semibold text-lg transition-all cursor-pointer" style={{ backgroundColor: "white" }}>
+                            {/* <button className="flex justify-center items-center gap-2 border border-slate-600 hover:bg-slate-800/50 px-8 py-4 rounded-xl font-semibold text-lg transition-all cursor-pointer" style={{ backgroundColor: "white" }}>
                                 <SchoolOutlinedIcon />
                                 Learn More
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </section>

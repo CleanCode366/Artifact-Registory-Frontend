@@ -32,10 +32,10 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
     const navigate = useNavigate();
 
     const protectedLinks: NavItem[] = [
-        { path: "/home", label: "Home", end: true,scrollvalue: 0, icon: <Home /> },
-        { path: "/feed", label: "Feed", end: true,scrollvalue: 0, icon: <DynamicFeedOutlinedIcon /> },
-        { path: "/upload", label: "Upload", end: true,scrollvalue: 0, icon: <Upload /> },
-        { path: "/profile", label: "Profile", end: true,scrollvalue: 0, icon: <AccountBoxOutlinedIcon /> },
+        { path: "/home", label: "Home", end: true, scrollvalue: 0, icon: <Home /> },
+        { path: "/feed", label: "Feed", end: true, scrollvalue: 0, icon: <DynamicFeedOutlinedIcon /> },
+        { path: "/upload", label: "Upload", end: true, scrollvalue: 0, icon: <Upload /> },
+        { path: "/profile", label: "Profile", end: true, scrollvalue: 0, icon: <AccountBoxOutlinedIcon /> },
     ];
 
     const publicLinks: NavItem[] = [
@@ -56,7 +56,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
         { path: "/home", label: "Get Started", scrollvalue: 4600, icon: "" },
     ];
 
-    const linksToShow = authenticated  ? protectedLinks : mobileNavbarOpen? publicLinksMobile:publicLinks;
+    const linksToShow = authenticated ? protectedLinks : mobileNavbarOpen ? publicLinksMobile : publicLinks;
 
     const handleScroll = () => setScrollPosition(window.scrollY);
 
@@ -149,7 +149,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
 
             <hr className="border-t border-white opacity-60" />
             <div className="navbar-gradient" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                <nav className={`top-0 z-50 text-secondary-text navbar-shadow ${mobileNavbarOpen? (scrollPosition > 2 ? "navscrollbehavior" : ""):scrollPosition > 200 ? "navscrollbehavior" : ""}`} style={{ backgroundColor: "transparent", width:"100%" }} >
+                <nav className={`top-0 z-50 text-secondary-text navbar-shadow ${mobileNavbarOpen ? (scrollPosition > 2 ? "navscrollbehavior" : "") : scrollPosition > 200 ? "navscrollbehavior" : ""}`} style={{ backgroundColor: "transparent", width: "100%" }} >
                     <div className=" mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between h-16 ">
                             {/* Links */}
@@ -204,7 +204,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
                                     </button>
                                 ) : (
                                     <button
-                                        onClick={() => navigate("/login")}
+                                        onClick={() => navigate("/login", { replace: true })}
                                         // className="flex items-center gap-2 bg-primary-light border-2 border-white px-4 py-2 rounded-lg"
                                         className="flex items-center gap-2 bg-primary-light border-2 border-white cursor-pointer text-primary-text hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
 
