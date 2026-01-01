@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { isAuthenticated } from '@/utils/auth';
 import CircularProgess from '@components/Spinner/CircularProgess';
+import { useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -11,13 +12,13 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    // synchronous check is fine — keep UX smooth by showing spinner while checking
     const ok = isAuthenticated();
     setAuthed(ok);
     setLoading(false);
-  }, []);
+  }, [location.pathname]);
 
   if (loading) {
     return (
