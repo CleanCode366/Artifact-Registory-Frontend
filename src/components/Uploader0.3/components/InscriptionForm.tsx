@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { GeoInfo, PostSchema } from "../types/types";
 import FormField from "./FormField";
 import SuggestionControls from "./SuggestionControls";
@@ -24,22 +24,58 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
   onFetchSuggestion,
   geoInfo
 }) => {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Allow unicode letters and numbers, spaces and these punctuation: () , : " . ; -
+  const allowedRegex = /^[a-zA-Z0-9\s]+$/
+    ;
+
+  const validateFieldValue = (value: string) => {
+    const v = (value || "").trim();
+    if (v.length < 3) return "Minimum 3 characters required.";
+    if (!allowedRegex.test(v)) return 'Special characters are prohibited: () , : " . ; -';
+    return "";
+  };
+
+  const handleFieldBlur = (key: string, rawValue: string) => {
+    const msg = validateFieldValue(rawValue || "");
+    setErrors(prev => ({ ...prev, [key]: msg }));
+  };
+
+  const clearErrorIfValid = (key: string, rawValue: string) => {
+    const msg = validateFieldValue(rawValue || "");
+    if (!msg && errors[key]) {
+      setErrors(prev => {
+        const copy = { ...prev };
+        delete copy[key];
+        return copy;
+      });
+    } else if (msg) {
+      setErrors(prev => ({ ...prev, [key]: msg }));
+    }
+  };
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-6">
         <FormField
           label="Title"
           value={formData.description.title || ""}
-          onChange={(value) => onChange("description.title", value)}
+          onChange={(value) => { onChange("description.title", value); clearErrorIfValid('title', value); }}
           placeholder="Stone Inscription Title"
           widthFull={true}
+          error={!!errors['title']}
+          helperText={errors['title']}
+          onBlur={() => handleFieldBlur('title', formData.description.title || "")}
         />
         <FormField
           label="Subject"
           value={formData.description.subject || ""}
-          onChange={(value) => onChange("description.subject", value)}
+          onChange={(value) => { onChange("description.subject", value); clearErrorIfValid('subject', value); }}
           placeholder="Ancient History"
           widthFull={true}
+          error={!!errors['subject']}
+          helperText={errors['subject']}
+          onBlur={() => handleFieldBlur('subject', formData.description.subject || "")}
         />
       </div>
 
@@ -47,9 +83,12 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
         <FormField
           label="Topic"
           value={formData.topic || ""}
-          onChange={(value) => onChange("topic", value)}
+          onChange={(value) => { onChange("topic", value); clearErrorIfValid('topic', value); }}
           placeholder="Temple Inscriptions"
           widthFull={true}
+          error={!!errors['topic']}
+          helperText={errors['topic']}
+          onBlur={() => handleFieldBlur('topic', formData.topic || "")}
         />
         {/* <FormField
           label="Type"
@@ -82,17 +121,23 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
         <FormField
           label="Script (comma separated)"
           value={formData.script?.join(", ") || ""}
-          onChange={(value) => onChange("script", value.split(",").map(s => s.trim()).filter(Boolean))}
+          onChange={(value) => { onChange("script", value.split(",").map(s => s.trim()).filter(Boolean)); clearErrorIfValid('script', value); }}
           placeholder="Grantha, Brahmi"
           widthFull={true}
+          error={!!errors['script']}
+          helperText={errors['script']}
+          onBlur={() => handleFieldBlur('script', formData.script?.join(", ") || "")}
         />
 
         <FormField
           label="Language (comma separated)"
           value={formData.description.language?.join(", ") || ""}
-          onChange={(value) => onChange("description.language", value.split(",").map(s => s.trim()).filter(Boolean))}
+          onChange={(value) => { onChange("description.language", value.split(",").map(s => s.trim()).filter(Boolean)); clearErrorIfValid('language', value); }}
           placeholder="Sanskrit, Prakrit"
           widthFull={true}
+          error={!!errors['language']}
+          helperText={errors['language']}
+          onBlur={() => handleFieldBlur('language', formData.description.language?.join(", ") || "")}
         />
       </div>
       <div>
@@ -111,10 +156,16 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
           size="small"
 
           value={formData.description.description || ""}
-          onChange={(e) => onChange("description.description", e.target.value)}
+          onChange={(e) => { onChange("description.description", e.target.value); clearErrorIfValid('description', e.target.value); }}
+          onBlur={() => handleFieldBlur('description', formData.description.description || "")}
+          error={!!errors['description']}
+          helperText={errors['description']}
           multiline
           rows={4}
           fullWidth
+          FormHelperTextProps={{
+            style: {  bottom: "-20px", margin: '0' }
+          }}
         />
 
         <SuggestionControls

@@ -137,11 +137,11 @@ const Feed = () => {
           ))
 
           }
-          {/* <DiscoveryCard
-            key={mockDiscoveryPosts.data[0]._id}
-            post={mockDiscoveryPosts.data[0]}
+          <DiscoveryCard
+            // key={mockDiscoveryPosts.data[1]._id}
+            post={mockDiscoveryPosts.data[2]}
             layout={layout}
-          /> */}
+          />
         </div>
 
         {/* Empty State */}

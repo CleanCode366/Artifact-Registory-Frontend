@@ -1,5 +1,4 @@
 import { TextField } from "@mui/material";
-import { useState } from "react";
 
 interface FormFieldProps {
   label: string;
@@ -7,33 +6,36 @@ interface FormFieldProps {
   onChange: (value: string) => void;
   placeholder: string;
   widthFull: boolean;
+  error?: boolean;
+  helperText?: string;
+  onBlur?: () => void;
 }
 
-const FormField: React.FC<FormFieldProps> = ({ label, value, onChange, placeholder, widthFull }) => {
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
-
+const FormField: React.FC<FormFieldProps> = ({ label, value, onChange, placeholder, widthFull, error, helperText, onBlur }) => {
   return (
-    <div style={{ width: `100%` }}
-    >
-      {/* <label className="block text-sm font-medium mb-2">{label}</label>
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400"
-    /> */}
+    <div style={{ width: `100%` }}>
       <TextField
-        error={!!errors["description.title"]}
-        helperText={errors["description.title"] ? "Title cannot be left blank." : ""}
-        id="outlined-error-helper-text"
+        error={!!error}
+        helperText={helperText}
+        id={`outlined-${label}-helper-text`}
         label={label}
-        defaultValue=""
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
         placeholder={placeholder}
         size="small"
         fullWidth={widthFull}
+        sx={error ? {
+          '& .MuiOutlinedInput-root': {
+            backgroundColor: 'rgba(244, 67, 54, 0.04)'
+          },
+          '& .MuiOutlinedInput-root fieldset': {
+            borderColor: '#f44336'
+          }
+        } : undefined}
+        FormHelperTextProps={{
+          style: { position:"absolute",bottom:"-20px",margin: '0' }
+        }}
       />
     </div>
   )
