@@ -14,7 +14,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ posts }) => {
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-7">
-        <h2 className="text-xl font-bold text-black">Uploaded Images</h2>
+        <h4 className="text-xl font-bold text-black">My Posts</h4>
         <button
           onClick={() => setViewAll(!viewAll)}
           className="text-orange-500 hover:text-orange-400 text-sm font-medium outline-none focus:outline-none cursor-pointer"

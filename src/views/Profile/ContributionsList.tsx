@@ -112,7 +112,7 @@ const ContributionsList: React.FC<ContributionsListProps> = ({ comments }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-black">My Contributions</h2>
+        <h4 className="text-xl font-bold text-black">My Comments</h4>
         <button
           onClick={() => setViewAll(!viewAll)}
           className="text-orange-500 cursor-pointer hover:text-orange-400 text-sm font-medium"
