@@ -2,16 +2,18 @@
 import type React from "react";
 import { useState } from "react";
 import StarRating from "./StarRating";
-import { Heart, MapPin } from "lucide-react";
+import { Heart, MapPin, Star } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import type { Post } from "./Feed";
+import { CircularProgress } from "@mui/material";
 
 interface DiscoveryCardProps {
   post: Post;
   layout?: string;
+  loading?: boolean;
 }
 
-const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid" }) => {
+const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid", loading }) => {
   const [isLiked, setIsLiked] = useState(false);
 
   const city = post?.description?.geolocation?.city ?? "Unknown";
@@ -79,27 +81,38 @@ const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid" }) 
   return (
     <div className="card-styling bg-primary-text rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-300">
       <div className="relative">
-        <img
+        {!loading ? <img
           src={post.images.image[0]}
           alt={post.description.title}
           className="w-full h-48 sm:h-56 object-cover"
-        />
+        /> : <div className="w-full h-48 sm:h-56 object-cover"
+        >
+          <CircularProgress className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" color="white" />
+        </div>}
         {/* <div className="absolute top-3 right-3 text-white text-sm bg-black bg-opacity-60 px-2 py-1 rounded">
           {post.distance} miles
         </div> */}
         <div className="absolute bottom-0 left-0 right-0" style={{ minHeight: "80px", background: "linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.2) 80%, rgba(0, 0, 0, 0) 100%)" }}>
           {
-            post.rating == 0 && post.description.title == null ? null :
-              (<div className="bg-primary-background bg-opacity-80 rounded-lg p-3 flex items-center justify-between m-3 ">
-                <span className="text-white font-semibold text-lg " >{post.description.title}</span>
-                {
-                  post.rating != 0 && (
-                    <div className="flex items-center gap-2">
-                      {post.rating && <StarRating rating={post.rating} />}
-                    </div>
-                  )
-                }
-              </div>)
+            (<div className="bg-primary-background bg-opacity-80 rounded-lg p-3 flex items-center justify-between m-3 ">
+              <div className="flex flex-col">
+                <span className="text-white font-semibold text-lg " >{post.description.title ? post.description.title : "Untitled"}</span>
+                <span className="text-white font-semibold text-xs " >Posted by: {post.user ? post.user : "Anonymous"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {post.rating > 0 ? (
+                  <div className="flex items-center space-x-1">
+                    <Star fill="currentColor" className="w-4 h-4 text-yellow-400" />
+                    <div className="text-white">{post.rating.toFixed(1)}</div>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-1">
+                    <Star className="w-4 h-4 text-yellow-400" />
+                    <div className="text-white">N/A</div>
+                  </div>
+                )}
+              </div>
+            </div>)
           }
         </div>
       </div>

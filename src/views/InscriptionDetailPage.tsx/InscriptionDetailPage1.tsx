@@ -315,7 +315,6 @@ const InscriptionDetailsPage: React.FC = () => {
     // inside your component
     const { id: postId } = useParams<{ id: string }>();
 
-    // useEffect(() => {
     //     const fetchPostDetails = async () => {
     //         if (!postId) {
     //             console.error("No postId found in route params");
@@ -621,7 +620,7 @@ const InscriptionDetailsPage: React.FC = () => {
     //     fetchUserDetails();
     //     fetchComments();
     //     fetchPostDetails();
-    // }, [postId]); // ✅ now it listens to route changes
+    // }, [postId]); 
 
     // const submitRatingToAPI = async (postId: string, rating: number): Promise<string> => {
     //     const myHeaders = new Headers();

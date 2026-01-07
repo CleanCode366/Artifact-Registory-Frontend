@@ -10,8 +10,8 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
   const statItems = [
     { icon: Upload, value: stats.imagesUploaded, label: "Images Uploaded", color: "text-[#34D399]" },
     { icon: ThumbsUp, value: stats.upvotesReceived, label: "Upvotes Received", color: "text-[#51A2FF]" },
-    { icon: Users, value: stats.followers, label: "Followers", color: "text-[#FBBF24]" },
-    { icon: Star, value: stats.points, label: "Points", color: "text-[#A78BFA]" }
+    // { icon: Users, value: stats.followers, label: "Followers", color: "text-[#FBBF24]" },
+    // { icon: Star, value: stats.points, label: "Point s", color: "text-[#A78BFA]" }
   ];
 
   return (

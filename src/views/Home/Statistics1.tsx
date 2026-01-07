@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import "./Statistics.css";
 import { getCookie } from "@/components/Uploader0.3/utils/Auth/auth";
+import { NavLink } from "react-router-dom";
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -59,6 +60,21 @@ const Statistics: React.FC = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ag-courses_item">
                     {Statistics.map((stat, index) => {
                         const IconComponent = stat.icon;
+                        if (stat.label === "totalPosts") {
+                            return (
+                                <NavLink to={`/feed`} key={index} className="cursor-pointer">
+                                    <div className="ag-courses-item_link text-center p-6 bg-primary-background/50 rounded-xl backdrop-blur-sm border border-slate-700/50 secondary-text-dark cursor-pointer">
+                                        <div className="ag-courses-item_bg" style={{ backgroundColor: `${stat.bgColor}` }}>
+
+                                        </div>
+                                        <IconComponent className={`w-8 h-8 mx-auto mb-3 text-white ag-courses-item_icon-box`} />
+                                        {/* <IconComponent className={`w-8 h-8 mx-auto mb-3 ${stat.color} `} /> */}
+                                        <div className="text-3xl font-bold mb-1 ag-courses-item_title">{stat.value}</div>
+                                        <div className="secondary-text-dark ag-courses-item_date-box">{stat.label}</div>
+                                    </div>
+                                </NavLink>
+                            )
+                        }
                         return (
                             <div key={index} className="ag-courses-item_link text-center p-6 bg-primary-background/50 rounded-xl backdrop-blur-sm border border-slate-700/50 secondary-text-dark cursor-pointer">
                                 <div className="ag-courses-item_bg" style={{ backgroundColor: `${stat.bgColor}` }}>

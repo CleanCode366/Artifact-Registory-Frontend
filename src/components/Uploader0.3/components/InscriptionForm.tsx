@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import type { GeoInfo, PostSchema } from "../types/types";
 import FormField from "./FormField";
 import SuggestionControls from "./SuggestionControls";
-import { MenuItem, TextField } from "@mui/material";
+import { FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, TextField } from "@mui/material";
 import { X } from "lucide-react";
 
 interface InscriptionFormProps {
@@ -161,10 +161,10 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
           error={!!errors['description']}
           helperText={errors['description']}
           multiline
-          rows={4}
+          rows={3}
           fullWidth
           FormHelperTextProps={{
-            style: {  bottom: "-20px", margin: '0' }
+            style: { bottom: "-20px", margin: '0' }
           }}
         />
 
@@ -200,6 +200,19 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
         onChange={(value) => onChange("description.scriptLanguage", value.split(",").map(s => s.trim()).filter(Boolean))}
         placeholder="Devanagari, Tamil"
       /> */}
+      <div className="flex items-center space-x-3">
+        <FormLabel id="demo-radio-buttons-group-label">Post anonymously: </FormLabel>
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+          defaultValue="No"
+          name="radio-buttons-group"
+          className="flex flex-row text-black"
+          style={{ display: "flex", flexDirection:"row", alignItems:"center" }}
+        >
+          <FormControlLabel value="female" control={<Radio />} label="Yes" />
+          <FormControlLabel value="male" control={<Radio />} label="No" />
+        </RadioGroup>
+      </div>
 
 
     </div>

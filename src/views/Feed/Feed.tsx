@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import DiscoveryCard from './DiscoveryCard';
 import FilterBar from './FilterBar';
 import mockDiscoveryPosts from "@/Db/feeds";
-import { Search, SearchX } from 'lucide-react';
+import { SearchX } from 'lucide-react';
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -27,6 +27,8 @@ export interface Post {
 const Feed = () => {
   const [layout, setLayout] = useState('grid');
   const [searchTerm, setSearchTerm] = useState('');
+  const [UserDetails, SetUserDetails] = useState<any | null>(null);
+
   type Post = {
     _id: string;
     description: {
@@ -43,6 +45,7 @@ const Feed = () => {
   };
 
   const [posts, setPosts] = useState<Post[]>([]);
+  // const [isLoading, setIsLoading] = useState(null);
 
   function getCookie(name: string): string | null {
     const value = `; ${document.cookie}`;
@@ -55,6 +58,7 @@ const Feed = () => {
 
   // Fetch posts from API
   useEffect(() => {
+    // setIsLoading(true);
     const fetchPosts = async () => {
       try {
         const token = getCookie('token');
@@ -74,7 +78,31 @@ const Feed = () => {
         console.error('Failed to fetch posts:', error);
       }
     };
+    const fetchUserDetailsOfPosts = async () => {
+      try {
+        const token = getCookie('token');
+        const response = await fetch(`${backendApiUrl}post/userProfile`, {
+          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
+          },
+          body: JSON.stringify({}),
+        });
+        const data = await response.json();
+        SetUserDetails(data.data);
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      } finally {
+        console.log("Fetched User Posts: ", UserDetails);
+      }
+    };
+
     fetchPosts();
+    fetchUserDetailsOfPosts();
+    // setIsLoading(false);
   }, []);
 
   // Filter posts based on search term
@@ -137,11 +165,12 @@ const Feed = () => {
           ))
 
           }
-          <DiscoveryCard
-            // key={mockDiscoveryPosts.data[1]._id}
+          {/* <DiscoveryCard
+            key={mockDiscoveryPosts.data[1]._id}
             post={mockDiscoveryPosts.data[2]}
             layout={layout}
-          />
+            loading={isLoading}
+          /> */}
         </div>
 
         {/* Empty State */}

@@ -25,6 +25,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, value, onChange, placehold
         placeholder={placeholder}
         size="small"
         fullWidth={widthFull}
+        // style={{backdropFilter:"blur(5px)"}}
         sx={error ? {
           '& .MuiOutlinedInput-root': {
             backgroundColor: 'rgba(244, 67, 54, 0.04)'
@@ -34,7 +35,7 @@ const FormField: React.FC<FormFieldProps> = ({ label, value, onChange, placehold
           }
         } : undefined}
         FormHelperTextProps={{
-          style: { position:"absolute",bottom:"-20px",margin: '0' }
+          style: { position:"absolute",bottom:"-20px",margin: '0',  }
         }}
       />
     </div>

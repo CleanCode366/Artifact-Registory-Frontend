@@ -317,12 +317,16 @@ const Profile: React.FC = () => {
         }
 
         {/* render gallery and contributions with fallback posts/comments */}
+        <h2 className="text-xl font-bold text-black">My Contributions</h2>
+        <h4 className="text-xl font-bold text-black">My Posts</h4>
+
         {posts && posts.length > 0 ? (
           <ImageGallery posts={posts} />
         ) : (
           <div className="py-8 text-center">No posts available.</div>
         )}
 
+        <h4 className="text-xl font-bold text-black">My comments</h4>
         {Comments && Comments.length > 0 ? (
           <ContributionsList comments={Comments} />
         ) : (
