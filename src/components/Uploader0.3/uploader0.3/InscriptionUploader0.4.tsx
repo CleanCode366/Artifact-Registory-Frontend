@@ -4,16 +4,16 @@ import { useFileUpload } from "../hooks/useFileUpload";
 import { useDescriptionSuggestion } from "../hooks/useDescriptionSuggestion";
 
 import { Header } from "../components/Header";
-import { ErrorMessage } from "../components/ErrorMessage";
+// import { ErrorMessage } from "../components/ErrorMessage";
 import { GPSStatus } from "../components/GPSStatus";
 import { CameraView } from "../components/CameraView";
 import { PhotoGrid } from "../components/PhotoGrid";
 import { PhotoUploadArea } from "../components/PhotoUploadArea";
-import { StoneCheckStatus } from "../components/StoneCheckStatus";
+// import { StoneCheckStatus } from "../components/StoneCheckStatus";
 import { UploadButton } from "../components/UploadButton";
 import InscriptionForm from "../components/InscriptionForm";
 import { useInscriptionUploader } from "../hooks/UseInscriptionUploader";
-import { checkStoneInscription } from "../Services/inscriptionService";
+// import { checkStoneInscription } from "../Services/inscriptionService";
 import { useCamera } from "../hooks/UseCamera";
 import { getEnvConfig } from "../config/env";
 // declare module 'piexifjs';
@@ -74,6 +74,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
       return false;
     } catch (err) {
       setError("Failed to check inscription type.");
+      // console.log(formData);
       return false;
     } finally {
       setIsCheckingStone(false);
@@ -294,6 +295,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
               />
               {/* <InfoFooter /> */}
             </div>
+            {/* <div className="text-black" onClick={checkStone}>upload</div> */}
           </div>
         </div>
       </div>
@@ -312,7 +314,6 @@ const EnhancedInscriptionUploader: React.FC = () => {
             <div key={i}>{line}</div>
           ))}
         </Alert>
-
       </Snackbar>
     </div>
   );

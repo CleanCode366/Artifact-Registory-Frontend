@@ -315,6 +315,7 @@ const InscriptionDetailsPage: React.FC = () => {
     // inside your component
     const { id: postId } = useParams<{ id: string }>();
 
+    // useEffect(() => {
     //     const fetchPostDetails = async () => {
     //         if (!postId) {
     //             console.error("No postId found in route params");
@@ -431,6 +432,8 @@ const InscriptionDetailsPage: React.FC = () => {
 
         const fetchPostDetails = async () => {
             if (!postId) {
+                console.error("No postId found in route params");
+                setPost(null);
                 setLoading(false);
                 return;
             }
@@ -502,12 +505,10 @@ const InscriptionDetailsPage: React.FC = () => {
                 setLoading(false);
             }
         };
-
-
         fetchUserDetails();
         fetchComments();
         fetchPostDetails();
-    }, [postId, comments]);
+    }, [postId]);
 
 
     // #KEEEP THIS
@@ -793,7 +794,7 @@ const InscriptionDetailsPage: React.FC = () => {
                     <ImageCarousel1
                         images={Array.isArray(postToRender.images.image)
                             ? postToRender.images.image
-                            : [placeholderImage1]}
+                            : []}
                     />
                     <div className='card-styling py-4 px-5'>
 
@@ -817,7 +818,6 @@ const InscriptionDetailsPage: React.FC = () => {
                                     <Tooltip title="Average rating by users" className='cursor-pointer'>
                                         <span className="inline-flex items-center gap-x-1.5 px-3 py-2 rounded-lg font-medium bg-teal-500 hover:bg-teal-300 border-1 border-teal-600 text-white">
                                             <Star />{postToRender.rating ? Number(postToRender.rating).toFixed(1) : 0}
-                                            {/* <Star />   {post.rating && <StarRating rating={post.rating} />} */}
                                         </span>
                                     </Tooltip>
 

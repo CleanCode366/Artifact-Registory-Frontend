@@ -1,8 +1,8 @@
 import { Upload } from "lucide-react"
 import { NavLink } from "react-router-dom";
-import { Parallax } from 'react-parallax';
+// import { Parallax } from 'react-parallax';
 import TravelExploreOutlinedIcon from '@mui/icons-material/TravelExploreOutlined';
-import parallaxBg from "@assets/parallaxImages/banner.png";
+// import parallaxBg from "@assets/parallaxImages/banner.png";
 import cdacRoundLogo from "@assets/cdacroundlogo.png";
 const HeroSection = () => {
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { GeoInfo, PostSchema } from "../types/types";
 import FormField from "./FormField";
 import SuggestionControls from "./SuggestionControls";
@@ -25,7 +25,12 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
   geoInfo
 }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [postedAnonymously, setPostedAnonymously] = useState<boolean>(!!formData.description.postedAnonymously);
 
+  // keep local state in sync if parent updates formData
+  useEffect(() => {
+    setPostedAnonymously(!!formData.description.postedAnonymously);
+  }, [formData.description.postedAnonymously]);
   // Allow unicode letters and numbers, spaces and these punctuation: () , : " . ; -
   const allowedRegex = /^[a-zA-Z0-9\s]+$/
     ;
@@ -200,21 +205,29 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
         onChange={(value) => onChange("description.scriptLanguage", value.split(",").map(s => s.trim()).filter(Boolean))}
         placeholder="Devanagari, Tamil"
       /> */}
-      <div className="flex items-center space-x-3">
-        <FormLabel id="demo-radio-buttons-group-label">Post anonymously: </FormLabel>
+      <div className="flex items-center space-x-5">
+        <FormLabel
+          id="demo-radio-buttons-group-label"
+        >
+          Post anonymously:
+        </FormLabel>
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
-          defaultValue="No"
           name="radio-buttons-group"
           className="flex flex-row text-black"
-          style={{ display: "flex", flexDirection:"row", alignItems:"center" }}
+          value={postedAnonymously ? "true" : "false"}
+          onChange={(e, v) => {
+            const boolVal = v === "true";
+            setPostedAnonymously(boolVal);
+            onChange("description.postedAnonymously", boolVal);
+          }}
+          defaultValue={"false"}
+          style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
         >
-          <FormControlLabel value="female" control={<Radio />} label="Yes" />
-          <FormControlLabel value="male" control={<Radio />} label="No" />
+          <FormControlLabel value={"true"} control={<Radio />} label="Yes" />
+          <FormControlLabel value={"false"} control={<Radio />} label="No" />
         </RadioGroup>
       </div>
-
-
     </div>
   );
 };

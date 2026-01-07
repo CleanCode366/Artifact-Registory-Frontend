@@ -5,6 +5,7 @@ import StatsGrid from './StatsGrid';
 import StatsGrid1 from './StatsGrid1';
 import ImageGallery from './ImageGallery';
 import ContributionsList from './ContributionsList';
+import cdacRoundLogo from "@assets/cdacroundlogo.png";
 
 /**
  * Profile component with robust fallbacks when backend/token are unavailable.
@@ -297,8 +298,12 @@ const Profile: React.FC = () => {
   // Keep the simple loading state UI so styling can be iterated on
   if (isLoading || isLoadingPosts || isLoadingComments) {
     return (
-      <div className="min-h-screen bg-primary-background flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+      <div className="min-h-screen bg-secondary-background flex items-center justify-center">
+        <div className='flex flex-col items-center'>
+          {/* <FaSpinner className="animate-spin text-4xl text-[#66B0FF]" /> */}
+          <img src={cdacRoundLogo} className="mr-3 mb-4 size-20 cdacSpinner" />
+          <div className="text-[#000000] text-lg">Loading user profile...</div>
+        </div>
       </div>
     );
   }
