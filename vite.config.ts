@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
 export default defineConfig({
   base: '/',
   preview: {
@@ -13,22 +12,36 @@ export default defineConfig({
   server: {
     host: 'localhost',
     port: 3000,
-    strictPort: true,      
+    strictPort: true,
   },
+
   plugins: [
-    react(),
+    react({
+      plugins: [
+        [
+          '@swc/plugin-styled-components',
+          {
+            displayName: true,
+            pure: true,
+            ssr: false,
+          }
+        ]
+      ]
+    }),
     tailwindcss(),
-    // tailwindcss({
-    //   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-    // }),
   ],
+
   css: {
     modules: {
       localsConvention: 'camelCase',
     }
   },
+
   resolve: {
     alias: {
+      // 🔴 REQUIRED FOR MUI + styled-components
+      '@mui/styled-engine': '@mui/styled-engine-sc',
+
       '@': path.resolve(__dirname, './src'),
       '@api': path.resolve(__dirname, './src/api'),
       '@assets': path.resolve(__dirname, './src/assets'),
