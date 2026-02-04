@@ -22,17 +22,10 @@ const Statistics: React.FC = () => {
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
-                // const xsrfToken = getCookie("XSRF-TOKEN");
                 const response = await authClient.get(`/post/public/getDashboardCounts`);
-                // const response = await fetch(`${backendApiUrl}post/public/getDashboardCounts`, {
-                //     credentials: 'include',
-                //     method: 'GET',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         "X-XSRF-TOKEN": xsrfToken || ""
-                //     },
-                // });
+
                 const data = response.data;
+
                 if (data && data.data) {
                     const updatedStatistics = statistics.map(stat => {
                         if (stat.label === "totalPosts") {
