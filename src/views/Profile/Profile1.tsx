@@ -6,6 +6,7 @@ import StatsGrid1 from './StatsGrid1';
 import ImageGallery from './ImageGallery';
 import ContributionsList from './ContributionsList';
 import cdacRoundLogo from "@assets/cdacroundlogo.png";
+import { apiClient } from '@/utils/http/clients/backendApiClientGeneral';
 
 /**
  * Profile component with robust fallbacks when backend/token are unavailable.
@@ -228,17 +229,10 @@ const Profile: React.FC = () => {
 
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${backendApiUrl}post/userProfile`, {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
-          },
-          body: JSON.stringify({}),
-        });
-        const data = await response.json();
+        const response = await apiClient.post(`${backendApiUrl}post/userProfile`);
+        const data = response.data;
+        // const data = await response.json();
+
         SetUserDetails(data.data);
       } catch (error) {
         console.error('Failed to fetch posts:', error);
@@ -249,17 +243,10 @@ const Profile: React.FC = () => {
 
     const fetchAllPosts = async () => {
       try {
-        const response = await fetch(`${backendApiUrl}post/getAllUserPost`, {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
-          },
-          body: JSON.stringify({}),
-        });
-        const data = await response.json();
+        const response = await apiClient.post(`${backendApiUrl}post/getAllUserPost`);
+        const data = response.data;
+        // const data = await response.json();
+
         setPosts(Array.isArray(data.data) ? data.data : []);
       } catch (error) {
         console.error('Failed to fetch posts:', error);
@@ -270,17 +257,8 @@ const Profile: React.FC = () => {
 
     const fetchAllComments = async () => {
       try {
-        const response = await fetch(`${backendApiUrl}post/getCommentByUser`, {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
-          },
-          body: JSON.stringify({}),
-        });
-        const data = await response.json();
+        const response = await apiClient.post(`${backendApiUrl}post/getCommentByUser`);
+        const { data } = response;
         // console.log(await data.data);
         setComments(Array.isArray(data.data) ? data.data : []);
       } catch (error) {

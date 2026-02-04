@@ -1,4 +1,5 @@
 // StarRating component
+import { apiClient } from "@/utils/http/clients/backendApiClientGeneral";
 import { Star } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
@@ -72,11 +73,11 @@ const submitRatingToAPI = async (postId: string, rating: number): Promise<string
   };
 
   try {
-    const response = await fetch(`${backendApiUrl}post/addRating`, requestOptions);
-    if (!response.ok) {
+    const response = await apiClient.post(`${backendApiUrl}post/addRating`);
+    if (!response.data.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const result = await response.text();
+    const result = await response.data.text();
     return result;
   } catch (error) {
     console.error('Error submitting rating:', error);

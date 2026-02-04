@@ -4,6 +4,7 @@ import { useState } from "react";
 // import { getCookie } from "@/utils/Auth/auth";
 
 import { Snackbar, Alert, Slide } from "@mui/material";
+import { apiClient } from "@/utils/http/clients/backendApiClientGeneral";
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -103,15 +104,15 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
         redirect: "follow"
       };
 
-      const response = await fetch(`${backendApiUrl}post/addPoastDiscription`, requestOptions);
+      const response = await apiClient.post(`${backendApiUrl}post/addPoastDiscription`);
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!response.data.ok) {
+        const errorText = await response.data.text();
         throw new Error(`${response.status} - ${errorText}`);
       }
 
       // assume server returns the created comment/object
-      const data = await response.json();
+      const data = await response.data.json();
       // console.log("Server response:", data);
 
       // give parent the created object so it can update UI immediately

@@ -19,6 +19,7 @@ import RatingModal1 from './RatingModal1';
 import cdacRoundLogo from '@/assets/cdacroundlogo.png';
 import type { User } from '@/types';
 import ShareModal from '@/components/ShareModal/ShareModal';
+import { apiClient } from '@/utils/http/clients/backendApiClientGeneral';
 
 const USE_FALLBACK = false;
 
@@ -414,17 +415,8 @@ const InscriptionDetailsPage: React.FC = () => {
         const fetchUserDetails = async () => {
             try {
                 const token = getCookie('token');
-                const response = await fetch(`${backendApiUrl}post/userProfile`, {
-                    credentials: 'include',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || ''
-                    },
-                    body: JSON.stringify({}),
-                });
-                const data = await response.json();
+                const response = await apiClient.post(`${backendApiUrl}post/userProfile`);
+                const {data} = response;
                 setUserDetails(data.data);
             } catch (error) {
                 console.error("Failed to fetch user details:", error);
@@ -441,18 +433,9 @@ const InscriptionDetailsPage: React.FC = () => {
 
             try {
                 const token = getCookie('token');
-                const response = await fetch(`${backendApiUrl}post/getAllPost`, {
-                    credentials: 'include',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || ''
-                    },
-                    body: JSON.stringify({}),
-                });
+                const response = await apiClient.post(`${backendApiUrl}post/getAllPost`);
 
-                const data = await response.json();
+                const data = response.data;
                 const allPosts = Array.isArray(data.data) ? data.data : [];
                 const matchedPost =
                     allPosts.find((p: Post) => String(p._id) === String(postId)) || null;
@@ -492,9 +475,9 @@ const InscriptionDetailsPage: React.FC = () => {
                     redirect: "follow"
                 };
 
-                const response = await fetch(`${backendApiUrl}post/getPostDiscription`, requestOptions)
+                const response = await apiClient.post(`${backendApiUrl}post/getPostDiscription`)
 
-                const data = await response.json();
+                const data = response.data;
                 const fetchedComments = Array.isArray(data.data) ? data.data : [];
                 setComments(fetchedComments);
             } catch (error) {

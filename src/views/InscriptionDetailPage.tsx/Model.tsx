@@ -1,4 +1,5 @@
 // Model.tsx
+import { apiClient } from "@/utils/http/clients/backendApiClientGeneral";
 import type React from "react";
 import { useState } from "react";
 
@@ -46,14 +47,14 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose }) => {
       redirect: "follow"
     };
 
-    const response = await fetch("http://localhost:8080/post/addPoastDiscription", requestOptions)
+    const response = await apiClient.post("http://localhost:8080/post/addPoastDiscription")
 
     if (!response.ok) {
       const errorText = await response.text(); // or response.json() if backend returns JSON
       throw new Error(`${response.status} - ${errorText}`);
     }
 
-    const data = await response.json(); // 🔥 get backend response
+    const data = response.data; // 🔥 get backend response
     // console.log("Server response:", data);
 
     alert("Description uploaded successfully!");
