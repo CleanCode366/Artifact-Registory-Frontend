@@ -32,7 +32,7 @@ const Statistics: React.FC = () => {
                 //         "X-XSRF-TOKEN": xsrfToken || ""
                 //     },
                 // });
-                const data = await response.json();
+                const data = response.data;
                 if (data && data.data) {
                     const updatedStatistics = statistics.map(stat => {
                         if (stat.label === "totalPosts") {
