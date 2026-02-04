@@ -33,9 +33,9 @@ const MainRoutes = {
     {
       path: 'feed',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Feed />
-        </ProtectedRoute>
+        {/* </ProtectedRoute> */}
       )
     },
     {
@@ -49,9 +49,9 @@ const MainRoutes = {
     {
       path: 'feed/:id',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <InscriptionDetails />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
@@ -65,9 +65,9 @@ const MainRoutes = {
     {
       path: 'profile',
       element: (
-        <ProtectedRoute>
+        // <ProtectedRoute>
           <Profile1 />
-        </ProtectedRoute>
+        // </ProtectedRoute>
       )
     },
     {
