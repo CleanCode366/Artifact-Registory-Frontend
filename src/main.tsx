@@ -1,10 +1,5 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-<<<<<<< HEAD
-=======
-import { StyleSheetManager } from 'styled-components';
-import './index.css';
->>>>>>> 2fe486c (csp issues)
 import App from './App.tsx';
 import { StyleSheetManager } from 'styled-components';
 import './index.css';
@@ -52,19 +47,8 @@ if (import.meta.env.PROD && !nonce) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-<<<<<<< HEAD
     <StyleSheetManager disableCSSOMInjection>
       <App />
     </StyleSheetManager>
-=======
-    {nonce ? (
-      <StyleSheetManager {...({ nonce } as any)}>
-        <App />
-      </StyleSheetManager>
-    ) : (
-      // In development without nginx, render without nonce
-      <App />
-    )}
->>>>>>> 2fe486c (csp issues)
   </StrictMode>
 );
