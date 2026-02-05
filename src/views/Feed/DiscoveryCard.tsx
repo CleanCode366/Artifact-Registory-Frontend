@@ -19,7 +19,7 @@ const DiscoveryCard: React.FC<DiscoveryCardProps> = ({ post, layout = "grid", lo
   const city = post?.description?.geolocation?.city ?? "Unknown";
   const state = post?.description?.geolocation?.state ?? "Unknown";
 
-  console.log(post);
+  // console.log(post);
   if (layout === "list") {
     return (
       <div className="bg-secondary-background rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">

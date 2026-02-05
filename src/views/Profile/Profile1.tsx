@@ -7,6 +7,9 @@ import ImageGallery from './ImageGallery';
 import ContributionsList from './ContributionsList';
 import cdacRoundLogo from "@assets/cdacroundlogo.png";
 import { coreBackendClient } from '@/utils/http/clients/coreBackend.client';
+import { authClient } from '@/utils/http/clients/authClient.client';
+import { authStore } from '@/store/authStore';
+import AuthContext from '@/context/auth-context';
 
 /**
  * Profile component with robust fallbacks when backend/token are unavailable.
@@ -30,6 +33,7 @@ const Profile: React.FC = () => {
   const [posts, setPosts] = useState<any[] | null>(null);
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [Comments, setComments] = useState<any[] | null>(null);
+  const authCtx = React.useContext(AuthContext);
 
   // Read cookie helper (string return or null)
   function getCookie(name: string): string | null {
@@ -285,6 +289,26 @@ const Profile: React.FC = () => {
       </div>
     );
   }
+
+
+  // Apply the context here
+  useEffect(() => {
+  const bootstrapAuth = async () => {
+    try {
+      const res = await authClient.post("/auth/refresh");
+      const token = res.data.auth_token;
+      authCtx.setToken(token);          // Context
+      authStore.setToken(token); // Axios
+    } catch (error) {
+      authCtx.setToken(null);
+      authStore.clear();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  bootstrapAuth();
+}, []);
 
   return (
     <div className="min-h-screen bg-primary-background p-4" >

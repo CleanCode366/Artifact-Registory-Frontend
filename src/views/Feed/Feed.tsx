@@ -10,7 +10,7 @@ import { CircularProgress } from '@mui/material';
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
-const isOffline = true;   // true → use mock data, false → use API
+const isOffline = false;   // true → use mock data, false → use API
 
 export interface Post {
   _id: string;
