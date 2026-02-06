@@ -1,4 +1,5 @@
 import { ProtectedRoute, PublicRoute } from "@/layouts/ProtectedLayOut/ProtectedLayout";
+import OAuthCallback from "@/views/Auth/OAuthCallBack";
 import HomePage from "@/views/Home/Home";
 import InscriptionDetails from "@/views/InscriptionDetailPage.tsx/InscriptionDetails";
 import NotFound from "@/views/NotFound/NotFound";
@@ -19,9 +20,7 @@ const MainRoutes = {
     {
       index: true,
       element: (
-        // <ProtectedRoute>
         <Navigate to="home" replace />
-        // </ProtectedRoute>
       )
     },
     {
@@ -33,25 +32,25 @@ const MainRoutes = {
     {
       path: 'feed',
       element: (
-        // <ProtectedRoute>
+        <ProtectedRoute>
           <Feed />
-        // </ProtectedRoute>
+        </ProtectedRoute>
       )
     },
     {
       path: 'upload',
       element: (
-        // <ProtectedRoute>
+        <ProtectedRoute>
           <Upload />
-        // </ProtectedRoute>
+        </ProtectedRoute>
       )
     },
     {
       path: 'feed/:id',
       element: (
-        // <ProtectedRoute>
+        <ProtectedRoute>
           <InscriptionDetails />
-        // </ProtectedRoute>
+        </ProtectedRoute>
       )
     },
     {
@@ -65,9 +64,9 @@ const MainRoutes = {
     {
       path: 'profile',
       element: (
-        // <ProtectedRoute>
+        <ProtectedRoute>
           <Profile1 />
-        // </ProtectedRoute>
+        </ProtectedRoute>
       )
     },
     {
@@ -83,6 +82,14 @@ const MainRoutes = {
       element: (
         <PublicRoute>
           <AuthPage />
+        </PublicRoute>
+      )
+    },
+    {
+      path: 'oauth/callback',
+      element: (
+        <PublicRoute>
+          <OAuthCallback />
         </PublicRoute>
       )
     },
