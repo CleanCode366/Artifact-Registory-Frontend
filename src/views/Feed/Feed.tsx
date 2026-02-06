@@ -15,8 +15,8 @@ const isOffline = false;   // true → use mock data, false → use API
 export interface Post {
   _id: string;
   description: {
-    title: string;
-    subject: string;
+    title: string | null;
+    subject: string | null;
     geolocation: {
       city: string;
       [key: string]: any;
@@ -37,8 +37,8 @@ const Feed = () => {
   type Post = {
     _id: string;
     description: {
-      title: string;
-      subject: string;
+      title: string | null;
+      subject: string | null;
       geolocation: {
         city: string;
         [key: string]: any;
@@ -71,7 +71,16 @@ const Feed = () => {
       let allPosts: Post[] = [];
 
       if (isOffline) {
-        allPosts = mockDiscoveryPosts.data;
+        allPosts = mockDiscoveryPosts.data.map((post: any) => ({
+          ...post,
+          description: {
+            ...post.description,
+            geolocation:
+              post.description?.geolocation && typeof post.description.geolocation === 'object'
+                ? post.description.geolocation
+                : { city: '', ...((typeof post.description?.geolocation === 'object') ? post.description.geolocation : {}) }
+          }
+        }));
       } else {
         const token = getCookie("token");
         const response = await fetch(`${backendApiUrl}post/getAllPost`, {
@@ -196,7 +205,7 @@ const Feed = () => {
           ))
 
           } */}
-          <InfiniteScroll
+          {visiblePosts.length > 0 && <InfiniteScroll
             dataLength={visiblePosts.length}
             next={loadMorePosts}
             hasMore={visiblePosts.length < posts.length}
@@ -223,7 +232,7 @@ const Feed = () => {
                 />
               ))}
             </div>
-          </InfiniteScroll>
+          </InfiniteScroll>}
         </div>
 
         {/* Empty State */}

@@ -190,30 +190,28 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
 
                             {/* Auth buttons */}
                             <div className="flex justify-between items-center space-x-3" >
+                                {
+                                    authenticated ? (
+                                        <button
+                                            onClick={() => {
+                                                logout();
+                                                // setAuthenticated(false);
+                                                navigate("/login", { replace: true });
+                                            }}
+                                            className="flex items-center gap-2 bg-primary-dark text-white border-2 border-white cursor-pointer hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
+                                        >
+                                            <LogOut /> Logout
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => navigate("/login", { replace: true })}
+                                            // className="flex items-center gap-2 bg-primary-light border-2 border-white px-4 py-2 rounded-lg"
+                                            className="flex items-center gap-2 bg-primary-light border-2 border-white cursor-pointer text-primary-text hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
 
-                                {authenticated === null ? (
-                                    <CircularProgess />
-                                ) : authenticated ? (
-                                    <button
-                                        onClick={() => {
-                                            logout();
-                                            // setAuthenticated(false);
-                                            navigate("/login", { replace: true });
-                                        }}
-                                        className="flex items-center gap-2 bg-primary-dark text-white border-2 border-white cursor-pointer hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
-                                    >
-                                        <LogOut /> Logout
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => navigate("/login", { replace: true })}
-                                        // className="flex items-center gap-2 bg-primary-light border-2 border-white px-4 py-2 rounded-lg"
-                                        className="flex items-center gap-2 bg-primary-light border-2 border-white cursor-pointer text-primary-text hover:bg-primary/80 pe-4 ps-3 py-2 rounded-lg font-medium transition-colors"
-
-                                    >
-                                        <LogIn /> Login
-                                    </button>
-                                )}
+                                        >
+                                            <LogIn /> Login
+                                        </button>
+                                    )}
                             </div>
                         </div>
                     </div>
