@@ -4,8 +4,8 @@ import { Outlet } from 'react-router-dom';
 
 import CircularProgess from '@components/Spinner/CircularProgess';
 // import Nav from '@components/Navbar/Nav';
-import Nav1 from '@/components/Navbar/Nav1.js';
 import Footer from '@/views/Home/Footer';
+import Nav from '@/components/Navbar/Nav';
 
 
 const BaseLayout: React.FC = () => {
@@ -28,7 +28,7 @@ const BaseLayout: React.FC = () => {
     <div className="flex flex-col background">
 
       {/* <Nav scrollToSection={scrollToSection} /> */}
-      <Nav1 scrollToSection={scrollToSection} />
+      <Nav scrollToSection={scrollToSection} />
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto bg-primary-background scrollbar-hide px-4 sm:px-6 lg:px-8 ">

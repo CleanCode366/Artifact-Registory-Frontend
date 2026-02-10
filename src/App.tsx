@@ -4,7 +4,7 @@
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
 import styles from "./App.module.css";
-import AuthProvider from "./context/AuthProvider";
+import { AuthProvider } from "./context/AuthContext";
 // import * from '@mui/styled-engine-sc' as styledEngineSC;,
 
 
