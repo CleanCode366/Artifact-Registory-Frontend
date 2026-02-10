@@ -6,6 +6,7 @@ import RatingModal from './RatingModal';
 import { useParams } from 'react-router-dom';
 import Model from './Model';
 import ImageCarousel from './ImageCarousel';
+import { coreBackendClient } from '@/utils/http/clients/coreBackend.client';
 
 
 
@@ -102,17 +103,9 @@ useEffect(() => {
     try {
       setLoading(true);
       const token = getCookie('token');
-      const response = await fetch('http://localhost:8080/post/getAllPost', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({}),
-      });
+      const response = await coreBackendClient.post('http://localhost:8080/post/getAllPost');
 
-      const data = await response.json();
-
+      const { data } = response;
       const allPosts = Array.isArray(data.data) ? data.data : [];
       const matchedPost =
         allPosts.find((p: Post) => String(p._id) === String(postId)) || null;
@@ -151,9 +144,9 @@ useEffect(() => {
         redirect: "follow"
       };
 
-      const response = await fetch("http://localhost:8080/post/getPostDiscription", requestOptions)
+      const response = await coreBackendClient.post("http://localhost:8080/post/getPostDiscription", requestOptions)
 
-      const data = await response.json();
+      const { data } = response;
       const fetchedComments = Array.isArray(data.data) ? data.data : [];
       setComments(fetchedComments);
     } catch (error) {
@@ -183,8 +176,8 @@ const submitRatingToAPI = async (postId: string, rating: number): Promise<string
     body: urlencoded,
     redirect: 'follow'
   };
-  const response = await fetch("http://localhost:8080/post/addRating", requestOptions);
-  if (!response.ok) {
+  const response = await coreBackendClient.post("http://localhost:8080/post/addRating", requestOptions);
+  if (!response.status || response.status !== 200) {
     throw new Error(`Error: ${response.statusText}`);
   }
   const result = await response.text();

@@ -16,17 +16,38 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.groupCollapsed("Profile fetch: requests");
+        console.log("POST -> post/userProfile");
+        console.log("POST -> post/getAllUserPost");
+        console.log("POST -> post/getCommentByUser");
+        console.groupEnd();
+
         const [profileRes, postsRes, commentsRes] = await Promise.all([
           coreBackendClient.post("post/userProfile"),
           coreBackendClient.post("post/getAllUserPost"),
           coreBackendClient.post("post/getCommentByUser"),
         ]);
 
-        setUserDetails(profileRes.data.data);
-        setPosts(postsRes.data.data ?? []);
-        setComments(commentsRes.data.data ?? []);
+        console.groupCollapsed("Profile fetch: responses");
+        console.log("profileRes:", profileRes?.data);
+        console.log("postsRes:", postsRes?.data);
+        console.log("commentsRes:", commentsRes?.data);
+        console.groupEnd();
+
+        setUserDetails(profileRes.data?.data);
+        setPosts(postsRes.data?.data ?? []);
+        setComments(commentsRes.data?.data ?? []);
       } catch (err) {
-        console.error("Profile fetch failed", err);
+        // Improved logging for axios errors
+        try {
+          // @ts-ignore
+          const status = err?.response?.status;
+          // @ts-ignore
+          const respData = err?.response?.data;
+          console.error("Profile fetch failed", { message: err?.message, status, respData });
+        } catch (e) {
+          console.error("Profile fetch failed", err);
+        }
       } finally {
         setLoading(false);
       }

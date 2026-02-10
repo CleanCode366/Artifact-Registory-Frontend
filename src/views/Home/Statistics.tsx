@@ -1,3 +1,4 @@
+import { apiClient } from "@/utils/http/clients/backendApiClientGeneral";
 import { Award, BookOpen, Globe, Users } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -15,13 +16,8 @@ const Statistics: React.FC = () => {
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
-                const response = await fetch('http://localhost:8080/post/public/getDashboardCounts', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                const data = await response.json();
+                const response = await apiClient.get('http://localhost:8080/post/public/getDashboardCounts');
+                const { data } = response;
                 if (data && data.data) {
                     const updatedStatistics = statistics.map(stat => {
                         if (stat.label === "totalPosts") {

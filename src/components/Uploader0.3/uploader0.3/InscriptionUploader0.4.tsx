@@ -19,6 +19,7 @@ import { getEnvConfig } from "../config/env";
 // declare module 'piexifjs';
 import piexifjs from "piexifjs";
 import { Alert, Slide, Snackbar, type SlideProps } from "@mui/material";
+import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
 
 function SlideDownTransition(props: SlideProps) {
   // direction="down" makes it slide top -> down
@@ -51,12 +52,12 @@ const EnhancedInscriptionUploader: React.FC = () => {
       formData.append("file", blob, "inscription.jpg");
 
       const { backendDetectUrl } = getEnvConfig();
-      const response = await fetch(`${backendDetectUrl}predict/`, {
+      const response = await coreBackendClient.post(`${backendDetectUrl}predict/`, {
         method: "POST",
         body: formData,
       });
 
-      const data = await response.json();
+      const { data } = response;
 
       if (data?.detail?.toLowerCase().includes("suspicious content")) {
         setStoneCheckResult("Suspicious content detected");

@@ -7,6 +7,7 @@ import mockDiscoveryPosts from "@/Db/feeds";
 import { SearchX } from 'lucide-react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { CircularProgress } from '@mui/material';
+import { coreBackendClient } from '@/utils/http/clients/coreBackend.client';
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
@@ -83,18 +84,9 @@ const Feed = () => {
         }));
       } else {
         const token = getCookie("token");
-        const response = await fetch(`${backendApiUrl}post/getAllPost`, {
-          credentials: "include",
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            "X-XSRF-TOKEN": getCookie("XSRF-TOKEN") || "",
-          },
-          body: JSON.stringify({}),
-        });
+        const response = await coreBackendClient.post(`${backendApiUrl}post/getAllPost`);
 
-        const data = await response.json();
+        const { data } = response;
         allPosts = Array.isArray(data.data) ? data.data : [];
       }
 
@@ -118,17 +110,8 @@ const Feed = () => {
   const fetchUserDetailsOfPosts = async () => {
     try {
       const token = getCookie('token');
-      const response = await fetch(`${backendApiUrl}post/userProfile`, {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864',
-        },
-        body: JSON.stringify({}),
-      });
-      const data = await response.json();
+      const response = await coreBackendClient.post(`${backendApiUrl}post/userProfile`);
+      const { data } = response;
       SetUserDetails(data.data);
     } catch (error) {
       console.error('Failed to fetch posts:', error);

@@ -4,7 +4,7 @@ import type { Comment } from "./InscriptionDetailPage";
 import type { User } from "@/types";
 import { Tooltip } from "@mui/material";
 import { authClient } from "@/utils/http/clients/authClient.client";
-import AuthContext from "@/context/AuthContextType";
+import AuthContext from "@/context/AuthContext";
 
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
