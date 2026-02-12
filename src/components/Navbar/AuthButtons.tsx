@@ -24,7 +24,7 @@ const AuthButtons = ({ authenticated }: { authenticated: boolean | null }) => {
   return (
     <button
       onClick={() => navigate("/login", { replace: true })}
-      className="flex items-center gap-2 bg-primary-light border-2 border-white px-4 py-2 rounded-lg cursor-pointer"
+      className="flex items-center gap-2 text-white bg-primary-light border-2 border-white px-4 py-2 rounded-lg cursor-pointer"
     >
       <LogIn /> Login
     </button>

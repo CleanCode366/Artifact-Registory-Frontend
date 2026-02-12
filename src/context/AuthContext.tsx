@@ -14,7 +14,7 @@ const AuthContext = createContext<AuthContextType>(null!);
 
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const loginSuccess = (token: string) => {
     authStore.setToken(token);

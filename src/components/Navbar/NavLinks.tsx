@@ -11,7 +11,7 @@ export const protectedLinks: NavItem[] = [
 ];
 
 export const publicLinks: NavItem[] = [
-  { path: "/home", label: "Home", scrollvalue: 60 },
+  { path: "/home", label: "Home", scrollvalue: 0 },
   { path: "/home", label: "Featured Discoveries", scrollvalue: 900 },
   { path: "/home", label: "How it works", scrollvalue: 1550 },
   { path: "/home", label: "Community", scrollvalue: 2100 },
@@ -19,9 +19,9 @@ export const publicLinks: NavItem[] = [
 ];
 
 export const publicLinksMobile: NavItem[] = [
-  { path: "/home", label: "Home", scrollvalue: 90 },
-  { path: "/home", label: "Featured Discoveries", scrollvalue: 1200 },
-  { path: "/home", label: "How it works", scrollvalue: 2200 },
-  { path: "/home", label: "Community", scrollvalue: 3300 },
-  { path: "/home", label: "Get Started", scrollvalue: 4600 },
+  { path: "/home", label: "Home", scrollvalue: 0 },
+  { path: "/home", label: "Featured Discoveries", scrollvalue: 1000 },
+  { path: "/home", label: "How it works", scrollvalue: 1900 },
+  { path: "/home", label: "Community", scrollvalue: 3000 },
+  { path: "/home", label: "Get Started", scrollvalue: 4200 },
 ];
