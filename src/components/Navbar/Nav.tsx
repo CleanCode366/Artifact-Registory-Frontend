@@ -41,7 +41,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
                 key={link.label}
                 onClick={() => scrollToSection(link.scrollvalue ?? 0)}
                 className={({ isActive }) =>
-                  `text-gray-800 transition-colors ${isActive && isAuthenticated ? "text-white border-b-4 font-semibold" : ""}`
+                  `text-gray-800 transition-colors ${linksToShow !== publicLinks && isActive ? "text-white border-b-4 font-semibold" : ""}`
                 }
                 style={{ height: "99%" }}
               >
@@ -74,7 +74,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
                   toggleMobileNavbar();
                   scrollToSection(link.scrollvalue ?? 0);
                 }}
-                className={({ isActive }) => `text-white py-4 transition-colors ${isActive && isAuthenticated ? "text-white border-b-4 font-semibold" : ""}`}
+                className={({ isActive }) => `text-white py-4 transition-colors ${linksToShow !== publicLinksMobile && isActive ? "text-white border-b-4 font-semibold" : ""}`}
               >
                 <div className="flex gap-2 justify-center items-center">
                   {link.icon}
