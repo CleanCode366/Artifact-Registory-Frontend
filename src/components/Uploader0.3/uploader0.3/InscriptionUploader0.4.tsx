@@ -57,7 +57,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
         body: formData,
       });
 
-      const { data } = response;
+      const { data } = response.data;
 
       if (data?.detail?.toLowerCase().includes("suspicious content")) {
         setStoneCheckResult("Suspicious content detected");

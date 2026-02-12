@@ -1,5 +1,5 @@
+import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
 import { getEnvConfig } from "../config/env";
-import { getCookie } from "../utils/Auth/auth";
 import type { PostSchema, GeoInfo } from "../types/types";
 import { X } from "lucide-react";
 
@@ -26,23 +26,15 @@ export const uploadInscription = async (
     }
   };
 
-  const token = getCookie("token");
-  const xsrfToken = getCookie("XSRF-TOKEN");
-  form.append("post", new Blob([JSON.stringify(postData)], { type: "application/json" }));
+  // const token = getCookie("token");
+  // const xsrfToken = getCookie("XSRF-TOKEN");
+  // form.append("post", new Blob([JSON.stringify(postData)], { type: "application/json" }));
 
   const { backendApiUrl } = getEnvConfig();
-  const response = await fetch(`${backendApiUrl}post/addPostWithFile`, {
-    credentials: 'include',
-    method: "POST",
-    headers: { 
-      Authorization: `Bearer ${token}`,
-      "X-XSRF-TOKEN": xsrfToken || ""
-    },
-    body: form
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
+  const response = await coreBackendClient.post(`${backendApiUrl}post/addPostWithFile`);
+  const { data } = response.data;
+  if (!data.ok) {
+    const errorText = await data.text();
     throw new Error(`${response.status} - ${errorText}`);
   }
 };

@@ -50,7 +50,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose }) => {
       const response = await coreBackendClient.post("http://localhost:8080/post/addPoastDiscription", requestOptions)
 
       if (!response.status || response.status !== 200) {
-        const errorText = await response.text(); // or response.json() if backend returns JSON
+        const errorText = await response.data.text(); // or response.json() if backend returns JSON
         throw new Error(`${response.status} - ${errorText}`);
       }
 
