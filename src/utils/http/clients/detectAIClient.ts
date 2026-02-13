@@ -1,9 +1,11 @@
 import { createAxiosClient } from "../axiosFactory";
 
-const backendApiUrl = window._env_?.VITE_BACKEND_AI_URL || import.meta.env.VITE_BACKEND_AI_URL;
+const backendApiUrl = "http://localhost:8000/";
 // FOR CALLING PUBLIC BACKEND APIS
 
 export const detectAIClient = createAxiosClient(
-    backendApiUrl, [],
+    backendApiUrl, 
+    [], 
+    500000,
     false
 )
