@@ -20,6 +20,7 @@ import { getEnvConfig } from "../config/env";
 import piexifjs from "piexifjs";
 import { Alert, Slide, Snackbar, type SlideProps } from "@mui/material";
 import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
+import { detectAIClient } from "@/utils/http/clients/detectAIClient";
 
 function SlideDownTransition(props: SlideProps) {
   // direction="down" makes it slide top -> down
@@ -51,8 +52,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
       const formData = new FormData();
       formData.append("file", blob, "inscription.jpg");
 
-      const { backendDetectUrl } = getEnvConfig();
-      const response = await coreBackendClient.post(`${backendDetectUrl}predict/`, {
+      const response = await detectAIClient.post('predict/', {
         method: "POST",
         body: formData,
       });
