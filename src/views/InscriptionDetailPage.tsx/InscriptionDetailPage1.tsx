@@ -179,7 +179,7 @@ const InscriptionDetailsPage: React.FC = () => {
         fetchUserDetails();
         fetchComments();
         fetchPostDetails();
-    }, [postId, comments]);
+    }, [postId]);
 
     const submitRatingToAPI = async (postId: string, rating: number): Promise<string> => {
 
