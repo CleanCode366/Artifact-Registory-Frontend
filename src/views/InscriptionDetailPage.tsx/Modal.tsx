@@ -31,29 +31,67 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
       urlencoded.append("postId", postId);
       // keep spelling used by backend if required; adjust if backend expects "description"
       urlencoded.append("discription", inputValue);
+            console.log("Posting description", { postId, inputValue });
+            const response = await coreBackendClient.post(`post/addPoastDiscription`, urlencoded);
 
-      const response = await coreBackendClient.post(`post/addPoastDiscription`, urlencoded);
-      const { data } = response.data;
-    //   console.log("Raw response:", response);
-      if (!data.ok) {
-        const errorText = await data.message;
-        throw new Error(`${data.status} - ${errorText}`);
-      }
+            // Log response shape for debugging
+            console.log("API response (axios):", {
+                status: response?.status,
+                statusText: response?.statusText,
+                data: response?.data,
+            });
 
-      // give parent the created object so it can update UI immediately
-      onDescriptionAdded?.(data ?? { discription: inputValue, postId });
+            // Support multiple possible shapes: { ok, data, message } or { data: {...} } or raw object
+            const respBody = response?.data;
 
-      alert("Description uploaded successfully!");
-      onClose(); // close modal after success
+            // If API follows { ok: boolean, data: any, message?: string }
+            if (typeof respBody === 'object' && respBody !== null && 'ok' in respBody) {
+                if (!respBody.ok) {
+                    const errMsg = respBody.message || JSON.stringify(respBody);
+                    throw new Error(`${response.status || 'HTTP?'} - ${errMsg}`);
+                }
+
+                const created = respBody.data ?? respBody;
+                console.log("Description upload created object:", created);
+                onDescriptionAdded?.(created ?? { discription: inputValue, postId });
+                alert("Description uploaded successfully!");
+                onClose();
+                return;
+            }
+
+            // If API returned the created object directly
+            if (typeof respBody === 'object' && respBody !== null) {
+                console.log("API returned object body:", respBody);
+                onDescriptionAdded?.(respBody ?? { discription: inputValue, postId });
+                alert("Description uploaded successfully!");
+                onClose();
+                return;
+            }
+
+            // Fallback: unexpected response
+            console.warn("Unexpected response shape for addPoastDiscription:", respBody);
+            onDescriptionAdded?.({ discription: inputValue, postId });
+            alert("Description uploaded (fallback)");
+            onClose();
     } catch (error) {
-        console.error("Upload failed NOT ERROR:", error);
-      if (error instanceof Error) {
-        console.error("Upload failed:", error);
-        alert("Upload failed: " + error.message);
-      } else {
-        console.error("Unknown error:", error);
-        alert("An unknown error occurred.");
-      }
+            console.error("Upload failed NOT ERROR:", error);
+            // Log richer error details from axios
+            try {
+                console.error("Axios error details:", {
+                    message: (error as any)?.message,
+                    response: (error as any)?.response?.data,
+                    status: (error as any)?.response?.status,
+                    config: (error as any)?.config,
+                });
+            } catch (e) {}
+
+            if (error instanceof Error) {
+                console.error("Upload failed:", error);
+                alert("Upload failed: " + (error.message || 'unknown'));
+            } else {
+                console.error("Unknown error:", error);
+                alert("An unknown error occurred.");
+            }
     } finally {
       setInputValue("");
     }

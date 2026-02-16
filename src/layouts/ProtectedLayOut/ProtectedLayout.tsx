@@ -11,7 +11,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // While authentication check is in progress, render nothing for the protected
   // outlet area so surrounding layout (including Navbar) remains visible.
-  if (isLoading) return <Navigate to="/login" replace />;
+  if (isLoading) return null;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
