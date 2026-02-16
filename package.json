@@ -71,6 +71,7 @@
     "tailwindcss": "^4.0.0-beta.7",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "vite-plugin-remove-console": "^2.2.0"
   }
 }

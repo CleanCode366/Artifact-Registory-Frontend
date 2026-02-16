@@ -1,6 +1,6 @@
 # Base
 ARG NODE_VERSION=22.13.1
-FROM node:${NODE_VERSION}-alpine AS base
+FROM node:${NODE_VERSION}-slim AS base
 
 RUN npm install -g pnpm@9
 WORKDIR /app

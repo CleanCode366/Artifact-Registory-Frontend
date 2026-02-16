@@ -104,7 +104,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
         redirect: "follow"
       };
 
-      const response = await coreBackendClient.post(`${backendApiUrl}post/addPoastDiscription`);
+      const response = await coreBackendClient.post(`post/addPoastDiscription`, requestOptions);
 
       if (!response.data.ok) {
         const errorText = await response.data.text();
