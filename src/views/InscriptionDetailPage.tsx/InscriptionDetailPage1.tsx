@@ -237,10 +237,30 @@ const InscriptionDetailsPage: React.FC = () => {
         );
     }
 
-    const handleDescriptionAdded = (newDesc: string) => {
-        // replace or append depending on desired UX:
-        // setDescription(prev => prev ? `${prev}\n${newDesc}` : newDesc);
-        setDescription(newDesc);
+    const handleDescriptionAdded = (createdComment: any) => {
+        // If backend returned a comment object, prepend it to comments so UI updates immediately
+        if (createdComment && typeof createdComment === 'object') {
+            setComments(prev => [createdComment as Comment, ...prev]);
+            setDescription((createdComment as any).description || "");
+            return;
+        }
+
+        // Fallback: a simple string was passed — create a minimal local comment
+        if (typeof createdComment === 'string') {
+            const newComment: Comment = {
+                _id: `local-${Date.now()}`,
+                postId: postId as string,
+                userId: userDetails?._id ?? 'unknown',
+                username: userDetails?.name ?? 'You',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                description: createdComment,
+                upvote: 0,
+                userVote: [],
+            };
+            setComments(prev => [newComment, ...prev]);
+            setDescription(createdComment);
+        }
     };
 
 
