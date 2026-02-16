@@ -1,5 +1,5 @@
 import AuthContext from '@/context/AuthContext';
-import { CircularProgress } from '@mui/material';
+// import { CircularProgress } from '@mui/material';
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 

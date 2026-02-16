@@ -38,6 +38,7 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
   const validateFieldValue = (value: string) => {
     const v = (value || "").trim();
     if (v.length < 3) return "Minimum 3 characters required.";
+    if (v.length > 100) return "Maximum 100 characters allowed.";
     if (!allowedRegex.test(v)) return 'Special characters are prohibited: () , : " . ; -';
     return "";
   };
