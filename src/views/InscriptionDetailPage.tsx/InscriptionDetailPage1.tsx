@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ThumbsUp, MapPin, Calendar, Languages, BookOpen, Share2, Heart, Plus, MessageSquareWarning, Star } from 'lucide-react';
-import StarRating from './StarRating';
+import { ThumbsUp, MapPin, Calendar, Languages, BookOpen, Plus, MessageSquareWarning, Star } from 'lucide-react';
 import CommentCard from './CommentCard';
 // import RatingModal from './RatingModal';
 import { useParams } from 'react-router-dom';
@@ -303,98 +302,10 @@ const InscriptionDetailsPage: React.FC = () => {
     const handleOpen = () => setDisplay(true);
     const handleClose = () => setDisplay(false);
 
-    function getCookie(name: string): string | null {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            return parts.pop()?.split(';').shift() || null;
-        }
-        return null;
-    }
-
 
     // inside your component
     const { id: postId } = useParams<{ id: string }>();
 
-    // useEffect(() => {
-    //     const fetchPostDetails = async () => {
-    //         if (!postId) {
-    //             console.error("No postId found in route params");
-    //             setPost(null);
-    //             setLoading(false);
-    //             return;
-    //         }
-
-    //         try {
-    //             setLoading(true);
-    //             const token = getCookie('token');
-    //             const response = await fetch('http://localhost:8080/post/getAllPost', {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`,
-    //                 },
-    //                 body: JSON.stringify({}),
-    //             });
-
-    //             const data = await response.json();
-
-    //             const allPosts = Array.isArray(data.data) ? data.data : [];
-    //             const matchedPost =
-    //                 allPosts.find((p: Post) => String(p._id) === String(postId)) || null;
-
-    //             // console.log("Route param postId:", postId);
-    //             // console.log("Available IDs:", allPosts.map((p: Post) => p._id));
-    //             // console.log("Matched Post:", matchedPost);
-    //             console.log(matchedPost);
-    //             setPost(matchedPost);
-    //         } catch (error) {
-    //             console.error('Failed to fetch posts:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     const fetchComments = async () => {
-    //         if (!postId) {
-    //             console.error("No postId found in route params");
-    //             setComments([]);
-    //             return;
-    //         }
-    //         try {
-    //             setLoading(true);
-    //             const token = getCookie('token');
-    //             const myHeaders = new Headers();
-    //             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    //             myHeaders.append("Authorization", `Bearer ${token}`);
-
-    //             const urlencoded = new URLSearchParams();
-    //             urlencoded.append("postId", postId);
-
-    //             const requestOptions: RequestInit = {
-    //                 method: "POST",
-    //                 headers: myHeaders,
-    //                 body: urlencoded,
-    //                 redirect: "follow"
-    //             };
-
-    //             const response = await fetch("http://localhost:8080/post/getPostDiscription", requestOptions)
-
-    //             const data = await response.json();
-    //             const fetchedComments = Array.isArray(data.data) ? data.data : [];
-    //             setComments(fetchedComments);
-    //         } catch (error) {
-    //             console.error('Failed to fetch comments:', error);
-    //             setComments(dummyComments);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchComments();
-    //     fetchPostDetails();
-    // }, [postId]); 
-
-    // Add this function inside your component
     useEffect(() => {
         setLoading(true);
         if (USE_FALLBACK) {
@@ -414,10 +325,10 @@ const InscriptionDetailsPage: React.FC = () => {
 
         const fetchUserDetails = async () => {
             try {
-                const token = getCookie('token');
-                const response = await coreBackendClient.post(`${backendApiUrl}post/userProfile`);
-                const { data } = response;
-                setUserDetails(data.data);
+                const response = await coreBackendClient.post("post/userProfile");
+                const { data } = response.data;
+                console.log("Fetched user details:", data);
+                setUserDetails(data);
             } catch (error) {
                 console.error("Failed to fetch user details:", error);
             }
@@ -432,17 +343,13 @@ const InscriptionDetailsPage: React.FC = () => {
             }
 
             try {
-                const token = getCookie('token');
-                const response = await coreBackendClient.post(`${backendApiUrl}post/getAllPost`);
+                const response = await coreBackendClient.post(`post/getAllPost`);
 
-                const data = response.data;
-                const allPosts = Array.isArray(data.data) ? data.data : [];
+                const { data } = response.data;
+                const allPosts = Array.isArray(data) ? data : [];
                 const matchedPost =
                     allPosts.find((p: Post) => String(p._id) === String(postId)) || null;
 
-                // console.log("Route param postId:", postId);
-                // console.log("Available IDs:", allPosts.map((p: Post) => p._id));
-                // console.log("Matched Post:", matchedPost);
                 console.log(matchedPost);
                 setPost(matchedPost);
             } catch (error) {
@@ -458,27 +365,14 @@ const InscriptionDetailsPage: React.FC = () => {
                 return;
             }
             try {
-                const token = getCookie('token');
-                const myHeaders = new Headers();
-                myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-                myHeaders.append("Authorization", `Bearer ${token}`);
-                myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
-
+                
                 const urlencoded = new URLSearchParams();
                 urlencoded.append("postId", postId);
 
-                const requestOptions: RequestInit = {
-                    credentials: 'include' as RequestCredentials,
-                    method: "POST",
-                    headers: myHeaders,
-                    body: urlencoded,
-                    redirect: "follow"
-                };
+                const response = await coreBackendClient.post(`post/getPostDiscription`, urlencoded);
 
-                const response = await coreBackendClient.post(`${backendApiUrl}post/getPostDiscription`);
-
-                const data = response.data;
-                const fetchedComments = Array.isArray(data.data) ? data.data : [];
+                const { data } = response.data;
+                const fetchedComments = Array.isArray(data) ? data : [];
                 setComments(fetchedComments);
             } catch (error) {
                 console.error('Failed to fetch comments:', error);
@@ -491,163 +385,17 @@ const InscriptionDetailsPage: React.FC = () => {
         fetchPostDetails();
     }, [postId]);
 
-
-    // #KEEEP THIS
-    // useEffect(() => {
-
-
-    //     // Add this function to fetch user details
-    //     const fetchUserDetails = async () => {
-    //         try {
-    //             const token = getCookie('token');
-    //             const response = await fetch(`${backendApiUrl}post/userProfile`, {
-    //                 credentials: 'include',
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`,
-    //                     'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864'
-    //                 },
-    //                 body: JSON.stringify({}),
-    //             });
-    //             const data = await response.json();
-    //             setUserDetails(data.data);
-    //         } catch (error) {
-    //             console.error("Failed to fetch user details:", error);
-    //             if (USE_FALLBACK) {
-    //                 setUserDetails({
-    //                     _id: "dummy-user",
-    //                     name: "John Doe",
-    //                 } as User);
-    //             }
-    //         }
-    //     };
-    //     const fetchPostDetails = async () => {
-    //         if (!postId) {
-    //             console.error("No postId found in route params");
-    //             setPost(null);
-    //             setLoading(false);
-    //             return;
-    //         }
-
-    //         try {
-    //             setLoading(true);
-    //             const token = getCookie('token');
-    //             const response = await fetch(`${backendApiUrl}post/getAllPost`, {
-    //                 credentials: 'include',
-    //                 method: 'POST',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`,
-    //                     'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864'
-    //                 },
-    //                 body: JSON.stringify({}),
-    //             });
-
-    //             const data = await response.json();
-
-    //             const allPosts = Array.isArray(data.data) ? data.data : [];
-    //             const matchedPost =
-    //                 allPosts.find((p: Post) => String(p._id) === String(postId)) || null;
-
-    //             // console.log("Route param postId:", postId);
-    //             // console.log("Available IDs:", allPosts.map((p: Post) => p._id));
-    //             // console.log("Matched Post:", matchedPost);
-    //             console.log(matchedPost);
-    //             setPost(matchedPost);
-    //         } catch (error) {
-    //             console.error("Failed to fetch posts:", error);
-    //             if (USE_FALLBACK) {
-    //                 setPost(dummyPost);
-    //             }
-    //         }
-    //     };
-    //     const fetchComments = async () => {
-    //         if (!postId) {
-    //             console.error("No postId found in route params");
-    //             setComments([]);
-    //             return;
-    //         }
-    //         try {
-    //             setLoading(true);
-    //             const token = getCookie('token');
-    //             const myHeaders = new Headers();
-    //             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    //             myHeaders.append("Authorization", `Bearer ${token}`);
-    //             myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
-
-    //             const urlencoded = new URLSearchParams();
-    //             urlencoded.append("postId", postId);
-
-    //             const requestOptions: RequestInit = {
-    //                 credentials: 'include' as RequestCredentials,
-    //                 method: "POST",
-    //                 headers: myHeaders,
-    //                 body: urlencoded,
-    //                 redirect: "follow"
-    //             };
-
-    //             const response = await fetch(`${backendApiUrl}post/getPostDiscription`, requestOptions)
-
-    //             const data = await response.json();
-    //             const fetchedComments = Array.isArray(data.data) ? data.data : [];
-    //             setComments(fetchedComments);
-    //         } catch (error) {
-    //             console.error("Failed to fetch comments:", error);
-    //             if (USE_FALLBACK) {
-    //                 setComments(dummyComments);
-    //             }
-    //         }
-    //     };
-    //     fetchUserDetails();
-    //     fetchComments();
-    //     fetchPostDetails();
-    // }, [postId]); 
-
-    // const submitRatingToAPI = async (postId: string, rating: number): Promise<string> => {
-    //     const myHeaders = new Headers();
-    //     const token = getCookie('token');
-    //     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    //     myHeaders.append("Authorization", `Bearer ${token}`);
-    //     const urlencoded = new URLSearchParams();
-    //     urlencoded.append("postId", postId);
-    //     urlencoded.append("rating", rating.toString());
-    //     const requestOptions: RequestInit = {
-    //         method: 'POST',
-    //         headers: myHeaders,
-    //         body: urlencoded,
-    //         redirect: 'follow'
-    //     };
-    //     const response = await fetch("http://localhost:8080/post/addRating", requestOptions);
-    //     if (!response.ok) {
-    //         throw new Error(`Error: ${response.statusText}`);
-    //     }
-    //     const result = await response.text();
-    //     return result;
-    // };
-
     const submitRatingToAPI = async (postId: string, rating: number): Promise<string> => {
-        const myHeaders = new Headers();
-        const token = getCookie('token');
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-        myHeaders.append("Authorization", `Bearer ${token}`);
-        myHeaders.append("X-XSRF-TOKEN", getCookie('XSRF-TOKEN') || '50d7115f-8f84-4e07-a8ae-1a155afe4864');
 
         const urlencoded = new URLSearchParams();
         urlencoded.append("postId", postId);
         urlencoded.append("rating", rating.toString());
-        const requestOptions: RequestInit = {
-            credentials: 'include' as RequestCredentials,
-            method: 'POST',
-            headers: myHeaders,
-            body: urlencoded,
-            redirect: 'follow'
-        };
-        const response = await coreBackendClient.post(`${backendApiUrl}post/addRating`);
-        if (!response.data.ok) {
+        const response = await coreBackendClient.post(`post/addRating`, urlencoded);
+        const { data } = response.data;
+        if (!data.ok) {
             throw new Error(`Error: ${response.statusText}`);
         }
-        const result = await response.data.text();
+        const result = await data.message; // or response.json() if backend returns JSON
         return result;
     };
 
