@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
 import { authClient } from "@/utils/http/clients/authClient.client";
 import AuthContext from "@/context/AuthContext";
 
@@ -39,7 +38,7 @@ const OAuthCallback = () => {
     completeLogin();
   }, []);
 
-  return <CircularProgress />;
+  return <div>Completing login...</div>;
 };
 
 export default OAuthCallback;

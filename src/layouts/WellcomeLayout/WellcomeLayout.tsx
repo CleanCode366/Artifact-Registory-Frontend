@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import CircularProgess from '@components/Spinner/CircularProgess';
+// Removed CircularProgess import per UI requirement
 
 const WellcomeLayout: React.FC = () => {
 

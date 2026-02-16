@@ -1,5 +1,4 @@
 import AuthContext from '@/context/AuthContext';
-import { CircularProgress } from '@mui/material';
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 
@@ -10,7 +9,9 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, isLoading } = useContext(AuthContext);
 
-  if (isLoading) return <CircularProgress />;
+  // While authentication check is in progress, render nothing for the protected
+  // outlet area so surrounding layout (including Navbar) remains visible.
+  if (isLoading) return null;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -24,13 +25,15 @@ interface PublicRouteProps {
 }
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  // const { isAuthenticated, isLoading } = useContext(AuthContext);
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
 
-  // if (isLoading) return <CircularProgress />;
+  // While auth status is being determined, render the public content area (no spinner)
+  if (isLoading) return <>{children}</>;
 
-  // if (isAuthenticated) {
-  //   return <Navigate to="/feed" replace />;
-  // }
+  // If user is already authenticated, redirect away from public pages like login
+  if (isAuthenticated) {
+    return <Navigate to="/home" replace />;
+  }
 
   return <>{children}</>;
 };

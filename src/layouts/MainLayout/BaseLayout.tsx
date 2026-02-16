@@ -2,7 +2,6 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import CircularProgess from '@components/Spinner/CircularProgess';
 // import Nav from '@components/Navbar/Nav';
 import Footer from '@/views/Home/Footer';
 import Nav from '@/components/Navbar/Nav';

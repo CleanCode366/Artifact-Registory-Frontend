@@ -7,7 +7,6 @@ import { protectedLinks, publicLinks, publicLinksMobile } from "./NavLinks";
 import { type NavProps } from "./types";
 import { useContext } from "react";
 import AuthContext from "@/context/AuthContext";
-import { CircularProgress } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
 const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
@@ -18,9 +17,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
     toggleMobileNavbar,
   } = useNavbar();
 
-  const { isAuthenticated, isLoading } = useContext(AuthContext);
-
-  if (isLoading) return <CircularProgress />;
+  const { isAuthenticated } = useContext(AuthContext);
 
   const linksToShow = isAuthenticated
     ? protectedLinks
