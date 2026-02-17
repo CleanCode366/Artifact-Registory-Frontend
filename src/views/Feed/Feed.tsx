@@ -11,7 +11,7 @@ import { coreBackendClient } from '@/utils/http/clients/coreBackend.client';
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
-const isOffline = true;   // true → use mock data, false → use API
+const isOffline = false;   // true → use mock data, false → use API
 
 export interface Post {
   _id: string;
@@ -58,14 +58,14 @@ const Feed = () => {
   const [visiblePosts, setVisiblePosts] = useState<Post[]>([]); // paginated slice
 
 
-  function getCookie(name: string): string | null {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop()?.split(';').shift() || null;
-    }
-    return null;
-  }
+  // function getCookie(name: string): string | null {
+  //   const value = `; ${document.cookie}`;
+  //   const parts = value.split(`; ${name}=`);
+  //   if (parts.length === 2) {
+  //     return parts.pop()?.split(';').shift() || null;
+  //   }
+  //   return null;
+  // }
 
   const fetchPosts = async () => {
     try {
@@ -83,7 +83,7 @@ const Feed = () => {
           }
         }));
       } else {
-        const token = getCookie("token");
+        // const token = getCookie("token");
         const response = await coreBackendClient.post(`${backendApiUrl}post/getAllPost`);
 
         const { data } = response;
@@ -109,7 +109,7 @@ const Feed = () => {
 
   const fetchUserDetailsOfPosts = async () => {
     try {
-      const token = getCookie('token');
+      // const token = getCookie('token');
       const response = await coreBackendClient.post(`${backendApiUrl}post/userProfile`);
       const { data } = response;
       SetUserDetails(data.data);

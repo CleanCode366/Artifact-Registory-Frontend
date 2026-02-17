@@ -1,11 +1,12 @@
 import type React from "react";
 import type { User } from "@/types";
-import { Share, SquarePen } from "lucide-react";
+// import { Share, SquarePen } from "lucide-react";
 // import profileImg from "@assets/user/profile.png";
 import coverPhoto from "@assets/banner111.jpg"
 interface ProfileHeaderProps {
   user: User;
 }
+
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
   return (

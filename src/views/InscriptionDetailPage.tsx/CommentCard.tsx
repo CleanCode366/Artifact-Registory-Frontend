@@ -111,7 +111,8 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments, currentUser }) => {
         </div>
         <div className="ml-4 flex items-center gap-2">
           <Tooltip title="Like">
-            <button
+            <p></p>
+            {/* <button
               onClick={LikeDisLikeAPI}
               className={`flex cursor-pointer items-center gap-1 px-3 py-1 rounded-full transition-colors ${isLiked
                 ? 'text-blue-400 bg-blue-900/30'
@@ -121,7 +122,7 @@ const CommentCard: React.FC<CommentCardProps> = ({ comments, currentUser }) => {
             >
               <ThumbsUp className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
               <span className="font-medium">{likes}</span>
-            </button>
+            </button> */}
           </Tooltip>
         </div>
       </div>

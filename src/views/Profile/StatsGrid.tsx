@@ -21,7 +21,7 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
         {statItems.map((item, index) => (
           <div key={index} className="bg-secondary-background border border-slate-700/50  rounded-lg p-4 text-center">
             <item.icon className={`w-8 h-8 mx-auto ${item.color}`} />
-            <div className="text-2xl font-bold text-black mb-1">{item.value}</div>
+            <div className="text-2xl font-bold text-black mt-4 mb-1">{item.value}</div>
             <div className="text-black text-sm">{item.label}</div>
           </div>
         ))}

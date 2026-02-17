@@ -17,9 +17,9 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
     return (
         <div className="mb-6">
             <h2 className="text-xl font-bold text-black ">Dashboard Stats</h2>
-            <section className="py-16 bg-secondary-background/30">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 ag-courses_item">
+            <section className="py-16 bg-secondary-background/30" >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-center" style={{ width: "100%" }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 ag-courses_item" style={{ width: "100%" }}>
                         {statItems.map((item, index) => {
                             return (
                                 <div key={index} className="ag-courses-item_link text-center p-6 bg-primary-background/50 rounded-xl backdrop-blur-sm border border-slate-700/50 secondary-text-dark cursor-pointer">
@@ -27,7 +27,7 @@ const StatsGrid: React.FC<StatsGridProps> = ({ stats }) => {
 
                                     </div>
                                     <item.icon className={`w-8 h-8 mx-auto mb-3 text-white ag-courses-item_icon-box ${item.color}`} />
-                                    <div className="text-3xl font-bold mb-1 ag-courses-item_title">{item.value}</div>
+                                    <div className="text-3xl font-bold mt-4 mb-1 ag-courses-item_title">{item.value}</div>
                                     <div className="secondary-text-dark ag-courses-item_date-box">{item.label}</div>
                                 </div>
                             );

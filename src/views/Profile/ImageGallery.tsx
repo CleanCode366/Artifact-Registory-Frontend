@@ -12,9 +12,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ posts }) => {
   const displayPosts = viewAll ? posts : posts.slice(0, 6);
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 mt-2">
       <div className="flex justify-between items-center mb-7">
-        <h4 className="text-xl font-bold text-black">My Posts</h4>
+        <h6 className="text-xl font-bold text-black">My Posts</h6>
         <button
           onClick={() => setViewAll(!viewAll)}
           className="text-orange-500 hover:text-orange-400 text-sm font-medium outline-none focus:outline-none cursor-pointer"

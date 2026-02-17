@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { authClient } from "@/utils/http/clients/authClient.client";
 import AuthContext from "@/context/AuthContext";
+import cdacRoundLogo from '@/assets/cdacroundlogo.png';
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
@@ -38,7 +39,16 @@ const OAuthCallback = () => {
     completeLogin();
   }, []);
 
-  return <div>Completing login...</div>;
+  return (
+    <div className="min-h-screen bg-secondary-background flex items-center justify-center">
+      <div className='flex flex-col items-center'>
+        {/* <FaSpinner className="animate-spin text-4xl text-[#66B0FF]" /> */}
+        <img src={cdacRoundLogo} className="mr-3 mb-4 size-20 cdacSpinner" />
+        <div className="text-[#000000] text-lg">Logging in...</div>
+      </div>
+    </div>
+  )
+
 };
 
 export default OAuthCallback;

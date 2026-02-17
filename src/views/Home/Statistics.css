@@ -104,13 +104,13 @@
 }
 
 .ag-courses-item_bg {
-  height: 50px;
-  width: 50px;
+  height: 64px;
+  width: 64px;
   background-color: #f9b234;
 
   z-index: 1;
   position: absolute;
-  top: 50%;
+  top: 56%;
   left: 50%;
   transform: translate(-50%, -127%);
   /* Center the circle relative to its parent */
