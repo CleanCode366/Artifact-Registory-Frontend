@@ -62,7 +62,7 @@ const ProfileUI = ({ user, posts, comments }: ProfileUIProps) => {
         ) : (
           <div className="py-8 flex items-center justify-center min-h-80">No contributions yet.</div>
         )}
-        <ContributionsList comments={comments} />
+        {/* <ContributionsList comments={comments} /> */}
 
       </div>
     </div>
