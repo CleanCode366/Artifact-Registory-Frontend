@@ -5,7 +5,7 @@ import ProfileLoader from "./ProfileLoader";
 import ProfileUI from "./ProfileUI";
 import { mockUser } from "@/Db/userProfile";
 
-const USE_FALLBACK = true;
+const USE_FALLBACK = false;
 
 const Profile: React.FC = () => {
   const { isLoading: authLoading } = useContext(AuthContext);
