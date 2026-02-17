@@ -27,7 +27,7 @@ export interface Post {
   script: string[];
   [key: string]: any;
 }
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 6;
 
 // Main Discovery Feed Component
 const Feed = () => {

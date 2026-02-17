@@ -3,7 +3,7 @@ import type React from "react";
 import { useState } from "react";
 // import { getCookie } from "@/utils/Auth/auth";
 
-import { Snackbar, Alert, Slide } from "@mui/material";
+import { Snackbar, Alert, Slide, TextField } from "@mui/material";
 import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
 
 interface ModelProps {
@@ -19,12 +19,32 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
 
     const [inputValue, setInputValue] = useState("");
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
 
-    const handleInputChange = (e: String) => {
-        setInputValue(e as string);
+    const handleInputChange = (value: string) => {
+        // enforce max length at input time
+        if (value.length > 200) {
+            setErrorMsg("Maximum 200 characters allowed.");
+            setInputValue(value.slice(0, 200));
+            return;
+        }
+        if (errorMsg) setErrorMsg("");
+        setInputValue(value);
     };
 
     const handlePost = async () => {
+        // basic validation before submit
+        const trimmed = (inputValue || "").trim();
+        if (!trimmed) {
+            setErrorMsg("Description cannot be empty.");
+            onPostError?.("Description cannot be empty.");
+            return;
+        }
+        if (trimmed.length > 200) {
+            setErrorMsg("Maximum 200 characters allowed.");
+            onPostError?.("Maximum 200 characters allowed.");
+            return;
+        }
     try {
 
       const urlencoded = new URLSearchParams();
@@ -151,13 +171,18 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
             <div className="bg-secondary-background p-4 rounded shadow flex flex-col gap-5 items-center w-sm" style={{ backgroundColor: "white" }}>
 
                 <div className="w-full">
-                    <label className="block text-sm font-medium mb-2 text-secondary-dark">Description</label>
-                    <textarea
-                        value={inputValue || ""}
-                        onChange={e => handleInputChange(e.target.value)}
+                    <TextField
+                        label="Description"
                         placeholder="This inscription belongs to the 12th century temple walls."
-                        className="w-full px-4 py-3 border border-gray-600 rounded-lg text-[#000000] resize-none"
+                        size="small"
+                        value={inputValue || ""}
+                        onChange={(e) => handleInputChange(e.target.value)}
+                        multiline
                         rows={3}
+                        fullWidth
+                        error={!!errorMsg}
+                        helperText={errorMsg || `${inputValue.length}/200`}
+                        FormHelperTextProps={{ style: { margin: 0 } }}
                     />
                 </div>
 
@@ -165,7 +190,14 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
                     <button onClick={handlePost} className="ml-2 cursor-pointer bg-orange-400 text-white px-3 py-1 rounded">
                         Post
                     </button>
-                    <button onClick={onClose} className="ml-2 cursor-pointer bg-slate-700 text-white px-3 py-1 rounded">
+                    <button onClick={() => {
+                        // prompt user if there's unsaved input
+                        if ((inputValue || "").trim().length > 0) {
+                            const confirmClose = window.confirm("You have unsaved text. Cancel posting and close?\nPress OK to discard, Cancel to continue editing.");
+                            if (!confirmClose) return;
+                        }
+                        onClose();
+                    }} className="ml-2 cursor-pointer bg-slate-700 text-white px-3 py-1 rounded">
                         Close
                     </button>
                 </div>

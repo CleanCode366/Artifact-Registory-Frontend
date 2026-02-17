@@ -545,7 +545,7 @@ const InscriptionDetailsPage: React.FC = () => {
                                         {/* {post.description.englishTranslation && ( */}
                                         <div className="mt-4 p-3 bg-white border-1 border-solid border-yellow-400 rounded-lg">
                                             <h5 className="text-orange-400 font-medium mb-2">English Translation:</h5>
-                                            <p className="text-black italic">"{postToRender.description.englishTranslation || "this is a transation"}"</p>
+                                            <p className="text-black italic">"{postToRender.description.englishTranslation || "Translation unavailable"}"</p>
                                             {/* <p className="text-black italic">"{post.description.englishTranslation || "this is a transation"}"</p> */}
                                         </div>
                                         {/* )} */}
