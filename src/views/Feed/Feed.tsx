@@ -11,7 +11,7 @@ import { coreBackendClient } from '@/utils/http/clients/coreBackend.client';
 // import { getTokenFromCookie } from '@/utils/cookieUtils';
 const backendApiUrl = window._env_?.VITE_BACKEND_API_URL || import.meta.env.VITE_BACKEND_API_URL;
 
-const isOffline = false;   // true → use mock data, false → use API
+const isOffline = true;   // true → use mock data, false → use API
 
 export interface Post {
   _id: string;
@@ -27,7 +27,7 @@ export interface Post {
   script: string[];
   [key: string]: any;
 }
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 3;
 
 // Main Discovery Feed Component
 const Feed = () => {
@@ -198,6 +198,7 @@ const Feed = () => {
                 <b>No more posts</b>
               </p>
             }
+            style={{ overflow: 'visible' }}
           >
             {/* <div
               style={{

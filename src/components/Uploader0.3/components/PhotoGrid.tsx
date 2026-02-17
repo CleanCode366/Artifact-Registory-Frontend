@@ -1,3 +1,5 @@
+import { RefreshCcw } from "lucide-react";
+
 interface PhotoGridProps {
   photos: string[];
   onReset: () => void;
@@ -17,8 +19,9 @@ export const PhotoGrid = ({ photos, onReset }: PhotoGridProps) => (
     </div>
     <button
       onClick={onReset}
-      className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition"
+      className="cursor-pointer w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition"
     >
+      <RefreshCcw className="inline mr-2" />
       Reset
     </button>
   </div>
