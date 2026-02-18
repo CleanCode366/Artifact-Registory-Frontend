@@ -1,6 +1,7 @@
 import AuthContext from '@/context/AuthContext';
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import cdacRoundLogo from '@/assets/cdacroundlogo.png';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -13,7 +14,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   // outlet area so surrounding layout (including Navbar) remains visible.
   // if (isLoading) return <Navigate to="/login" replace />;
 
-  if (isLoading) return <></>;
+  if (isLoading) return <div className="min-h-screen"><div className='flex flex-col items-center'>
+    {/* <FaSpinner className="animate-spin text-4xl text-[#66B0FF]" /> */}
+    <img src={cdacRoundLogo} className="mr-3 mb-4 size-20 cdacSpinner" />
+    <div className="text-[#000000] text-lg">Logging in...</div>
+  </div></div>;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
