@@ -9,7 +9,7 @@ export const useDescriptionSuggestion = (geoInfo: any) => {
   const fetchSuggestion = async (lat?: string, lon?: string) => {
     setSuggestion(null);
     setIsFetching(true);
-    
+
     try {
       let latitude = lat || geoInfo?.latitude;
       let longitude = lon || geoInfo?.longitude;
@@ -29,16 +29,17 @@ export const useDescriptionSuggestion = (geoInfo: any) => {
       if (!res.ok) throw new Error(`Service returned ${res.status}`);
 
       let text = "";
-      try {
-        const json = await res.json();
-        text = json.suggestion || json.description || json.text || JSON.stringify(json);
-        console.log("Suggestion service response JSON:", json);
-        console.log("Suggestion service response text:", text);
-      } catch (err) {
-        text = await res.text();
+      const outer = await res.json(); // first parse
+
+      if (outer.text) {
+        const inner = JSON.parse(outer.text); // second parse
+        text = inner.description;
+      } else {
+        text = outer.description || outer.suggestion || "";
       }
 
       setSuggestion(text);
+
     } catch (err) {
       setSuggestion("Failed to get suggestion.");
     } finally {
