@@ -141,7 +141,7 @@ const Feed = () => {
       post?.description?.geolocation?.city,
       ...(Array.isArray(post?.script) ? post.script : [])
     ]
-      .filter(Boolean)
+      .filter((value): value is string => typeof value === 'string' && value !== '')
       .map(value => value.toLowerCase());
 
     if (searchableValues.length === 0) return true;
