@@ -1,5 +1,6 @@
 import { authStore } from "../../../store/authStore";
 import { authClient } from "../clients/authClient.client";
+import { type AxiosInstance } from "axios";
 
 let isRefreshing = false;
 let pendingQueue: ((token: string) => void)[] = [];
@@ -9,8 +10,8 @@ const processQueue = (token: string) => {
   pendingQueue = [];
 };
 
-export const refreshTokenInterceptor = () => {
-  authClient.interceptors.response.use(
+export const refreshTokenInterceptor = (client: AxiosInstance) => {
+  client.interceptors.response.use(
     (res) => res,
     async (error) => {
       const originalRequest = error.config;
@@ -33,8 +34,9 @@ export const refreshTokenInterceptor = () => {
         if (isRefreshing) {
           return new Promise((resolve) => {
             pendingQueue.push((token: string) => {
+              originalRequest.headers = originalRequest.headers || {};
               originalRequest.headers.Authorization = `Bearer ${token}`;
-              resolve(authClient(originalRequest));
+              resolve(client(originalRequest));
             });
           });
         }
@@ -61,7 +63,7 @@ export const refreshTokenInterceptor = () => {
 
           originalRequest.headers = originalRequest.headers || {};
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return authClient(originalRequest);
+          return client(originalRequest);
         } catch (refreshError) {
           console.error("refreshToken.interceptor: refresh failed:", {
             message: (refreshError as any)?.message,

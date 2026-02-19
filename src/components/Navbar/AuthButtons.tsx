@@ -7,11 +7,15 @@ const AuthButtons = ({ authenticated }: { authenticated: boolean | null }) => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
 
+  if (authenticated === null) {
+    return <div className="h-10 w-24" aria-hidden="true" />;
+  }
+
   if (authenticated) {
     return (
       <button
-        onClick={() => {
-          logout();
+        onClick={async () => {
+          await logout();
           navigate("/login", { replace: true });
         }}
         className="flex items-center gap-2 bg-primary-dark text-white border-2 border-white px-4 py-2 rounded-lg cursor-pointer"

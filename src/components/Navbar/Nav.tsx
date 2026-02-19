@@ -17,13 +17,15 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
     toggleMobileNavbar,
   } = useNavbar();
 
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
 
-  const linksToShow = isAuthenticated
-    ? protectedLinks
-    : mobileNavbarOpen
-      ? publicLinksMobile
-      : publicLinks;
+  const linksToShow = isLoading
+    ? []
+    : isAuthenticated
+      ? protectedLinks
+      : mobileNavbarOpen
+        ? publicLinksMobile
+        : publicLinks;
 
   return (
     <div className="navbar-gradient">
@@ -58,7 +60,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
             )}
           </div>
 
-          <AuthButtons authenticated={isAuthenticated} />
+          <AuthButtons authenticated={isLoading ? null : isAuthenticated} />
         </div>
 
         {(mobileNavbarOpen || isClosing) && (

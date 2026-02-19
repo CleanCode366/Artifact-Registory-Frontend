@@ -8,14 +8,14 @@ type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   loginSuccess: (token: string) => void;
-  logout: () => void;
+  logout: () => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType>(null!);
 
 export const AuthProvider = (props: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const loginSuccess = (token: string) => {
     authStore.setToken(token);
@@ -37,9 +37,9 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
       console.log("Logout response:", res);
       if (res.status === 200) {
         console.log("Logout successful");
-        window.location.href = "/login";
         return true;
       }
+      return false;
     } catch (error) {
       console.error("Logout failed:", {
         message: (error as any)?.message,
@@ -65,7 +65,8 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
           console.log("useEffect in AuthContext: User is authenticated.");
         } else {
           console.warn("AuthContext.bootstrap: no token found in refresh response", res?.data);
-          logout();
+          authStore.clear();
+          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error("AuthContext.bootstrap: refresh failed:", {
@@ -73,7 +74,8 @@ export const AuthProvider = (props: { children: React.ReactNode }) => {
           response: (error as any)?.response?.data,
           status: (error as any)?.response?.status,
         });
-        logout();
+        authStore.clear();
+        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }
