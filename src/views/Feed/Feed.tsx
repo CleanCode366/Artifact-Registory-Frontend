@@ -121,15 +121,36 @@ const Feed = () => {
   };
 
   // Filter posts based on search term
-  const filteredPosts = visiblePosts.filter(post =>
-    post?.description?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post?.description?.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post?.description?.geolocation?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (Array.isArray(post?.script) &&
-      post.script.some(s =>
-        s?.toLowerCase().includes(searchTerm.toLowerCase())
-      ))
-  );
+  // const filteredPosts = visiblePosts.filter(post =>
+  //   post?.description?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   post?.description?.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   post?.description?.geolocation?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   (Array.isArray(post?.script) &&
+  //     post.script.some(s =>
+  //       s?.toLowerCase().includes(searchTerm.toLowerCase())
+  //     ))
+  // );
+  const normalizedSearch = searchTerm?.toLowerCase().trim();
+
+  const filteredPosts = visiblePosts.filter(post => {
+    if (!normalizedSearch) return true;
+
+    const searchableValues = [
+      post?.description?.title,
+      post?.description?.subject,
+      post?.description?.geolocation?.city,
+      ...(Array.isArray(post?.script) ? post.script : [])
+    ]
+      .filter(Boolean)
+      .map(value => value.toLowerCase());
+
+    if (searchableValues.length === 0) return true;
+
+    return searchableValues.some(value =>
+      value.includes(normalizedSearch)
+    );
+  });
+
 
   useEffect(() => {
     fetchPosts();
