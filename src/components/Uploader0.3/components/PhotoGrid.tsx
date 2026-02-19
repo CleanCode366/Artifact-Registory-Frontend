@@ -7,7 +7,7 @@ interface PhotoGridProps {
 }
 
 export const PhotoGrid = ({ photos, onReset }: PhotoGridProps) => (
-  <div className="space-y-4 w-full h-120 flex flex-col justify-between">
+  <div className="space-y-4 w-full h-120 flex flex-col justify-between border-2 border-dashed border-gray-600 rounded-lg p-4">
     <div className="grid grid-cols-2 gap-2">
       {photos? photos.map((photo, idx) => (
         <img
