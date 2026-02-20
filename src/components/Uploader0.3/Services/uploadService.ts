@@ -87,7 +87,7 @@ export const uploadInscription = async (
       const meaningfulMessage =
         backendError.error_message ||
         backendError.message ||
-        `Request failed with status ${error.response.status}`;
+        `Request failed with please try to logout and login again.`;
 
       throw new Error(meaningfulMessage);
     }
