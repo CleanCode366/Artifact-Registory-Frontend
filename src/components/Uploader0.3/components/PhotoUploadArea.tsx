@@ -14,7 +14,7 @@ export const PhotoUploadArea = ({
   onFileChange 
 }: PhotoUploadAreaProps) => (
   <div className="space-y-4">
-    <div className="w-full h-102 flex flex-col items-center justify-center border-2 border-dashed border-gray-600 rounded-lg">
+    <div className="w-full h-102 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 hover:border-black rounded-lg">
       <Camera size={48} className="text-orange-500 mb-4" />
       <p className="text-gray-400 text-center text-sm">
         Capture or upload photos with GPS coordinates

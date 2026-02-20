@@ -31,7 +31,7 @@ export const useFileUpload = (
         if (onStoneCheck) {
           const isStoneInscription = await onStoneCheck(imageDataUrl);
           if (!isStoneInscription) {
-            errorMessages.push(`${file.name} is not a stone inscription - discarded`);
+            errorMessages.push(`Uploaded file is not a stone inscription - discarded`);
             continue; // Skip this file and move to next
           }
         }
@@ -41,14 +41,16 @@ export const useFileUpload = (
         onFileUploadData(gpsResult.allExif, gpsResult.hasGPS);
 
         if (!gpsResult.hasGPS) {
-          errorMessages.push(`Warning: No GPS data found in image ${file.name}`);
+          // errorMessages.push(`Warning: No GPS data found in image ${file.name}`);
+          errorMessages.push(`Warning: No GPS data found in one or more uploaded files`);
         }
 
         newPhotos.push(imageDataUrl);
 
       } catch (error) {
         console.error('Error processing file:', error);
-        errorMessages.push(`Failed to process ${files[i].name}`);
+        // errorMessages.push(`Failed to process ${files[i].name}`);
+        errorMessages.push(`Failed to process one or more uploaded files`);
       }
     }
 

@@ -1,6 +1,7 @@
 import { Check, WandSparkles } from "lucide-react";
 import type { GeoInfo } from "../types/types";
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import CircularProgress from "@mui/material/CircularProgress";
 
 interface SuggestionControlsProps {
   isFetching: boolean;
@@ -52,7 +53,7 @@ const SuggestionControls: React.FC<SuggestionControlsProps> = ({
         Use current location
       </button> */}
 
-      {suggestion && suggestion!== "Failed to get suggestion." && (
+      {suggestion && suggestion!== "Failed to get suggestion." ? (
         <button
           onClick={handleUseSuggestion}
           className="flex items-center space-x-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
@@ -62,7 +63,7 @@ const SuggestionControls: React.FC<SuggestionControlsProps> = ({
             Use suggestion
           </span>
         </button>
-      )}
+      ): isFetching && <CircularProgress size={32}/>}
     </div>
   );
 };

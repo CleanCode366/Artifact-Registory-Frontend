@@ -26,6 +26,7 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
 }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [postedAnonymously, setPostedAnonymously] = useState<boolean>(!!formData.description.postedAnonymously);
+  const [showSuggestion, setShowSuggestion] = useState<boolean>(true);
 
   // keep local state in sync if parent updates formData
   useEffect(() => {
@@ -179,13 +180,13 @@ const InscriptionForm: React.FC<InscriptionFormProps> = ({
           onFetch={onFetchSuggestion}
           geoInfo={geoInfo}
           suggestion={suggestion}
-          onUseSuggestion={(text) => onChange("description.description", text)}
+          onUseSuggestion={(text) => { onChange("description.description", text); setShowSuggestion(false); }}
         />
 
         {
-          suggestion &&
+          suggestion && showSuggestion &&
           (
-            <div className="mt-3 p-3 border border-gray-700 rounded-md text-sm text-black">
+            <div className="mt-3 p-3 border border-gray-300 hover:border-black rounded-sm text-sm text-black">
               <div className="flex justify-between items-start">
                 <strong className="text-xs text-black">Suggested description</strong>
                 <button

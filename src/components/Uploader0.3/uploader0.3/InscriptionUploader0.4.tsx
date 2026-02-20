@@ -182,21 +182,28 @@ const EnhancedInscriptionUploader: React.FC = () => {
     "info" | "success" | "warning" | "error"
   >("info");
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
+  const [snackbarKey, setSnackbarKey] = useState(0);
+
+  const showSnackbar = (
+    severity: "info" | "success" | "warning" | "error",
+    message: string
+  ) => {
+    setSnackbarSeverity(severity);
+    setSnackbarMessage(message);
+    setSnackbarKey((prev) => prev + 1);
+    setSnackbarOpen(true);
+  };
 
   useEffect(() => {
     // If there is an explicit error, show it immediately (highest priority)
     if (error) {
-      setSnackbarSeverity("error");
-      setSnackbarMessage(error);
-      setSnackbarOpen(true);
+      showSnackbar("error", error);
       return;
     }
 
     // If currently checking (no error), show checking info
     if (isCheckingStone) {
-      setSnackbarSeverity("info");
-      setSnackbarMessage("Checking inscription type...");
-      setSnackbarOpen(true);
+      showSnackbar("info", "Checking inscription type...");
       return;
     }
 
@@ -204,12 +211,10 @@ const EnhancedInscriptionUploader: React.FC = () => {
     if (!isCheckingStone && stoneCheckResult) {
       const lower = stoneCheckResult.toLowerCase();
       if (lower.includes("suspicious") || lower.includes("not")) {
-        setSnackbarSeverity("warning");
+        showSnackbar("warning", `Detection Result: ${stoneCheckResult}`);
       } else {
-        setSnackbarSeverity("success");
+        showSnackbar("success", `Detection Result: ${stoneCheckResult}`);
       }
-      setSnackbarMessage(`Detection Result: ${stoneCheckResult}`);
-      setSnackbarOpen(true);
       return;
     }
 
@@ -222,6 +227,8 @@ const EnhancedInscriptionUploader: React.FC = () => {
       return;
     }
     setSnackbarOpen(false);
+    setError(null);
+    setStoneCheckResult(null);
   };
 
   return (
@@ -282,6 +289,7 @@ const EnhancedInscriptionUploader: React.FC = () => {
         </div>
       </div>
       <Snackbar
+        key={snackbarKey}
         open={snackbarOpen}
         onClose={handleSnackbarClose}
         autoHideDuration={3500}
