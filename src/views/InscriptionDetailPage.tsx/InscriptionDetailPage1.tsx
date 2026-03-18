@@ -783,27 +783,39 @@ const InscriptionDetailsPage: React.FC = () => {
                                         const isSelected = selectedImagesForDeletion.includes(imageUrl);
 
                                         return (
-                                            <button
+                                            <Tooltip
                                                 key={`${imageUrl}-${index}`}
-                                                type="button"
-                                                onClick={() => handleToggleImageSelection(imageUrl)}
-                                                disabled={isUpdatingPost}
-                                                className={`relative overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${isSelected
-                                                    ? "border-red-500 ring-2 ring-red-200"
-                                                    : "border-transparent hover:border-gray-300"
-                                                    }`}
+                                                placement="top"
+                                                arrow
+                                                title={
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={`Preview of post image ${index + 1}`}
+                                                        className="h-56 w-80 max-w-[70vw] rounded-md object-cover"
+                                                    />
+                                                }
                                             >
-                                                <img
-                                                    src={imageUrl}
-                                                    alt={`Post image ${index + 1}`}
-                                                    className="h-24 w-full object-cover"
-                                                />
-                                                {isSelected && (
-                                                    <span className="absolute top-1 right-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center">
-                                                        <Check className="h-3.5 w-3.5" />
-                                                    </span>
-                                                )}
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleToggleImageSelection(imageUrl)}
+                                                    disabled={isUpdatingPost}
+                                                    className={`relative overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${isSelected
+                                                        ? "border-red-500 ring-2 ring-red-200"
+                                                        : "border-transparent hover:border-gray-300"
+                                                        }`}
+                                                >
+                                                    <img
+                                                        src={imageUrl}
+                                                        alt={`Post image ${index + 1}`}
+                                                        className="h-24 w-full object-cover"
+                                                    />
+                                                    {isSelected && (
+                                                        <span className="absolute top-1 right-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center">
+                                                            <Check className="h-3.5 w-3.5" />
+                                                        </span>
+                                                    )}
+                                                </button>
+                                            </Tooltip>
                                         );
                                     })}
                                 </div>
