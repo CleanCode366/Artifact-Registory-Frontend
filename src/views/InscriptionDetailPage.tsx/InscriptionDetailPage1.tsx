@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ThumbsUp, MapPin, Calendar, Languages, BookOpen, Plus, MessageSquareWarning, Star, Trash, Edit } from 'lucide-react';
+import { ThumbsUp, MapPin, Calendar, Languages, BookOpen, Plus, MessageSquareWarning, Star, Trash, Edit, Check } from 'lucide-react';
 import CommentCard from './CommentCard';
 // import RatingModal from './RatingModal';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -137,6 +137,19 @@ const toStringArray = (value: unknown): string[] => {
     return [];
 };
 
+const extractImageIdFromUrl = (imageUrl: string): string => {
+    if (!imageUrl) return "";
+
+    try {
+        const parsedUrl = new URL(imageUrl);
+        const segments = parsedUrl.pathname.split("/").filter(Boolean);
+        return segments[segments.length - 1] ?? "";
+    } catch {
+        const segments = imageUrl.split("/").filter(Boolean);
+        return segments[segments.length - 1] ?? "";
+    }
+};
+
 const toVoteUserIds = (rawVote: unknown): string[] => {
     if (!Array.isArray(rawVote)) return [];
 
@@ -218,6 +231,9 @@ const InscriptionDetailsPage: React.FC = () => {
         type: "Stone",
         description: "",
     });
+    const [editablePostImages, setEditablePostImages] = useState<string[]>([]);
+    const [selectedImagesForDeletion, setSelectedImagesForDeletion] = useState<string[]>([]);
+    const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
 
     const handleOpen = () => setDisplay(true);
     const handleClose = () => setDisplay(false);
@@ -562,11 +578,58 @@ const InscriptionDetailsPage: React.FC = () => {
             type: normalizeInscriptionType(postToRender?.type),
             description: postToRender?.description?.description ?? "",
         });
+        setEditablePostImages(Array.isArray(postToRender?.images?.image) ? postToRender.images.image : []);
+        setSelectedImagesForDeletion([]);
+        setDeletedImageIds([]);
         setShowEditPostModal(true);
+    };
+
+    const handleCloseEditPostModal = () => {
+        setShowEditPostModal(false);
+        setEditablePostImages([]);
+        setSelectedImagesForDeletion([]);
+        setDeletedImageIds([]);
     };
 
     const handleEditPostFieldChange = (field: keyof EditPostFormState, value: string) => {
         setEditPostForm((previous) => ({ ...previous, [field]: value }));
+    };
+
+    const handleToggleImageSelection = (imageUrl: string) => {
+        setSelectedImagesForDeletion((previous) =>
+            previous.includes(imageUrl)
+                ? previous.filter((url) => url !== imageUrl)
+                : [...previous, imageUrl]
+        );
+    };
+
+    const handleDeleteSelectedImages = () => {
+        if (selectedImagesForDeletion.length === 0) return;
+
+        if (selectedImagesForDeletion.length >= editablePostImages.length) {
+            handlePostError("At least one image is required in a post.");
+            return;
+        }
+
+        const selectedImageIds = selectedImagesForDeletion
+            .map(extractImageIdFromUrl)
+            .filter(Boolean)
+            .filter((imageId, index, imageIds) => imageIds.indexOf(imageId) === index);
+
+        if (selectedImageIds.length === 0) {
+            handlePostError("Unable to identify the selected images for deletion.");
+            return;
+        }
+
+        const selectedImageIdSet = new Set(selectedImageIds);
+
+        setDeletedImageIds((previous) =>
+            [...previous, ...selectedImageIds].filter((imageId, index, imageIds) => imageIds.indexOf(imageId) === index)
+        );
+        setEditablePostImages((previous) =>
+            previous.filter((imageUrl) => !selectedImageIdSet.has(extractImageIdFromUrl(imageUrl)))
+        );
+        setSelectedImagesForDeletion([]);
     };
 
     const handleConfirmEditPost = async () => {
@@ -596,6 +659,11 @@ const InscriptionDetailsPage: React.FC = () => {
             return;
         }
 
+        if (editablePostImages.length < 1) {
+            handlePostError("At least one image is required in a post.");
+            return;
+        }
+
         setIsUpdatingPost(true);
         try {
             const postPayload = {
@@ -618,6 +686,9 @@ const InscriptionDetailsPage: React.FC = () => {
                 new Blob([JSON.stringify(postPayload)], { type: "application/json" })
             );
             form.append("postId", resolvedPostId);
+            deletedImageIds.forEach((imageId) => {
+                form.append("deletedImageIds", imageId);
+            });
 
             const response = await coreBackendClient.post("post/updatePost", form);
 
@@ -635,6 +706,11 @@ const InscriptionDetailsPage: React.FC = () => {
                     ...previous,
                     topic: trimmedTopic,
                     type: normalizedType,
+                    images: {
+                        ...previous.images,
+                        image: editablePostImages,
+                        thumbnailImage: editablePostImages.length > 0 ? [editablePostImages[0]] : previous.images.thumbnailImage,
+                    },
                     description: {
                         ...previous.description,
                         title: trimmedTitle,
@@ -642,7 +718,7 @@ const InscriptionDetailsPage: React.FC = () => {
                     },
                 };
             });
-            setShowEditPostModal(false);
+            handleCloseEditPostModal();
             handlePostSuccess("Post updated successfully.");
         } catch (error) {
             const message =
@@ -653,6 +729,8 @@ const InscriptionDetailsPage: React.FC = () => {
         }
     };
     // const commentsToRender = comments.length > 0 ? comments : dummyComments;
+    const canDeleteSelectedImages =
+        selectedImagesForDeletion.length > 0 && selectedImagesForDeletion.length < editablePostImages.length;
 
     return (
         <div className="min-h-screen bg-primary-background">
@@ -685,7 +763,7 @@ const InscriptionDetailsPage: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={() => setShowEditPostModal(false)}
+                        onClick={handleCloseEditPostModal}
 
                     >
                         <motion.div
@@ -697,16 +775,58 @@ const InscriptionDetailsPage: React.FC = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <h4 className="text-lg font-semibold text-gray-900 mb-4">Edit</h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    {postToRender.images.thumbnailImage && postToRender.images.thumbnailImage.length > 0 ? (
-                                        <img
-                                            src={postToRender.images.thumbnailImage[0]}
-                                            alt="Thumbnail"
-                                            className="w-full h-full object-cover rounded-lg"
-                                        />
-                                    ) : null}
+                            <div className="mb-4">
+                                <p className="text-sm font-medium text-gray-800">Post Images</p>
+                                <p className="text-xs text-gray-500">Select images first, then remove them.</p>
+                                <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-64 overflow-y-auto pr-1">
+                                    {editablePostImages.map((imageUrl, index) => {
+                                        const isSelected = selectedImagesForDeletion.includes(imageUrl);
+
+                                        return (
+                                            <button
+                                                key={`${imageUrl}-${index}`}
+                                                type="button"
+                                                onClick={() => handleToggleImageSelection(imageUrl)}
+                                                disabled={isUpdatingPost}
+                                                className={`relative overflow-hidden rounded-lg border-2 transition-all cursor-pointer ${isSelected
+                                                    ? "border-red-500 ring-2 ring-red-200"
+                                                    : "border-transparent hover:border-gray-300"
+                                                    }`}
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={`Post image ${index + 1}`}
+                                                    className="h-24 w-full object-cover"
+                                                />
+                                                {isSelected && (
+                                                    <span className="absolute top-1 right-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center">
+                                                        <Check className="h-3.5 w-3.5" />
+                                                    </span>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
+                                {selectedImagesForDeletion.length > 0 && (
+                                    <div className="mt-3">
+                                        <button
+                                            type="button"
+                                            onClick={handleDeleteSelectedImages}
+                                            disabled={isUpdatingPost || !canDeleteSelectedImages}
+                                            className="px-3 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-60 cursor-pointer"
+                                        >
+                                            Delete Selected ({selectedImagesForDeletion.length})
+                                        </button>
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            At least one image must remain in the post.
+                                        </p>
+                                    </div>
+                                )}
+                                <p className="mt-2 text-xs text-gray-500">
+                                    Click Save Changes to apply image deletions.
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <TextField
                                     label="Title"
                                     size="small"
@@ -749,7 +869,7 @@ const InscriptionDetailsPage: React.FC = () => {
                             </div>
                             <div className="mt-5 flex items-center justify-end gap-2">
                                 <button
-                                    onClick={() => setShowEditPostModal(false)}
+                                    onClick={handleCloseEditPostModal}
                                     disabled={isUpdatingPost}
                                     className="px-3 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 disabled:opacity-60 cursor-pointer"
                                 >

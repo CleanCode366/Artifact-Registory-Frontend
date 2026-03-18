@@ -45,6 +45,8 @@ interface GroupFormData {
   description: string;
   type: string;
   topic: string;
+  language: string[];
+  script: string[];
   postedAnonymously: boolean;
 }
 
@@ -61,8 +63,16 @@ const DEFAULT_GROUP_FORM_DATA: GroupFormData = {
   description: "",
   type: "Stone",
   topic: "",
+  language: [],
+  script: [],
   postedAnonymously: false,
 };
+
+const parseCommaSeparatedInput = (value: string) =>
+  value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 
 function SlideDownTransition(props: SlideProps) {
   return <Slide {...props} direction="down" />;
@@ -701,12 +711,13 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                 title: group.formData.title,
                 description: group.formData.description,
                 subject: group.formData.topic,
+                language: group.formData.language,
                 postedAnonymously: group.formData.postedAnonymously,
               },
               topic: group.formData.topic,
-              script: [],
+              script: group.formData.script,
               type: group.formData.type,
-              visiblity: true,
+              visiblity: !group.formData.postedAnonymously,
             }),
           ],
           { type: "application/json" }
@@ -983,6 +994,34 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                           value={group.formData.topic}
                           onChange={(event) =>
                             updateGroupFormData(group.id, "topic", event.target.value)
+                          }
+                          disabled={disableEdits}
+                          fullWidth
+                        />
+                        <TextField
+                          label="Language (comma separated)"
+                          size="small"
+                          value={group.formData.language.join(", ")}
+                          onChange={(event) =>
+                            updateGroupFormData(
+                              group.id,
+                              "language",
+                              parseCommaSeparatedInput(event.target.value)
+                            )
+                          }
+                          disabled={disableEdits}
+                          fullWidth
+                        />
+                        <TextField
+                          label="Script (comma separated)"
+                          size="small"
+                          value={group.formData.script.join(", ")}
+                          onChange={(event) =>
+                            updateGroupFormData(
+                              group.id,
+                              "script",
+                              parseCommaSeparatedInput(event.target.value)
+                            )
                           }
                           disabled={disableEdits}
                           fullWidth
