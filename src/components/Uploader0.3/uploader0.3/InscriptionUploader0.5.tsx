@@ -29,6 +29,7 @@ import type { GeoInfo } from "../types/types";
 import { getEnvConfig } from "../config/env";
 import getCurrentLocation from "../utils/Camera/getCurrentLocation";
 import verifyGPSInImage from "../utils/GPS/verifyGPSInImage";
+import { suggestionApiClient } from "@/utils/http/clients/suggestionApi.client";
 
 const isOnline = false; // true => validate with AI, false => skip AI validation only
 const MAX_IMAGES = 16;
@@ -446,12 +447,12 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
         normalizedLatitude
       )}&lon=${encodeURIComponent(normalizedLongitude)}`;
 
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Service returned ${response.status}`);
+      const response = await suggestionApiClient.post("", { body: { lat: normalizedLatitude, lon: normalizedLongitude } });
+      if (!response) {
+        throw new Error(`Service returned ${response}`);
       }
 
-      const outer = await response.json();
+      const outer = await response.data;
       let text = "";
 
       if (outer?.text) {
