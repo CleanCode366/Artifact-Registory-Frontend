@@ -420,62 +420,54 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
   };
 
   const fetchGroupSuggestion = async (groupId: string, lat?: string, lon?: string) => {
-    setGroupSuggestions((previous) => ({ ...previous, [groupId]: null }));
-    setGroupSuggestionVisibility((previous) => ({ ...previous, [groupId]: true }));
-    setGroupSuggestionLoading((previous) => ({ ...previous, [groupId]: true }));
+  setGroupSuggestions((previous) => ({ ...previous, [groupId]: null }));
+  setGroupSuggestionVisibility((previous) => ({ ...previous, [groupId]: true }));
+  setGroupSuggestionLoading((previous) => ({ ...previous, [groupId]: true }));
 
-    try {
-      let latitude = lat || geoInfo?.latitude;
-      let longitude = lon || geoInfo?.longitude;
-      let normalizedLatitude = normalizeCoordinate(latitude);
-      let normalizedLongitude = normalizeCoordinate(longitude);
+  try {
+    let latitude = lat || geoInfo?.latitude;
+    let longitude = lon || geoInfo?.longitude;
+    let normalizedLatitude = normalizeCoordinate(latitude);
+    let normalizedLongitude = normalizeCoordinate(longitude);
 
-      if (!normalizedLatitude || !normalizedLongitude) {
-        const location = await getCurrentLocation();
-        latitude = location.latitude;
-        longitude = location.longitude;
-        normalizedLatitude = normalizeCoordinate(latitude);
-        normalizedLongitude = normalizeCoordinate(longitude);
-      }
-
-      if (!normalizedLatitude || !normalizedLongitude) {
-        throw new Error("No coordinates available");
-      }
-
-      const { webhookUrl } = getEnvConfig();
-      const url = `${webhookUrl}?lat=${encodeURIComponent(
-        normalizedLatitude
-      )}&lon=${encodeURIComponent(normalizedLongitude)}`;
-
-      const response = await suggestionApiClient.post("", { body: { lat: normalizedLatitude, lon: normalizedLongitude } });
-      if (!response) {
-        throw new Error(`Service returned ${response}`);
-      }
-
-      const outer = await response.data;
-      let text = "";
-
-      if (outer?.text) {
-        const inner = JSON.parse(outer.text);
-        text = inner?.description || "";
-      } else {
-        text = outer?.description || outer?.suggestion || "";
-      }
-
-      if (!text) {
-        throw new Error("No suggestion returned");
-      }
-
-      setGroupSuggestions((previous) => ({ ...previous, [groupId]: text }));
-    } catch {
-      setGroupSuggestions((previous) => ({
-        ...previous,
-        [groupId]: "Failed to get suggestion.",
-      }));
-    } finally {
-      setGroupSuggestionLoading((previous) => ({ ...previous, [groupId]: false }));
+    if (!normalizedLatitude || !normalizedLongitude) {
+      const location = await getCurrentLocation();
+      normalizedLatitude = normalizeCoordinate(location.latitude);
+      normalizedLongitude = normalizeCoordinate(location.longitude);
     }
-  };
+
+    if (!normalizedLatitude || !normalizedLongitude) {
+      throw new Error("No coordinates available");
+    }
+
+    // Flat POST body — no wrapping, numbers not strings
+    const response = await suggestionApiClient.post("", {
+      lat: Number(normalizedLatitude),
+      lon: Number(normalizedLongitude),
+    });
+
+    const outer = response.data;
+    let text = "";
+
+    if (outer?.text) {
+      // text is already a plain string — no JSON.parse needed
+      text = outer.text;
+    } else {
+      text = outer?.description || outer?.suggestion || "";
+    }
+
+    if (!text) throw new Error("No suggestion returned");
+
+    setGroupSuggestions((previous) => ({ ...previous, [groupId]: text }));
+  } catch {
+    setGroupSuggestions((previous) => ({
+      ...previous,
+      [groupId]: "Failed to get suggestion.",
+    }));
+  } finally {
+    setGroupSuggestionLoading((previous) => ({ ...previous, [groupId]: false }));
+  }
+};
 
   const checkStone = async (imageDataUrl: string): Promise<boolean> => {
     if (!isOnline) {
