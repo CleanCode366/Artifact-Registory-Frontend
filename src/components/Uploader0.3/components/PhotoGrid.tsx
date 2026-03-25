@@ -15,16 +15,16 @@ export const PhotoGrid = ({
   onRemovePhoto,
   onRotatePhoto,
 }: PhotoGridProps) => (
-  <div className="space-y-4 w-full h-120 flex flex-col justify-between">
-    <div className="grid grid-cols-2 gap-2 h-120 border-2 border-dashed border-gray-600 rounded-lg p-4 overflow-y-auto">
-      {photos ? (
+  <div className="w-full flex flex-col gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-2 border-dashed border-gray-600 rounded-lg p-4 min-h-[180px] max-h-[520px] overflow-y-auto overscroll-contain">
+      {photos.length > 0 ? (
         photos.map((photo, idx) => (
-          <div key={idx} className="relative group">
+          <div key={idx} className="relative group h-32">
             <Tooltip
               placement="top"
               arrow
               title={
-                <div className="p-1">
+                <div className="p-1 max-w-[calc(100vw-3rem)] overflow-hidden rounded-md">
                   <img
                     src={photo}
                     alt={`Preview ${idx + 1}`}
@@ -36,7 +36,7 @@ export const PhotoGrid = ({
               <img
                 src={photo}
                 alt={`Captured inscription ${idx + 1}`}
-                className="w-full h-32 object-contain border border-gray-300 rounded-lg"
+                className="w-full h-full object-contain border border-gray-300 rounded-lg"
               />
             </Tooltip>
 
@@ -63,7 +63,9 @@ export const PhotoGrid = ({
           </div>
         ))
       ) : (
-        <CircularProgess size={40} />
+        <div className="col-span-full flex items-center justify-center py-8">
+          <CircularProgess size={40} />
+        </div>
       )}
     </div>
 

@@ -6,6 +6,7 @@ import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
 import AuthContext from "@/context/AuthContext";
 
 const DEFAULT_BIO = "Archaeology enthusiast & digital volunteer";
+type ProfileModerationField = "name" | "bio";
 
 interface EditProfileModalProps {
     userName: string;
@@ -25,6 +26,122 @@ interface EditProfileModalProps {
  * @param payload - The profile fields to update
  * @returns Promise with the response from backend
  */
+const extractApiPayload = (body: unknown): any => {
+    if (body && typeof body === "object" && "data" in body) {
+        return (body as { data: unknown }).data;
+    }
+    return body;
+};
+
+const resolveApiOk = (body: any, payload: any): boolean => {
+    if (typeof body?.ok === "boolean") return body.ok;
+    if (typeof payload?.ok === "boolean") return payload.ok;
+    if (body?.data === false || payload?.data === false) return false;
+    return true;
+};
+
+const resolveApiMessage = (body: any, payload: any, fallback: string): string => {
+    if (typeof body?.message === "string" && body.message.trim()) return body.message;
+    if (typeof payload?.message === "string" && payload.message.trim()) return payload.message;
+    if (typeof body?.error_message === "string" && body.error_message.trim()) return body.error_message;
+    if (typeof payload?.error_message === "string" && payload.error_message.trim()) return payload.error_message;
+    return fallback;
+};
+
+const extractErrorMessageFromPayload = (payload: unknown): string | null => {
+    if (!payload || typeof payload !== "object") return null;
+
+    const payloadRecord = payload as Record<string, unknown>;
+    const directCandidates = [
+        payloadRecord.error_message,
+        payloadRecord.message,
+        payloadRecord.error,
+    ];
+
+    for (const candidate of directCandidates) {
+        if (typeof candidate === "string" && candidate.trim()) {
+            return candidate.trim();
+        }
+    }
+
+    if (payloadRecord.data) {
+        return extractErrorMessageFromPayload(payloadRecord.data);
+    }
+
+    return null;
+};
+
+const resolveRequestErrorMessage = (error: unknown, fallback: string): string => {
+    if (error && typeof error === "object") {
+        const errorRecord = error as Record<string, unknown>;
+        const response = errorRecord.response as Record<string, unknown> | undefined;
+        const responseMessage = extractErrorMessageFromPayload(response?.data);
+        if (responseMessage) {
+            return responseMessage;
+        }
+
+        const directMessage = errorRecord.message;
+        if (typeof directMessage === "string" && directMessage.trim()) {
+            return directMessage.trim();
+        }
+    }
+
+    if (error instanceof Error && error.message.trim()) {
+        return error.message.trim();
+    }
+
+    return fallback;
+};
+
+const extractModerationReason = (message: string): string | null => {
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) return null;
+
+    const normalizedMessage = trimmedMessage.toLowerCase();
+    const moderationSignals = [
+        "moderation",
+        "inappropriate",
+        "profan",
+        "bad word",
+        "blocked word",
+        "forbidden word",
+        "offensive language",
+        "abusive language",
+        "policy violation",
+        "banned word",
+    ];
+
+    if (!moderationSignals.some((signal) => normalizedMessage.includes(signal))) {
+        return null;
+    }
+
+    const reasonMatch = trimmedMessage.match(/(?:reason|details?)\s*[:\-]\s*(.+)$/i);
+    if (reasonMatch?.[1]?.trim()) {
+        return reasonMatch[1].trim();
+    }
+
+    const firstColonIndex = trimmedMessage.indexOf(":");
+    if (firstColonIndex >= 0 && firstColonIndex < trimmedMessage.length - 1) {
+        const reason = trimmedMessage.slice(firstColonIndex + 1).trim();
+        return reason || "Contains inappropriate language.";
+    }
+
+    return trimmedMessage || "Contains inappropriate language.";
+};
+
+const inferProfileModerationField = (reason: string): ProfileModerationField => {
+    const normalizedReason = reason.toLowerCase();
+
+    if (
+        normalizedReason.includes("bio") ||
+        normalizedReason.includes("about")
+    ) {
+        return "bio";
+    }
+
+    return "name";
+};
+
 const updateProfile = async (payload: { username?: string; bio?: string }): Promise<any> => {
     try {
         const response = await coreBackendClient.post("user/updateProfile", payload);
@@ -37,6 +154,12 @@ const updateProfile = async (payload: { username?: string; bio?: string }): Prom
         });
 
         const respBody = response?.data;
+        const extractedPayload = extractApiPayload(respBody);
+        const ok = resolveApiOk(respBody, extractedPayload);
+
+        if (!ok) {
+            throw new Error(resolveApiMessage(respBody, extractedPayload, "Failed to update profile."));
+        }
 
         if (typeof respBody === "object" && respBody !== null) {
             console.log("API returned object body:", respBody);
@@ -254,8 +377,20 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             onClose();
         } catch (error) {
             console.error("Edit profile failed:", error);
-            const errorMessage = error instanceof Error ? error.message : 'Failed to update profile';
-            onEditError(errorMessage);
+            const errorMessage = resolveRequestErrorMessage(error, "Failed to update profile");
+            const moderationReason = extractModerationReason(errorMessage);
+
+            if (moderationReason) {
+                const moderatedField = inferProfileModerationField(moderationReason);
+                if (moderatedField === "bio") {
+                    setBioErrorMsg(moderationReason);
+                } else {
+                    setErrorMsg(moderationReason);
+                }
+                onEditError("Please remove inappropriate language from the highlighted field.");
+            } else {
+                onEditError(errorMessage);
+            }
         } finally {
             setIsSaving(false);
         }

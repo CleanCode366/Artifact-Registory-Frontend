@@ -13,8 +13,9 @@ import {
   Tooltip,
   type SlideProps,
 } from "@mui/material";
-import { ArrowRight, RefreshCcw, RotateCw, Trash2, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowRight, Plus, RefreshCcw, RotateCw, Trash2, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useBlocker, useNavigate } from "react-router-dom";
 
 import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
 import { detectAIClient } from "@/utils/http/clients/detectAIClient";
@@ -31,8 +32,8 @@ import getCurrentLocation from "../utils/Camera/getCurrentLocation";
 import verifyGPSInImage from "../utils/GPS/verifyGPSInImage";
 import { suggestionApiClient } from "@/utils/http/clients/suggestionApi.client";
 
-const isOnline = false; // true => validate with AI, false => skip AI validation only
-const MAX_IMAGES = 16;
+const isOnline = true; // true => validate with AI, false => skip AI validation only
+const MAX_IMAGES = 20;
 
 interface ImageItem {
   id: string;
@@ -249,10 +250,10 @@ const extractModerationReason = (message: string): string | null => {
   const firstColonIndex = trimmedMessage.indexOf(":");
   if (firstColonIndex >= 0 && firstColonIndex < trimmedMessage.length - 1) {
     const reason = trimmedMessage.slice(firstColonIndex + 1).trim();
-    return reason || "Contains inappropriate language.";
+    return "Invalid input: " + reason || "Invalid input: Contains inappropriate language.";
   }
 
-  return "Contains inappropriate language.";
+  return "Invalid input: Contains inappropriate language.";
 };
 
 const inferRejectedFieldFromReason = (reason: string): ModerationFieldName => {
@@ -329,6 +330,10 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
     ungroupedImages.length +
     groups.reduce((accumulator, group) => accumulator + group.images.length, 0);
   const isAnyGroupSubmitting = groups.some((group) => group.status === "submitting");
+  const hasPendingUploaderData =
+    ungroupedImages.length > 0 ||
+    groups.some((group) => group.images.length > 0 && group.status !== "submitted");
+  const blocker = useBlocker(hasPendingUploaderData);
 
   const showSnackbar = (
     severity: "info" | "success" | "warning" | "error",
@@ -363,7 +368,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
 
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (ungroupedImages.length > 0 || groups.length > 0) {
+      if (hasPendingUploaderData) {
         event.preventDefault();
         event.returnValue = "";
       }
@@ -371,7 +376,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [ungroupedImages.length, groups.length]);
+  }, [hasPendingUploaderData]);
 
   useEffect(() => {
     const groupsWithImages = groups.filter((group) => group.images.length > 0);
@@ -904,6 +909,16 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
   const selectedUngroupedCount = ungroupedImages.filter((image) =>
     selectedImageIds.includes(image.id)
   ).length;
+  const handleStayOnPage = () => {
+    if (blocker.state === "blocked") {
+      blocker.reset();
+    }
+  };
+  const handleLeavePage = () => {
+    if (blocker.state === "blocked") {
+      blocker.proceed();
+    }
+  };
 
   return (
     <div className="text-white p-4 max-w-7xl mx-auto">
@@ -923,14 +938,14 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
               />
             ) : ungroupedImages.length > 0 ? (
               <div className="space-y-4 w-full">
-                <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-3 md:grid-rows-3 gap-2 h-120 border-2 border-dashed border-gray-600 rounded-lg p-4 overflow-y-auto">
+                <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[8rem] gap-3 border-2 border-dashed border-gray-600 rounded-lg p-4 min-h-[380px] max-h-[520px] overflow-y-auto overscroll-contain">
                   {ungroupedImages.map((image, index) => (
-                    <div key={image.id} className="w-64 relative group h-32">
+                    <div key={image.id} className="relative group h-32 w-full">
                       <Tooltip
                         placement="top"
                         arrow
                         title={
-                          <div className="p-1">
+                          <div className="p-1 max-w-[calc(100vw-3rem)] overflow-hidden rounded-md">
                             <img
                               src={image.preview}
                               alt={`Preview ${index + 1}`}
@@ -942,7 +957,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                         <img
                           src={image.preview}
                           alt={`Uploaded inscription ${index + 1}`}
-                          className="w-64 h-32 object-contain border border-gray-300 rounded-lg"
+                          className="w-full h-full object-cover border border-gray-300 rounded-lg"
                         />
                       </Tooltip>
 
@@ -975,7 +990,24 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                   for upload
                 </span>
 
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
                 <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 cursor-pointer px-6 py-4 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition flex items-center justify-center gap-2"
+                  >
+                    <Plus size={18} />
+                    Upload More Photos
+                  </button>
                   <button
                     type="button"
                     onClick={resetUploaderFlow}
@@ -1005,17 +1037,17 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className="w-full space-y-6">
-            <section className="bg-white border border-gray-300 rounded-lg p-4">
+          <div className="w-full flex flex-col md:flex-row gap-6 h-full">
+            <section className="flex-1 bg-white border border-gray-300 rounded-lg p-4 overflow-hidden flex flex-col min-h-[400px] md:min-h-[622px] md:max-h-[622px]">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                 <h3 className="text-black font-semibold">Ungrouped Images: {ungroupedImages.length}</h3>
                 <span className="text-sm text-gray-600">Total Images: {totalImages} / 20</span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-2 border-dashed border-gray-300 rounded-lg p-3 min-h-[120px]">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 border-2 border-dashed border-gray-300 rounded-lg p-3 min-h-[380px] max-h-[493px] overflow-y-auto overscroll-contain ">
                 {ungroupedImages.length > 0 ? (
                   ungroupedImages.map((image, index) => (
-                    <label key={image.id} className="relative block cursor-pointer">
+                    <label key={image.id} className="relative block cursor-pointer h-28">
                       <input
                         type="checkbox"
                         checked={selectedImageIds.includes(image.id)}
@@ -1039,7 +1071,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                         <img
                           src={image.preview}
                           alt={`Ungrouped ${index + 1}`}
-                          className="w-full h-28 object-cover rounded-md"
+                          className="w-full h-full object-cover rounded-md"
                         />
                       </Tooltip>
                     </label>
@@ -1072,7 +1104,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
 
             </section>
 
-            <section className="space-y-4">
+            <section className="flex-1 space-y-4 min-h-[400px] md:min-h-[622px] overflow-y-auto">
               {groups.length === 0 ? (
                 <div className="bg-white border border-gray-300 rounded-lg p-4 text-gray-500 text-sm">
                   No groups created yet
@@ -1098,10 +1130,10 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-2 border-dashed border-gray-300 rounded-lg p-3 min-h-[120px]">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-2 border-dashed border-gray-300 rounded-lg p-3 min-h-[120px] max-h-[420px] overflow-y-auto overscroll-contain">
                         {group.images.length > 0 ? (
                           group.images.map((image, index) => (
-                            <label key={image.id} className="relative block cursor-pointer">
+                            <label key={image.id} className="relative block cursor-pointer h-28">
                               <input
                                 type="checkbox"
                                 checked={selectedImageIds.includes(image.id)}
@@ -1125,7 +1157,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                                 <img
                                   src={image.preview}
                                   alt={`${group.name} image ${index + 1}`}
-                                  className="w-full h-28 object-cover rounded-md"
+                                  className="w-full h-full object-cover rounded-md"
                                 />
                               </Tooltip>
                             </label>
@@ -1212,9 +1244,24 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                           <MenuItem value="Metal">Metal</MenuItem>
                           <MenuItem value="Clay">Clay</MenuItem>
                         </TextField>
+                        <TextField
+                          select
+                          label="Post anonymously"
+                          size="small"
+                          value={group.formData.postedAnonymously ? "true" : "false"}
+                          onChange={(event) =>
+                            updateGroupFormData(group.id, "postedAnonymously", event.target.value === "true")
+                          }
+                          disabled={disableEdits}
+                          fullWidth
+                        >
+                          <MenuItem value="true">Yes</MenuItem>
+                          <MenuItem value="false">No</MenuItem>
+                        </TextField>
+                        {/* COMMENTED OUT - Radio button version (replaced with dropdown)
                         <div className=" flex items-center space-x-5 text-black">
                           <FormLabel id={`${group.id}-post-anonymously-label`}>
-                            Post anonymously:
+                            <nobr>Post:</nobr>
                           </FormLabel>
                           <RadioGroup
                             aria-labelledby={`${group.id}-post-anonymously-label`}
@@ -1240,6 +1287,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
                             />
                           </RadioGroup>
                         </div>
+                        */}
                       </div>
 
                       {!disableEdits && (
@@ -1338,6 +1386,46 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
             </section>
           </div>
         )}
+
+        <AnimatePresence>
+          {blocker.state === "blocked" && (
+            <motion.div
+              className="fixed w-screen h-screen z-999 flex items-center justify-center top-0 left-0 bg-black/60 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleStayOnPage}
+            >
+              <motion.div
+                className="bg-white p-6 rounded-lg shadow-xl flex flex-col gap-5 items-center w-96"
+                initial={{ scale: 0.9, opacity: 0, y: 30 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 30 }}
+                transition={{ duration: 0.25 }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <h2 className="text-lg font-bold text-black">Leave this page?</h2>
+                <p className="text-sm text-gray-600 text-center">
+                  You have uploaded images that are not submitted yet. Leaving now will discard your progress.
+                </p>
+                <div className="w-full flex justify-between gap-3">
+                  <button
+                    onClick={handleStayOnPage}
+                    className="flex-1 cursor-pointer bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded font-medium transition-colors"
+                  >
+                    Stay
+                  </button>
+                  <button
+                    onClick={handleLeavePage}
+                    className="flex-1 cursor-pointer bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded font-medium transition-colors"
+                  >
+                    Leave
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <Snackbar

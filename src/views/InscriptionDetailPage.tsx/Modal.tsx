@@ -61,34 +61,114 @@ const resolveRequestErrorMessage = (error: unknown, fallback: string): string =>
     return fallback;
 };
 
+const extractApiPayload = (body: unknown): any => {
+    if (body && typeof body === "object" && "data" in body) {
+        return (body as { data: unknown }).data;
+    }
+    return body;
+};
+
+const resolveApiOk = (body: any, payload: any): boolean => {
+    if (typeof body?.ok === "boolean") return body.ok;
+    if (typeof payload?.ok === "boolean") return payload.ok;
+    if (body?.data === false || payload?.data === false) return false;
+    return true;
+};
+
+const resolveApiMessage = (body: any, payload: any, fallback: string): string => {
+    if (typeof body?.message === "string" && body.message.trim()) return body.message;
+    if (typeof payload?.message === "string" && payload.message.trim()) return payload.message;
+    if (typeof body?.error_message === "string" && body.error_message.trim()) return body.error_message;
+    if (typeof payload?.error_message === "string" && payload.error_message.trim()) return payload.error_message;
+    return fallback;
+};
+
 const extractModerationReason = (message: string): string | null => {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return null;
 
-    const moderationPrefix = "content failed moderation and was not saved";
-    if (!trimmedMessage.toLowerCase().includes(moderationPrefix)) {
+    const normalizedMessage = trimmedMessage.toLowerCase();
+    const moderationSignals = [
+        "moderation",
+        "inappropriate",
+        "profan",
+        "bad word",
+        "blocked word",
+        "forbidden word",
+        "offensive language",
+        "abusive language",
+        "policy violation",
+        "banned word",
+    ];
+
+    if (!moderationSignals.some((signal) => normalizedMessage.includes(signal))) {
         return null;
+    }
+
+    const reasonMatch = trimmedMessage.match(/(?:reason|details?)\s*[:\-]\s*(.+)$/i);
+    if (reasonMatch?.[1]?.trim()) {
+        return reasonMatch[1].trim();
     }
 
     const firstColonIndex = trimmedMessage.indexOf(":");
     if (firstColonIndex >= 0 && firstColonIndex < trimmedMessage.length - 1) {
         const reason = trimmedMessage.slice(firstColonIndex + 1).trim();
-        return reason || "Contains inappropriate language.";
+        return "Invalid input: " + reason || "Invalid input: Contains inappropriate language.";
     }
 
-    return "Contains inappropriate language.";
+    return "Invalid input: Contains inappropriate language.";
 };
 
-const buildDescriptionModerationMessage = (
-    status: "ACCEPTED" | "REJECTED",
-    reason?: string
-): string => {
-    if (status === "ACCEPTED") {
-        return "description: ACCEPTED";
+const looksLikeCommentRecord = (value: unknown): value is Record<string, unknown> => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    const record = value as Record<string, unknown>;
+    return Boolean(
+        record._id ??
+        record.id ??
+        record.description ??
+        record.discription ??
+        record.comment ??
+        record.postId ??
+        record.post_id
+    );
+};
+
+const findCreatedCommentInResponse = (value: unknown): Record<string, unknown> | null => {
+    if (!value) return null;
+
+    if (Array.isArray(value)) {
+        for (const entry of value) {
+            const nested = findCreatedCommentInResponse(entry);
+            if (nested) return nested;
+        }
+        return null;
     }
 
-    const normalizedReason = reason?.trim() || "Contains inappropriate language.";
-    return `description: REJECTED - ${normalizedReason}`;
+    if (typeof value !== "object") {
+        return null;
+    }
+
+    if (looksLikeCommentRecord(value)) {
+        return value as Record<string, unknown>;
+    }
+
+    const record = value as Record<string, unknown>;
+    const candidates = [
+        record.data,
+        record.comment,
+        record.description,
+        record.discription,
+        record.result,
+        record.createdComment,
+        record.payload,
+    ];
+
+    for (const candidate of candidates) {
+        const nested = findCreatedCommentInResponse(candidate);
+        if (nested) return nested;
+    }
+
+    return null;
 };
 
 const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAdded, onPostSuccess, onPostError }) => {
@@ -115,16 +195,15 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
         const trimmed = (inputValue || "").trim();
         if (!trimmed) {
             setErrorMsg("Description cannot be empty.");
-            onPostError?.("Description cannot be empty.");
             return;
         }
         if (trimmed.length > 200) {
             setErrorMsg("Maximum 200 characters allowed.");
-            onPostError?.("Maximum 200 characters allowed.");
             return;
         }
 
         try {
+            setErrorMsg("");
             setIsSubmitting(true);
             const urlencoded = new URLSearchParams();
             urlencoded.append("postId", postId);
@@ -133,13 +212,14 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
             urlencoded.append("discription", trimmed);
             const response = await coreBackendClient.post(`post/addPoastDiscription`, urlencoded);
             const respBody = response?.data;
-            if (typeof respBody === 'object' && respBody !== null && 'ok' in respBody) {
-                if (!respBody.ok) {
-                    throw new Error(resolveRequestErrorMessage({ response: { data: respBody } }, "Failed to post description."));
-                }
+            const payload = extractApiPayload(respBody);
+            const ok = resolveApiOk(respBody, payload);
+            if (!ok) {
+                throw new Error(resolveApiMessage(respBody, payload, "Failed to post description."));
             }
 
-            onDescriptionAdded?.(trimmed);
+            const createdComment = findCreatedCommentInResponse(respBody);
+            onDescriptionAdded?.(createdComment ?? trimmed);
             onPostSuccess?.("Comment posted successfully.");
             setInputValue("");
             setErrorMsg("");
@@ -148,7 +228,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
             const message = resolveRequestErrorMessage(error, "Failed to post description.");
             const moderationReason = extractModerationReason(message);
             if (moderationReason) {
-                onPostError?.(buildDescriptionModerationMessage("REJECTED", moderationReason));
+                setErrorMsg(moderationReason);
             } else {
                 onPostError?.(message);
             }

@@ -11,7 +11,7 @@ const DesktopHeader = () => (
         <p className="text-sm text-primary-text">Bangalore</p>
       </div>
     </NavLink>
-    <img src={meityLogo} className="h-18" />
+    <img src={meityLogo} className="h-14" />
   </div>
 );
 

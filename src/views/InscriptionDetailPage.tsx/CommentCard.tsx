@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  TextField,
   Tooltip,
 } from "@mui/material";
 import { coreBackendClient } from "@/utils/http/clients/coreBackend.client";
@@ -24,6 +25,7 @@ interface CommentCardProps {
   onCommentDeleted?: (commentId: string) => void;
   onActionSuccess?: (message: string) => void;
   onActionError?: (message: string) => void;
+  onEditDraftChange?: (commentId: string, hasUnsavedDraft: boolean) => void;
 }
 
 const toComparableId = (rawId: unknown): string => {
@@ -77,6 +79,12 @@ const resolveApiOk = (body: any, payload: any): boolean => {
 const resolveApiMessage = (body: any, payload: any, fallback: string): string => {
   if (typeof body?.message === "string" && body.message.trim()) return body.message;
   if (typeof payload?.message === "string" && payload.message.trim()) return payload.message;
+  if (typeof body?.error_message === "string" && body.error_message.trim()) {
+    return body.error_message;
+  }
+  if (typeof payload?.error_message === "string" && payload.error_message.trim()) {
+    return payload.error_message;
+  }
   return fallback;
 };
 
@@ -129,23 +137,36 @@ const extractModerationReason = (message: string): string | null => {
   const trimmedMessage = message.trim();
   if (!trimmedMessage) return null;
 
-  const moderationPrefix = "content failed moderation and was not saved";
-  if (!trimmedMessage.toLowerCase().includes(moderationPrefix)) {
+  const normalizedMessage = trimmedMessage.toLowerCase();
+  const moderationSignals = [
+    "moderation",
+    "inappropriate",
+    "profan",
+    "bad word",
+    "blocked word",
+    "forbidden word",
+    "offensive language",
+    "abusive language",
+    "policy violation",
+    "banned word",
+  ];
+
+  if (!moderationSignals.some((signal) => normalizedMessage.includes(signal))) {
     return null;
+  }
+
+  const reasonMatch = trimmedMessage.match(/(?:reason|details?)\s*[:\-]\s*(.+)$/i);
+  if (reasonMatch?.[1]?.trim()) {
+    return reasonMatch[1].trim();
   }
 
   const firstColonIndex = trimmedMessage.indexOf(":");
   if (firstColonIndex >= 0 && firstColonIndex < trimmedMessage.length - 1) {
     const reason = trimmedMessage.slice(firstColonIndex + 1).trim();
-    return reason || "Contains inappropriate language.";
+    return "Invalid input: " + reason || "Invalid input: Contains inappropriate language.";
   }
 
-  return "Contains inappropriate language.";
-};
-
-const buildDescriptionModerationMessage = (reason: string): string => {
-  const normalizedReason = reason.trim() || "Contains inappropriate language.";
-  return `description: REJECTED - ${normalizedReason}`;
+  return "Invalid input: Contains inappropriate language.";
 };
 
 const REPORT_REASONS = [
@@ -165,12 +186,14 @@ const CommentCard: React.FC<CommentCardProps> = ({
   onCommentDeleted,
   onActionSuccess,
   onActionError,
+  onEditDraftChange,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState<number>(comments.upvote ?? 0);
   const [isLiking, setIsLiking] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(comments.description ?? "");
+  const [editErrorMsg, setEditErrorMsg] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -183,6 +206,10 @@ const CommentCard: React.FC<CommentCardProps> = ({
   const isAuthor = useMemo(
     () => Boolean(currentUserId && commentUserId && currentUserId === commentUserId),
     [currentUserId, commentUserId]
+  );
+  const hasUnsavedEditDraft = useMemo(
+    () => isEditing && (editValue ?? "").trim() !== (comments.description ?? "").trim(),
+    [comments.description, editValue, isEditing]
   );
 
   // Initialize isLiked based on userVote (guard against undefined)
@@ -200,8 +227,27 @@ const CommentCard: React.FC<CommentCardProps> = ({
   useEffect(() => {
     if (!isEditing) {
       setEditValue(comments.description ?? "");
+      setEditErrorMsg("");
     }
   }, [comments.description, isEditing]);
+
+  useEffect(() => {
+    if (!onEditDraftChange) return;
+    const draftTrackingId = commentId || String(comments.id ?? comments._id ?? "");
+    if (!draftTrackingId) return;
+
+    onEditDraftChange(draftTrackingId, hasUnsavedEditDraft);
+  }, [commentId, comments.id, comments._id, hasUnsavedEditDraft, onEditDraftChange]);
+
+  useEffect(() => {
+    if (!onEditDraftChange) return;
+    const draftTrackingId = commentId || String(comments.id ?? comments._id ?? "");
+    if (!draftTrackingId) return;
+
+    return () => {
+      onEditDraftChange(draftTrackingId, false);
+    };
+  }, [commentId, comments.id, comments._id, onEditDraftChange]);
 
   // Like/Dislike API
   const likeDislikeAPI = async () => {
@@ -297,13 +343,22 @@ const CommentCard: React.FC<CommentCardProps> = ({
   const handleStartEdit = () => {
     if (!isAuthor || isDeleting || isUpdating) return;
     setEditValue(comments.description ?? "");
+    setEditErrorMsg("");
     setIsEditing(true);
   };
 
   const handleCancelEdit = () => {
     if (isUpdating) return;
     setEditValue(comments.description ?? "");
+    setEditErrorMsg("");
     setIsEditing(false);
+  };
+
+  const handleEditValueChange = (value: string) => {
+    if (editErrorMsg) {
+      setEditErrorMsg("");
+    }
+    setEditValue(value);
   };
 
   const handleUpdateComment = async () => {
@@ -318,18 +373,20 @@ const CommentCard: React.FC<CommentCardProps> = ({
 
     const trimmed = (editValue ?? "").trim();
     if (!trimmed) {
-      onActionError?.("Description cannot be empty.");
+      setEditErrorMsg("Description cannot be empty.");
       return;
     }
     if (trimmed.length > 200) {
-      onActionError?.("Maximum 200 characters allowed.");
+      setEditErrorMsg("Maximum 200 characters allowed.");
       return;
     }
     if (trimmed === (comments.description ?? "").trim()) {
+      setEditErrorMsg("");
       setIsEditing(false);
       return;
     }
 
+    setEditErrorMsg("");
     setIsUpdating(true);
     try {
       const urlencoded = new URLSearchParams();
@@ -367,7 +424,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
       const moderationReason = extractModerationReason(message);
       console.error("Failed to update description:", error);
       if (moderationReason) {
-        onActionError?.(buildDescriptionModerationMessage(moderationReason));
+        setEditErrorMsg(moderationReason);
       } else {
         onActionError?.(message);
       }
@@ -479,6 +536,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   <Tooltip title="Like">
                     {/* <p></p> */}
                     <button
+                      type="button"
                       onClick={likeDislikeAPI}
                       disabled={isLiking || isUpdating || isDeleting}
                       className={`flex cursor-pointer items-center gap-1 px-3 py-1 rounded-full transition-colors ${isLiked
@@ -496,14 +554,25 @@ const CommentCard: React.FC<CommentCardProps> = ({
               </div>
               {isEditing ? (
                 <div className="mb-2" >
-                  <textarea
+                  <TextField
                     value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    maxLength={200}
-                    rows={3}
-                    className="w-full rounded border border-gray-300 px-2 py-1 text-sm text-black focus:outline-none focus:border-orange-400"
+                    onChange={(event) => handleEditValueChange(event.target.value)}
+                    size="small"
+                    multiline
+                    minRows={3}
+                    fullWidth
+                    disabled={isUpdating || isDeleting}
+                    error={Boolean(editErrorMsg)}
+                    helperText={editErrorMsg || `${editValue.length}/200`}
+                    inputProps={{ maxLength: 200 }}
+                    FormHelperTextProps={{
+                      sx: {
+                        marginLeft: 0,
+                        marginRight: 0,
+                        textAlign: editErrorMsg ? "left" : "right",
+                      },
+                    }}
                   />
-                  <div className="text-xs text-gray-500 text-right">{editValue.length}/200</div>
                 </div>
               ) : (
                 <p className="text-black text-base leading-relaxed">
@@ -518,7 +587,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                 {new Intl.DateTimeFormat("en-GB", {
                   day: "2-digit",
                   month: "short",
-                  year: "2-digit",
+                  year: "numeric",
                   hour: "numeric",
                   minute: "2-digit",
                   hour12: true,
@@ -534,6 +603,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   {isEditing ? (
                     <>
                       <button
+                        type="button"
                         onClick={handleUpdateComment}
                         disabled={isUpdating || isDeleting}
                         className="text-emerald-600 hover:text-emerald-700 disabled:opacity-50 flex items-center gap-1 cursor-pointer"
@@ -543,6 +613,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                       </button>
 
                       <button
+                        type="button"
                         onClick={handleCancelEdit}
                         disabled={isUpdating || isDeleting}
                         className="text-gray-500 hover:text-gray-700 disabled:opacity-50 flex items-center gap-1 cursor-pointer"
@@ -554,6 +625,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                   ) : (
                     <>
                       <button
+                        type="button"
                         onClick={handleStartEdit}
                         disabled={isDeleting || isUpdating}
                         className="text-gray-500 hover:text-blue-600 disabled:opacity-50 flex items-center gap-1 cursor-pointer"
@@ -563,6 +635,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
                       </button>
 
                       <button
+                        type="button"
                         onClick={handleOpenDeleteModal}
                         disabled={isDeleting || isUpdating}
                         className="text-gray-500 hover:text-red-600 disabled:opacity-50 flex items-center gap-1 cursor-pointer"
@@ -576,6 +649,7 @@ const CommentCard: React.FC<CommentCardProps> = ({
               ) : (
                 <div>
                   <button
+                    type="button"
                     onClick={handleOpenReportModal}
                     disabled={isDeleting || isUpdating}
                     className="text-gray-500 hover:text-red-600 disabled:opacity-50 flex items-center gap-1 cursor-pointer"

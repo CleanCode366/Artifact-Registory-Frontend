@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { ThumbsUp, MapPin, Calendar, Languages, BookOpen, Plus, MessageSquareWarning, Star, Trash, Edit, Check, TriangleAlert } from 'lucide-react';
 import CommentCard from './CommentCard';
 // import RatingModal from './RatingModal';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useBlocker, useLocation, useNavigate, useParams } from 'react-router-dom';
 // import Model from './Model';
 import Modal from './Modal';
 // import ImageCarousel from './ImageCarousel';
@@ -42,6 +42,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import AuthContext from '@/context/AuthContext';
 import RatingStars from './RatingStars';
 import { MoreVert } from '@mui/icons-material';
+import AppImage from "@/components/AppImage";
 
 const USE_FALLBACK = false;
 const REPORT_REASONS = [
@@ -143,6 +144,8 @@ const normalizeEntityId = (rawId: unknown): string => {
     return "";
 };
 
+const isMongoObjectId = (value: string): boolean => /^[a-fA-F0-9]{24}$/.test(value);
+
 const unwrapApiData = (payload: unknown): any => {
     if (payload && typeof payload === "object" && "data" in payload) {
         return (payload as { data: unknown }).data;
@@ -164,6 +167,10 @@ const resolveApiMessage = (body: any, payload: any, fallback: string): string =>
 };
 
 type ModerationFieldName = "topic" | "title" | "description";
+type ModerationFieldErrors = Partial<Record<ModerationFieldName, string>>;
+
+const isModerationFieldName = (field: keyof EditPostFormState): field is ModerationFieldName =>
+    field === "title" || field === "topic" || field === "description";
 
 const extractErrorMessageFromPayload = (payload: unknown): string | null => {
     if (!payload || typeof payload !== "object") return null;
@@ -222,10 +229,10 @@ const extractModerationReason = (message: string): string | null => {
     const firstColonIndex = trimmedMessage.indexOf(":");
     if (firstColonIndex >= 0 && firstColonIndex < trimmedMessage.length - 1) {
         const reason = trimmedMessage.slice(firstColonIndex + 1).trim();
-        return reason || "Contains inappropriate language.";
+        return "Invalid input: " + reason || "Invalid input: Contains inappropriate language.";
     }
 
-    return "Contains inappropriate language.";
+    return "Invalid input: Contains inappropriate language.";
 };
 
 const inferRejectedFieldFromReason = (reason: string): ModerationFieldName => {
@@ -250,20 +257,40 @@ const inferRejectedFieldFromReason = (reason: string): ModerationFieldName => {
     return "description";
 };
 
-const buildModerationSnackbarMessage = (
-    rejectedField: ModerationFieldName,
-    reason: string
-): string => {
+const buildModerationFieldErrors = (reason: string): ModerationFieldErrors => {
     const normalizedReason = reason.trim() || "Contains inappropriate language.";
-    const fieldStatus: Record<ModerationFieldName, string> = {
-        topic: "ACCEPTED",
-        title: "ACCEPTED",
-        description: "ACCEPTED",
-    };
+    const segmentedReasons = normalizedReason
+        .split(/\r?\n|\|/)
+        .map((segment) => segment.trim())
+        .filter(Boolean);
+    const fieldErrors: ModerationFieldErrors = {};
 
-    fieldStatus[rejectedField] = `REJECTED - ${normalizedReason}`;
+    segmentedReasons.forEach((segment) => {
+        const normalizedSegment = segment.toLowerCase();
 
-    return `topic: ${fieldStatus.topic}\ntitle: ${fieldStatus.title}\ndescription: ${fieldStatus.description}`;
+        if (normalizedSegment.includes("topic") || normalizedSegment.includes("subject")) {
+            fieldErrors.topic = fieldErrors.topic ?? segment;
+        }
+
+        if (normalizedSegment.includes("title") || normalizedSegment.includes("heading")) {
+            fieldErrors.title = fieldErrors.title ?? segment;
+        }
+
+        if (
+            normalizedSegment.includes("description") ||
+            normalizedSegment.includes("comment") ||
+            normalizedSegment.includes("body")
+        ) {
+            fieldErrors.description = fieldErrors.description ?? segment;
+        }
+    });
+
+    if (Object.keys(fieldErrors).length > 0) {
+        return fieldErrors;
+    }
+
+    const rejectedField = inferRejectedFieldFromReason(normalizedReason);
+    return { [rejectedField]: normalizedReason };
 };
 
 const toStringArray = (value: unknown): string[] => {
@@ -385,13 +412,29 @@ const InscriptionDetailsPage: React.FC = () => {
         postedAnonymously: false,
         description: "",
     });
+    const [editPostModerationErrors, setEditPostModerationErrors] = useState<ModerationFieldErrors>({});
     const [editablePostImages, setEditablePostImages] = useState<string[]>([]);
     const [selectedImagesForDeletion, setSelectedImagesForDeletion] = useState<string[]>([]);
     const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
     const [newImagesForUpload, setNewImagesForUpload] = useState<PendingEditImage[]>([]);
+    const [unsavedCommentDrafts, setUnsavedCommentDrafts] = useState<Record<string, boolean>>({});
 
     const handleOpen = () => setDisplay(true);
     const handleClose = () => setDisplay(false);
+    const hasUnsavedCommentEdits = Object.values(unsavedCommentDrafts).some(Boolean);
+    const shouldBlockUnsavedCommentNavigation = useCallback(
+        ({ currentLocation, nextLocation }) => {
+            if (!hasUnsavedCommentEdits) return false;
+
+            return (
+                currentLocation.pathname !== nextLocation.pathname ||
+                currentLocation.search !== nextLocation.search ||
+                currentLocation.hash !== nextLocation.hash
+            );
+        },
+        [hasUnsavedCommentEdits]
+    );
+    const unsavedCommentEditBlocker = useBlocker(shouldBlockUnsavedCommentNavigation);
 
 
     // inside your component
@@ -399,6 +442,17 @@ const InscriptionDetailsPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { isAuthenticated } = useContext(AuthContext);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (!hasUnsavedCommentEdits) return;
+            event.preventDefault();
+            event.returnValue = "";
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [hasUnsavedCommentEdits]);
 
     useEffect(() => {
         setLoading(true);
@@ -525,6 +579,23 @@ const InscriptionDetailsPage: React.FC = () => {
         }
     };
 
+    const handleCommentEditDraftChange = useCallback((commentId: string, hasUnsavedDraft: boolean) => {
+        if (!commentId) return;
+
+        setUnsavedCommentDrafts((previous) => {
+            const hasExistingDraft = Boolean(previous[commentId]);
+            if (hasUnsavedDraft) {
+                if (hasExistingDraft) return previous;
+                return { ...previous, [commentId]: true };
+            }
+
+            if (!hasExistingDraft) return previous;
+            const next = { ...previous };
+            delete next[commentId];
+            return next;
+        });
+    }, []);
+
     const handleClick = (lat: number, lon: number) => {
         const url = `https://www.google.com/maps?q=${lat},${lon}`;
         window.open(url, '_blank');
@@ -554,25 +625,65 @@ const InscriptionDetailsPage: React.FC = () => {
     }
 
     const handleDescriptionAdded = (createdComment: any) => {
-        // If backend returned a comment object, normalize fields to our Comment shape and prepend
-        if (createdComment && typeof createdComment === 'object') {
-            const normalized = normalizeComment(createdComment, postId as string, userDetails);
+        const resolvedPostId = normalizeEntityId(postId) || String(postId ?? "").trim();
 
-            setComments(prev => [normalized, ...prev]);
-            setDescription(normalized.description);
-            return;
+        const refreshComments = async () => {
+            if (!resolvedPostId) return;
+
+            try {
+                const urlencoded = new URLSearchParams();
+                urlencoded.append("postId", resolvedPostId);
+
+                const response = await coreBackendClient.post("post/getPostDiscription", urlencoded);
+                const payload = unwrapApiData(response.data);
+                const fetchedComments = Array.isArray(payload)
+                    ? payload
+                    : Array.isArray(payload?.data)
+                        ? payload.data
+                        : [];
+
+                setComments(
+                    fetchedComments.map((comment: any) =>
+                        normalizeComment(comment, resolvedPostId, userDetails)
+                    )
+                );
+            } catch (error) {
+                console.error("Failed to refresh comments after posting:", error);
+            }
+        };
+
+        if (createdComment && typeof createdComment === "object") {
+            const normalized = normalizeComment(createdComment, resolvedPostId, userDetails);
+            const normalizedId = normalizeEntityId(normalized._id ?? normalized.id);
+
+            if (isMongoObjectId(normalizedId)) {
+                setComments((previous) => {
+                    const withoutDuplicate = previous.filter((comment) => {
+                        const existingId = normalizeEntityId(comment._id ?? comment.id);
+                        return existingId !== normalizedId;
+                    });
+                    return [normalized, ...withoutDuplicate];
+                });
+                setDescription(normalized.description);
+                return;
+            }
         }
 
-        // Fallback: a simple string was passed — create a minimal local comment
-        if (typeof createdComment === 'string') {
-            const newComment = normalizeComment(
-                { description: createdComment, postId: postId as string },
-                postId as string,
-                userDetails
-            );
-            setComments(prev => [newComment, ...prev]);
+        if (typeof createdComment === "string") {
             setDescription(createdComment);
+        } else if (createdComment && typeof createdComment === "object") {
+            const commentRecord = createdComment as Record<string, unknown>;
+            const candidateDescription =
+                commentRecord.description ??
+                commentRecord.discription ??
+                commentRecord.comment;
+
+            if (typeof candidateDescription === "string" && candidateDescription.trim()) {
+                setDescription(candidateDescription);
+            }
         }
+
+        void refreshComments();
     };
 
     const handleCommentLikeUpdated = (commentId: string, updates: Partial<Comment>) => {
@@ -621,6 +732,16 @@ const InscriptionDetailsPage: React.FC = () => {
                 return String(existingId) !== String(commentId);
             })
         );
+    };
+    const handleStayOnCommentEditPage = () => {
+        if (unsavedCommentEditBlocker.state === "blocked") {
+            unsavedCommentEditBlocker.reset();
+        }
+    };
+    const handleLeaveCommentEditPage = () => {
+        if (unsavedCommentEditBlocker.state === "blocked") {
+            unsavedCommentEditBlocker.proceed();
+        }
     };
 
 
@@ -767,6 +888,7 @@ const InscriptionDetailsPage: React.FC = () => {
             postedAnonymously: isAnonymousPost,
             description: postToRender?.description?.description ?? "",
         });
+        setEditPostModerationErrors({});
         setEditablePostImages(Array.isArray(postToRender?.images?.image) ? postToRender.images.image : []);
         setSelectedImagesForDeletion([]);
         setDeletedImageIds([]);
@@ -818,6 +940,7 @@ const InscriptionDetailsPage: React.FC = () => {
 
     const handleCloseEditPostModal = () => {
         setShowEditPostModal(false);
+        setEditPostModerationErrors({});
         setEditablePostImages([]);
         setSelectedImagesForDeletion([]);
         setDeletedImageIds([]);
@@ -832,6 +955,15 @@ const InscriptionDetailsPage: React.FC = () => {
         value: EditPostFormState[K]
     ) => {
         setEditPostForm((previous) => ({ ...previous, [field]: value }));
+
+        if (isModerationFieldName(field)) {
+            setEditPostModerationErrors((previous) => {
+                if (!previous[field]) return previous;
+                const updated = { ...previous };
+                delete updated[field];
+                return updated;
+            });
+        }
     };
 
     const handleToggleImageSelection = (imageUrl: string) => {
@@ -941,6 +1073,7 @@ const InscriptionDetailsPage: React.FC = () => {
             return;
         }
 
+        setEditPostModerationErrors({});
         setIsUpdatingPost(true);
         try {
             const postPayload = {
@@ -1009,8 +1142,8 @@ const InscriptionDetailsPage: React.FC = () => {
             const moderationReason = extractModerationReason(message);
 
             if (moderationReason) {
-                const rejectedField = inferRejectedFieldFromReason(moderationReason);
-                handlePostError(buildModerationSnackbarMessage(rejectedField, moderationReason));
+                setEditPostModerationErrors(buildModerationFieldErrors(moderationReason));
+                handlePostError("Please remove inappropriate language from the highlighted fields.");
             } else {
                 handlePostError(message);
             }
@@ -1092,11 +1225,13 @@ const InscriptionDetailsPage: React.FC = () => {
                                                 placement="top"
                                                 arrow
                                                 title={
-                                                    <img
-                                                        src={imageUrl}
-                                                        alt={`Preview of post image ${index + 1}`}
-                                                        className="h-56 w-80 max-w-[70vw] rounded-md object-cover"
-                                                    />
+                                                    <div className="w-72 max-w-[calc(100vw-3rem)] overflow-hidden rounded-md">
+                                                        <AppImage
+                                                            src={imageUrl}
+                                                            alt={`Preview of post image ${index + 1}`}
+                                                            className="block h-52 w-full object-cover"
+                                                        />
+                                                    </div>
                                                 }
                                             >
                                                 <button
@@ -1108,7 +1243,7 @@ const InscriptionDetailsPage: React.FC = () => {
                                                         : "border-transparent hover:border-gray-300"
                                                         }`}
                                                 >
-                                                    <img
+                                                    <AppImage
                                                         src={imageUrl}
                                                         alt={`Post image ${index + 1}`}
                                                         className="h-24 w-full object-cover"
@@ -1174,6 +1309,8 @@ const InscriptionDetailsPage: React.FC = () => {
                                     value={editPostForm.title}
                                     onChange={(event) => handleEditPostFieldChange("title", event.target.value)}
                                     disabled={isUpdatingPost}
+                                    error={Boolean(editPostModerationErrors.title)}
+                                    helperText={editPostModerationErrors.title}
                                     fullWidth
                                 />
                                 <TextField
@@ -1182,6 +1319,8 @@ const InscriptionDetailsPage: React.FC = () => {
                                     value={editPostForm.topic}
                                     onChange={(event) => handleEditPostFieldChange("topic", event.target.value)}
                                     disabled={isUpdatingPost}
+                                    error={Boolean(editPostModerationErrors.topic)}
+                                    helperText={editPostModerationErrors.topic}
                                     fullWidth
                                 />
                                 <TextField
@@ -1236,6 +1375,8 @@ const InscriptionDetailsPage: React.FC = () => {
                                         value={editPostForm.description}
                                         onChange={(event) => handleEditPostFieldChange("description", event.target.value)}
                                         disabled={isUpdatingPost}
+                                        error={Boolean(editPostModerationErrors.description)}
+                                        helperText={editPostModerationErrors.description}
                                         multiline
                                         minRows={3}
                                         fullWidth
@@ -1435,16 +1576,16 @@ const InscriptionDetailsPage: React.FC = () => {
                                                 onClose={handleClosePostActionMenu}
                                             >
                                                 {isPostAuthor ? (
-                                                    <>
-                                                        <MenuItem onClick={handleOpenEditPostFromMenu}>
+                                                    [
+                                                        <MenuItem key="edit-post" onClick={handleOpenEditPostFromMenu}>
                                                             <Edit className="w-4 h-4 mr-2" />
                                                             Edit Post
-                                                        </MenuItem>
-                                                        <MenuItem onClick={handleOpenDeletePostFromMenu} sx={{ color: "#dc2626" }}>
+                                                        </MenuItem>,
+                                                        <MenuItem key="delete-post" onClick={handleOpenDeletePostFromMenu} sx={{ color: "#dc2626" }}>
                                                             <Trash className="w-4 h-4 mr-2" />
                                                             Delete Post
-                                                        </MenuItem>
-                                                    </>
+                                                        </MenuItem>,
+                                                    ]
                                                 ) : (
                                                     <MenuItem onClick={handleOpenReportPostFromMenu} sx={{ color: "#dc2626" }}>
                                                         <TriangleAlert className="w-4 h-4 mr-2" />
@@ -1627,6 +1768,7 @@ const InscriptionDetailsPage: React.FC = () => {
                                     onCommentDeleted={handleCommentDeleted}
                                     onActionSuccess={handlePostSuccess}
                                     onActionError={handlePostError}
+                                    onEditDraftChange={handleCommentEditDraftChange}
                                 />
                             ))}
 
@@ -1658,9 +1800,36 @@ const InscriptionDetailsPage: React.FC = () => {
                 }}
                 postId={postId as string}
             />
+
+            <Dialog
+                open={unsavedCommentEditBlocker.state === "blocked"}
+                onClose={handleStayOnCommentEditPage}
+                fullWidth
+                maxWidth="xs"
+            >
+                <DialogTitle>Leave without saving?</DialogTitle>
+                <DialogContent>
+                    <p className="text-sm text-gray-600">
+                        You have an unsaved comment edit. Save the comment before leaving, or leave now and discard your changes.
+                    </p>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleStayOnCommentEditPage} color="inherit">
+                        Stay and Save
+                    </Button>
+                    <Button
+                        onClick={handleLeaveCommentEditPage}
+                        color="error"
+                        variant="contained"
+                    >
+                        Leave Without Saving
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };
 
 // Demo wrapper component to show how to use it
 export default InscriptionDetailsPage;
+
