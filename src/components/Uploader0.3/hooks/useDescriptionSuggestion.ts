@@ -1,6 +1,7 @@
+// useDescriptionSuggestion.ts
 import { useState } from "react";
 import getCurrentLocation from "../utils/Camera/getCurrentLocation";
-import { getEnvConfig } from "../config/env";
+import { suggestionApiClient } from "@/utils/http/clients/suggestionApi.client";
 
 export const useDescriptionSuggestion = (geoInfo: any) => {
   const [suggestion, setSuggestion] = useState<string | null>(null);
@@ -22,26 +23,30 @@ export const useDescriptionSuggestion = (geoInfo: any) => {
 
       if (!latitude || !longitude) throw new Error("No coordinates available");
 
-      const { webhookUrl } = getEnvConfig();
-      const url = `${webhookUrl}?lat=${encodeURIComponent(latitude)}&lon=${encodeURIComponent(longitude)}`;
+      // Use axios client with POST (matching your original axios snippet)
+      const res = await suggestionApiClient.post("", {
+        lat: Number(latitude),   // send as number, not string — matches Postman payload
+        lon: Number(longitude),
+      });
 
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Service returned ${res.status}`);
+      console.log("API response:", res.data); // Debug log to inspect response structure
 
+      const outer = res.data;
       let text = "";
-      const outer = await res.json(); // first parse
 
       if (outer.text) {
-        const inner = JSON.parse(outer.text); // second parse
-        text = inner.description;
+        const inner = JSON.parse(outer.text); // second parse if nested
+        text = inner.description || "";
       } else {
         text = outer.description || outer.suggestion || "";
       }
 
       setSuggestion(text);
-
+      return text;
     } catch (err) {
-      setSuggestion("Failed to get suggestion.");
+      const errorText = "Failed to get suggestion.";
+      setSuggestion(errorText);
+      return errorText;
     } finally {
       setIsFetching(false);
     }
