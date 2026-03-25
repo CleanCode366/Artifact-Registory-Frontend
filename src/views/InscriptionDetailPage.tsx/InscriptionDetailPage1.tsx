@@ -36,6 +36,7 @@ import cdacRoundLogo from '@/assets/cdacroundlogo.png';
 import type { User } from '@/types';
 import ShareModal from '@/components/ShareModal/ShareModal';
 import { coreBackendClient } from '@/utils/http/clients/coreBackend.client';
+import { detectAIClient } from '@/utils/http/clients/detectAIClient';
 import mockDiscoveryPosts from '@/Db/feeds';
 import { getDummyCommentsByPostId } from './dummyData';
 import { AnimatePresence, motion } from "framer-motion";
@@ -418,6 +419,7 @@ const InscriptionDetailsPage: React.FC = () => {
     const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
     const [newImagesForUpload, setNewImagesForUpload] = useState<PendingEditImage[]>([]);
     const [unsavedCommentDrafts, setUnsavedCommentDrafts] = useState<Record<string, boolean>>({});
+    const [isCheckingImagesForUpload, setIsCheckingImagesForUpload] = useState(false);
 
     const handleOpen = () => setDisplay(true);
     const handleClose = () => setDisplay(false);
@@ -756,15 +758,63 @@ const InscriptionDetailsPage: React.FC = () => {
         setSnackbarOpen(false);
     };
 
-    const handlePostSuccess = (message: string) => {
-        setSnackbarMessage(message);
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-    };
+    // const handlePostSuccess = (message: string) => {
+    //     setSnackbarMessage(message);
+    //     setSnackbarSeverity("success");
+    //     setSnackbarOpen(true);
+    // };
 
     const handlePostError = (message: string) => {
         setSnackbarMessage(message);
         setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+    };
+
+    const readFileAsDataUrl = (file: File): Promise<string> =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => resolve(String(event.target?.result || ""));
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+
+    const validateAndCheckStone = async (imageDataUrl: string): Promise<boolean> => {
+        try {
+            const response = await fetch(imageDataUrl);
+            const blob = await response.blob();
+            const formData = new FormData();
+            formData.append("file", blob, "inscription.jpg");
+
+            interface DetectAIResponse {
+                result: string;
+                confidence: number;
+                internal_label: string;
+                filename: string;
+                detail?: string;
+            }
+
+            const { data } = await detectAIClient.post<DetectAIResponse>("predict/", formData);
+
+            if (data?.detail?.toLowerCase().includes("suspicious content")) {
+                handlePostError("Upload restricted: Suspicious content detected in file.");
+                return false;
+            }
+
+            if (data?.result === "Stone Inscription") {
+                return true;
+            }
+
+            handlePostError(`Upload restricted: Not a Stone Inscription (detected as ${data?.result || "unknown"}).`);
+            return false;
+        } catch (error) {
+            handlePostError("Failed to check inscription type for image.");
+            return false;
+        }
+    };
+
+    const handlePostSuccess = (message: string) => {
+        setSnackbarMessage(message);
+        setSnackbarSeverity("success");
         setSnackbarOpen(true);
     };
 
@@ -1003,7 +1053,7 @@ const InscriptionDetailsPage: React.FC = () => {
         setSelectedImagesForDeletion([]);
     };
 
-    const handleAddEditPostImages = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAddEditPostImages = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = Array.from(event.target.files ?? []);
         if (selectedFiles.length === 0) return;
 
@@ -1014,13 +1064,41 @@ const InscriptionDetailsPage: React.FC = () => {
             return;
         }
 
-        const pendingImages = imageFiles.map((file, index) => ({
-            id: `${Date.now()}-${index}-${file.name}-${file.size}`,
-            file,
-            previewUrl: URL.createObjectURL(file),
-        }));
+        setIsCheckingImagesForUpload(true);
+        const pendingImages = [];
+        const errorMessages = [];
 
-        setNewImagesForUpload((previous) => [...previous, ...pendingImages]);
+        for (const file of imageFiles) {
+            try {
+                const dataUrl = await readFileAsDataUrl(file);
+                const isStone = await validateAndCheckStone(dataUrl);
+                
+                if (!isStone) {
+                    errorMessages.push(`${file.name}: not a stone inscription`);
+                    continue;
+                }
+
+                pendingImages.push({
+                    id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}-${file.name}`,
+                    file,
+                    previewUrl: dataUrl,
+                });
+            } catch (error) {
+                errorMessages.push(`${file.name}: failed to process`);
+            }
+        }
+
+        setIsCheckingImagesForUpload(false);
+
+        if (pendingImages.length > 0) {
+            setNewImagesForUpload((previous) => [...previous, ...pendingImages]);
+            handlePostSuccess(`${pendingImages.length} valid inscription image(s) added.`);
+        }
+
+        if (errorMessages.length > 0) {
+            handlePostError(`${errorMessages.join(" | ")}`);
+        }
+
         event.target.value = "";
     };
 
@@ -1201,20 +1279,33 @@ const InscriptionDetailsPage: React.FC = () => {
                             <div className="mb-4">
                                 <div className="flex flex-wrap items-center justify-between gap-3">
                                     <p className="text-sm font-medium text-gray-800">Post Images</p>
-                                    <label className="inline-flex items-center gap-2 rounded-md border border-orange-300 bg-orange-100 px-3 py-1.5 text-sm font-medium text-orange-700 cursor-pointer hover:bg-orange-200 transition-colors">
-                                        <Plus className="w-4 h-4" />
-                                        Add Images
+                                    <label className={`inline-flex items-center gap-2 rounded-md border border-orange-300 px-3 py-1.5 text-sm font-medium transition-colors ${
+                                        isCheckingImagesForUpload || isUpdatingPost
+                                            ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                            : "bg-orange-100 text-orange-700 cursor-pointer hover:bg-orange-200"
+                                    }`}>
+                                        {isCheckingImagesForUpload ? (
+                                            <>
+                                                <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin" />
+                                                Validating...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Plus className="w-4 h-4" />
+                                                Add Images
+                                            </>
+                                        )}
                                         <input
                                             type="file"
                                             accept="image/*"
                                             multiple
                                             className="hidden"
                                             onChange={handleAddEditPostImages}
-                                            disabled={isUpdatingPost}
+                                            disabled={isUpdatingPost || isCheckingImagesForUpload}
                                         />
                                     </label>
                                 </div>
-                                <p className="text-xs text-gray-500">Select images first, then remove them.</p>
+                                <p className="text-xs text-gray-500">Images are validated as stone inscriptions before upload. Select images first, then remove them.</p>
                                 <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-64 overflow-y-auto pr-1">
                                     {editablePostImages.map((imageUrl, index) => {
                                         const isSelected = selectedImagesForDeletion.includes(imageUrl);
