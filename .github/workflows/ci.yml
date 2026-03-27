@@ -28,8 +28,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # - name: Build
+      #   run: pnpm build:production
+      
       - name: Build
-        run: pnpm build:production
+        run: pnpm vite build
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -42,4 +45,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend-latest:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/stoneinscription:frontend-latest
