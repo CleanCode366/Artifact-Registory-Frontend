@@ -59,10 +59,10 @@ const HeroSection = () => {
                 <section className="relative overflow-hidden" style={{ minHeight: "500px" }}>
                     {/* <section className="relative overflow-hidden" style={{ minHeight: "500px" }}> */}
                     <div className="w-full h-full" style={{ minHeight: "inherit", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        <div className="text-center mb-12">
-                            <img src={cdacRoundLogo} alt="C-DAC Logo" className="mx-auto mb-6 w-28 h-28" />
+                        <div className="text-center my-12">
+                            {/* <img src={cdacRoundLogo} alt="C-DAC Logo" className="mx-auto mb-6 w-28 h-28" /> */}
                             {/* <h2 className="text-5xl md:text-6xl font-bold mb-6 text-[#000000]"> */}
-                            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-[#000000]">
+                            <h2 className="leading-tight text-5xl md:text-6xl font-bold mb-6 text-[#000000]">
                                 Let Us Decode Ancient Wisdom Together
                             </h2>
                             {/* <p className="text-xl text-[#000000] max-w-3xl mx-auto mb-8"> */}

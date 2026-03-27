@@ -54,6 +54,7 @@ const REPORT_REASONS = [
     "Violence or dangerous organizations",
     "Selling or promoting restricted items",
 ];
+const DESCRIPTION_PREVIEW_CHAR_LIMIT = 320;
 
 export interface Comment {
     id?: string;
@@ -403,6 +404,7 @@ const InscriptionDetailsPage: React.FC = () => {
     const [isUpdatingPost, setIsUpdatingPost] = useState(false);
     const [isReportPostModalOpen, setIsReportPostModalOpen] = useState(false);
     const [reportPostReason, setReportPostReason] = useState("");
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
     const [postActionAnchorEl, setPostActionAnchorEl] = useState<HTMLElement | null>(null);
     const [editPostForm, setEditPostForm] = useState<EditPostFormState>({
         title: "",
@@ -418,6 +420,26 @@ const InscriptionDetailsPage: React.FC = () => {
     const [selectedImagesForDeletion, setSelectedImagesForDeletion] = useState<string[]>([]);
     const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
     const [newImagesForUpload, setNewImagesForUpload] = useState<PendingEditImage[]>([]);
+
+    // Disable page scrolling when any modal is open (edit, delete, report, rating, or generic display)
+    useEffect(() => {
+        const anyModalOpen = Boolean(
+            display || showEditPostModal || showDeletePostModal || isReportPostModalOpen || showRatingModal
+        );
+
+        const previousOverflow = document.body.style.overflow;
+        if (anyModalOpen) {
+            // prevent background scrolling
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = previousOverflow || "";
+        }
+
+        return () => {
+            // ensure we restore overflow when component unmounts or effect re-runs
+            document.body.style.overflow = previousOverflow || "";
+        };
+    }, [display, showEditPostModal, showDeletePostModal, isReportPostModalOpen, showRatingModal]);
     const [unsavedCommentDrafts, setUnsavedCommentDrafts] = useState<Record<string, boolean>>({});
     const [isCheckingImagesForUpload, setIsCheckingImagesForUpload] = useState(false);
 
@@ -602,6 +624,10 @@ const InscriptionDetailsPage: React.FC = () => {
         const url = `https://www.google.com/maps?q=${lat},${lon}`;
         window.open(url, '_blank');
     };
+
+    useEffect(() => {
+        setIsDescriptionExpanded(false);
+    }, [post?._id, post?.description?.description]);
 
 
 
@@ -906,6 +932,15 @@ const InscriptionDetailsPage: React.FC = () => {
             : postToRender?.script
     );
     const normalizedLanguageValues = toStringArray(postToRender?.description?.language);
+    const fullDescription =
+        typeof postToRender?.description?.description === "string" ? postToRender.description.description : "";
+    const hasDescription = fullDescription.trim().length > 0;
+    const shouldShowDescriptionToggle = fullDescription.length > DESCRIPTION_PREVIEW_CHAR_LIMIT;
+    const descriptionToDisplay = hasDescription
+        ? isDescriptionExpanded || !shouldShowDescriptionToggle
+            ? fullDescription
+            : `${fullDescription.slice(0, DESCRIPTION_PREVIEW_CHAR_LIMIT).trimEnd()}...`
+        : "No description provided.";
     const postLocationLabel =
         [postToRender?.description?.geolocation?.city, postToRender?.description?.geolocation?.state]
             .map((value) => (typeof value === "string" ? value.trim() : ""))
@@ -1268,7 +1303,7 @@ const InscriptionDetailsPage: React.FC = () => {
 
                     >
                         <motion.div
-                            className="w-full max-w-xl rounded-xl bg-white p-5 shadow-2xl"
+                            className="w-full max-w-xl rounded-xl bg-white p-5 shadow-2xl overflow-y-auto max-h-[90vh]"
                             initial={{ scale: 0.9, opacity: 0, y: 30 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 30 }}
@@ -1714,10 +1749,19 @@ const InscriptionDetailsPage: React.FC = () => {
                                         </div>
 
 
-                                        <p className=" text-base leading-relaxed mb-4">
-                                            {postToRender.description.description || 'No description provided.'}
+                                        <p className="text-base leading-relaxed mb-2 whitespace-pre-wrap break-words">
+                                            {descriptionToDisplay}
                                             {/* {post.description.description || 'No description provided.'} */}
                                         </p>
+                                        {hasDescription && shouldShowDescriptionToggle && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsDescriptionExpanded((previous) => !previous)}
+                                                className="mb-4 text-sm font-medium text-orange-500 hover:text-blue-800 underline cursor-pointer"
+                                            >
+                                                {isDescriptionExpanded ? "See less" : "See more"}
+                                            </button>
+                                        )}
 
                                         {/* Metadata */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">

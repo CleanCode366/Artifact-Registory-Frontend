@@ -48,10 +48,10 @@ const CallToAction: React.FC = () => {
                                 <VolunteerActivismOutlinedIcon />
                                 Start Contributing
                             </NavLink>
-                            <button className="flex justify-center items-center gap-2 border border-slate-600 hover:bg-slate-800/50 px-8 py-4 rounded-xl font-semibold text-lg transition-all cursor-pointer" style={{ backgroundColor: "white" }}>
+                            {/* <button className="flex justify-center items-center gap-2 border border-slate-600 hover:bg-slate-800/50 px-8 py-4 rounded-xl font-semibold text-lg transition-all cursor-pointer" style={{ backgroundColor: "white" }}>
                                 <SchoolOutlinedIcon />
                                 Learn More
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </section>

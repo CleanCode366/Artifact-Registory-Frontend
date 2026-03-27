@@ -151,7 +151,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
     // }, [mobileNavbarOpen, openMobileNavbarHandler, setMobileNavbarOpen]);
 
     return (
-        <div className="navbar-gradient">
+        <div className="navbar-gradient borderRed">
             {/* Desktop header */}
             <div className="mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-6 navbar-logos">
                 <NavLink to="/home" className="flex items-center space-x-3">
@@ -180,7 +180,7 @@ const Nav: React.FC<NavProps> = ({ scrollToSection }) => {
 
             <hr className="border-t border-white opacity-60" />
             <div className="navbar-gradient" style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                <nav className={`top-0 z-50 text-secondary-text navbar-shadow ${mobileNavbarOpen ? (scrollPosition > 2 ? "navscrollbehavior" : "") : scrollPosition > 200 ? "navscrollbehavior" : ""}`} style={{ backgroundColor: "transparent", width: "100%" }} >
+                <nav className={`sticky top-0 z-50 text-secondary-text navbar-shadow ${mobileNavbarOpen ? (scrollPosition > 2 ? "navscrollbehavior" : "") : scrollPosition > 200 ? "navscrollbehavior" : ""}`} style={{ backgroundColor: "transparent", width: "100%" }} >
                     <div className=" mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between h-16 ">
                             {/* Links */}

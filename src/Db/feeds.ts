@@ -23,8 +23,41 @@ const mockDiscoveryPosts = {
                 "language": null,
                 "englishTranslation": null,
                 "upvote": 0,
-                "geolocation": null,
-                "createdAt": "2025-11-10T06:33:55.615+00:00",
+                "geolocation": {
+                    "amenity": "",
+                    "road": "Swamy Vivekananda Road",
+                    "neighbourhood": "Benniganahalli",
+                    "suburb": "Baiyyappanahalli",
+                    "city": "Bengaluru",
+                    "county": "Bangalore East",
+                    "state": "Karnataka",
+                    "postcode": "560033",
+                    "country": "India",
+                    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+                    "type": "parking",
+                    "importance": 7.094453345536E-5,
+                    "name": "",
+                    "boundingbox": [
+                        "12.9896251",
+                        "12.9903375",
+                        "77.6525387",
+                        "77.6538333"
+                    ],
+                    "coordinates": null,
+                    "lon": "77.65240277777778",
+                    "lat": "12.989738888888889",
+                    "city_district": "Bengaluru Central City Corporation",
+                    "state_district": "Bengaluru Urban",
+                    "ISO3166-2-lvl4": "IN-KA",
+                    "country_code": "in",
+                    "place_id": 233528628,
+                    "osm_type": "way",
+                    "osm_id": 148042611,
+                    "class": "amenity",
+                    "place_rank": 30,
+                    "addresstype": "amenity",
+                    "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
+                }, "createdAt": "2025-11-10T06:33:55.615+00:00",
                 "updatedAt": "2025-11-13T06:49:44.251+00:00"
             },
             "topic": "",
@@ -59,15 +92,48 @@ const mockDiscoveryPosts = {
                 ]
             },
             "description": {
-                "title": "Rock Inscription 31",
+                "title": "Vijayanagara inscription",
                 "subject": null,
                 "description": "test",
                 "scriptLanguage": null,
                 "language": null,
                 "englishTranslation": null,
                 "upvote": 0,
-                "geolocation": null,
-                "createdAt": "2025-11-10T06:52:19.819+00:00",
+                "geolocation": {
+                    "amenity": "",
+                    "road": "Swamy Vivekananda Road",
+                    "neighbourhood": "Benniganahalli",
+                    "suburb": "Baiyyappanahalli",
+                    "city": "Bengaluru",
+                    "county": "Bangalore East",
+                    "state": "Karnataka",
+                    "postcode": "560033",
+                    "country": "India",
+                    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+                    "type": "parking",
+                    "importance": 7.094453345536E-5,
+                    "name": "",
+                    "boundingbox": [
+                        "12.9896251",
+                        "12.9903375",
+                        "77.6525387",
+                        "77.6538333"
+                    ],
+                    "coordinates": null,
+                    "lon": "77.65240277777778",
+                    "lat": "12.989738888888889",
+                    "city_district": "Bengaluru Central City Corporation",
+                    "state_district": "Bengaluru Urban",
+                    "ISO3166-2-lvl4": "IN-KA",
+                    "country_code": "in",
+                    "place_id": 233528628,
+                    "osm_type": "way",
+                    "osm_id": 148042611,
+                    "class": "amenity",
+                    "place_rank": 30,
+                    "addresstype": "amenity",
+                    "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
+                }, "createdAt": "2025-11-10T06:52:19.819+00:00",
                 "updatedAt": "2025-11-11T05:29:16.637+00:00"
             },
             "topic": "",
@@ -108,8 +174,41 @@ const mockDiscoveryPosts = {
                 "language": null,
                 "englishTranslation": null,
                 "upvote": 0,
-                "geolocation": null,
-                "createdAt": "2025-11-11T09:43:43.041+00:00",
+                "geolocation": {
+                    "amenity": "",
+                    "road": "Swamy Vivekananda Road",
+                    "neighbourhood": "Benniganahalli",
+                    "suburb": "Baiyyappanahalli",
+                    "city": "Bengaluru",
+                    "county": "Bangalore East",
+                    "state": "Karnataka",
+                    "postcode": "560033",
+                    "country": "India",
+                    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+                    "type": "parking",
+                    "importance": 7.094453345536E-5,
+                    "name": "",
+                    "boundingbox": [
+                        "12.9896251",
+                        "12.9903375",
+                        "77.6525387",
+                        "77.6538333"
+                    ],
+                    "coordinates": null,
+                    "lon": "77.65240277777778",
+                    "lat": "12.989738888888889",
+                    "city_district": "Bengaluru Central City Corporation",
+                    "state_district": "Bengaluru Urban",
+                    "ISO3166-2-lvl4": "IN-KA",
+                    "country_code": "in",
+                    "place_id": 233528628,
+                    "osm_type": "way",
+                    "osm_id": 148042611,
+                    "class": "amenity",
+                    "place_rank": 30,
+                    "addresstype": "amenity",
+                    "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
+                }, "createdAt": "2025-11-11T09:43:43.041+00:00",
                 "updatedAt": "2025-11-11T09:43:46.201+00:00"
             },
             "topic": "",
@@ -121,40 +220,40 @@ const mockDiscoveryPosts = {
             "userrating": [],
             "postedAnonymously": true
         },
-        {
-            "_id": "69130e4d05959ad242fe9756",
-            "user_id": "69118409d23e86bbb9cb8ce4",
-            "createdAt": "2025-11-11T10:22:05.028+00:00",
-            "updatedAt": "2025-11-11T10:22:05.458+00:00",
-            "images": {
-                "thumbnailImage": "https://c7.alamy.com/comp/PKHCTG/rock-inscriptions-leh-ladakh-jammu-kashmir-india-asia-PKHCTG.jpg",
-                "image": [
-                    "https://c7.alamy.com/comp/PKHCTG/rock-inscriptions-leh-ladakh-jammu-kashmir-india-asia-PKHCTG.jpg"
-                ]
-            },
-            "description": {
-                "title": "forth",
-                "subject": "v",
-                "description": "Dooravaninagar is a locality situated within Ramamurthy Nagar, an area located in the eastern part of Bengaluru. It falls under the administrative jurisdiction of the Bengaluru East City Corporation, within Bengaluru (also known as Bangalore East) in the Bengaluru Urban district of Karnataka, India. The postal code for this area is 560016.",
-                "scriptLanguage": null,
-                "language": [
-                    "san"
-                ],
-                "englishTranslation": null,
-                "upvote": 0,
-                "geolocation": null,
-                "createdAt": "2025-11-11T10:22:05.028+00:00",
-                "updatedAt": "2025-11-11T10:22:05.458+00:00"
-            },
-            "topic": "tamil",
-            "script": [
-                "tamill"
-            ],
-            "type": "Tamil",
-            "distance": null,
-            "rating": 0.0,
-            "userrating": []
-        },
+        // {
+        //     "_id": "69130e4d05959ad242fe9756",
+        //     "user_id": "69118409d23e86bbb9cb8ce4",
+        //     "createdAt": "2025-11-11T10:22:05.028+00:00",
+        //     "updatedAt": "2025-11-11T10:22:05.458+00:00",
+        //     "images": {
+        //         "thumbnailImage": "https://c7.alamy.com/comp/PKHCTG/rock-inscriptions-leh-ladakh-jammu-kashmir-india-asia-PKHCTG.jpg",
+        //         "image": [
+        //             "https://c7.alamy.com/comp/PKHCTG/rock-inscriptions-leh-ladakh-jammu-kashmir-india-asia-PKHCTG.jpg"
+        //         ]
+        //     },
+        //     "description": {
+        //         "title": "forth",
+        //         "subject": "v",
+        //         "description": "Dooravaninagar is a locality situated within Ramamurthy Nagar, an area located in the eastern part of Bengaluru. It falls under the administrative jurisdiction of the Bengaluru East City Corporation, within Bengaluru (also known as Bangalore East) in the Bengaluru Urban district of Karnataka, India. The postal code for this area is 560016.",
+        //         "scriptLanguage": null,
+        //         "language": [
+        //             "san"
+        //         ],
+        //         "englishTranslation": null,
+        //         "upvote": 0,
+        //         "geolocation": null,
+        //         "createdAt": "2025-11-11T10:22:05.028+00:00",
+        //         "updatedAt": "2025-11-11T10:22:05.458+00:00"
+        //     },
+        //     "topic": "tamil",
+        //     "script": [
+        //         "tamill"
+        //     ],
+        //     "type": "Tamil",
+        //     "distance": null,
+        //     "rating": 0.0,
+        //     "userrating": []
+        // },
         {
             "_id": "69130efa05959ad242fe9758",
             "user_id": "69118409d23e86bbb9cb8ce4",
@@ -170,36 +269,6 @@ const mockDiscoveryPosts = {
                 "title": "Chola inscription",
                 "subject": null,
                 "description": "Dooravaninagar and Ramamurthy Nagar are well-known localities situated within the Bengaluru East City Corporation administrative zone in the eastern part of Bengaluru (Bangalore), Karnataka, India. These areas fall under the Bengaluru Urban district and are identified by the postal code 560016, indicating their specific geographical location within the city's extensive network.",
-                "scriptLanguage": null,
-                "language": null,
-                "englishTranslation": null,
-                "upvote": 0,
-                "geolocation": null,
-                "createdAt": "2025-11-11T10:24:58.077+00:00",
-                "updatedAt": "2025-11-11T10:24:59.041+00:00"
-            },
-            "topic": "",
-            "script": [],
-            "type": "Stone",
-            "distance": null,
-            "rating": 0.0,
-            "userrating": []
-        },
-        {
-            "_id": "69131eeb05959ad242fe975e",
-            "user_id": "69131e0505959ad242fe975d",
-            "createdAt": "2025-11-11T11:32:59.174+00:00",
-            "updatedAt": "2025-11-11T11:32:59.502+00:00",
-            "images": {
-                "thumbnailImage": "https://whc.unesco.org/uploads/thumbs/site_1222_0002-500--20110920204336.jpg",
-                "image": [
-                    "https://whc.unesco.org/uploads/thumbs/site_1222_0002-500--20110920204336.jpg"
-                ]
-            },
-            "description": {
-                "title": "Persian",
-                "subject": null,
-                "description": null,
                 "scriptLanguage": null,
                 "language": null,
                 "englishTranslation": null,
@@ -238,9 +307,8 @@ const mockDiscoveryPosts = {
                     "place_rank": 30,
                     "addresstype": "amenity",
                     "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
-                },
-                "createdAt": "2025-11-11T11:32:59.174+00:00",
-                "updatedAt": "2025-11-11T11:32:59.502+00:00"
+                }, "createdAt": "2025-11-11T10:24:58.077+00:00",
+                "updatedAt": "2025-11-11T10:24:59.041+00:00"
             },
             "topic": "",
             "script": [],
@@ -249,6 +317,70 @@ const mockDiscoveryPosts = {
             "rating": 0.0,
             "userrating": []
         },
+        // {
+        //     "_id": "69131eeb05959ad242fe975e",
+        //     "user_id": "69131e0505959ad242fe975d",
+        //     "createdAt": "2025-11-11T11:32:59.174+00:00",
+        //     "updatedAt": "2025-11-11T11:32:59.502+00:00",
+        //     "images": {
+        //         "thumbnailImage": "https://whc.unesco.org/uploads/thumbs/site_1222_0002-500--20110920204336.jpg",
+        //         "image": [
+        //             "https://whc.unesco.org/uploads/thumbs/site_1222_0002-500--20110920204336.jpg"
+        //         ]
+        //     },
+        //     "description": {
+        //         "title": "Persian",
+        //         "subject": null,
+        //         "description": null,
+        //         "scriptLanguage": null,
+        //         "language": null,
+        //         "englishTranslation": null,
+        //         "upvote": 0,
+        //         "geolocation": {
+        //             "amenity": "",
+        //             "road": "Swamy Vivekananda Road",
+        //             "neighbourhood": "Benniganahalli",
+        //             "suburb": "Baiyyappanahalli",
+        //             "city": "Bengaluru",
+        //             "county": "Bangalore East",
+        //             "state": "Karnataka",
+        //             "postcode": "560033",
+        //             "country": "India",
+        //             "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        //             "type": "parking",
+        //             "importance": 7.094453345536E-5,
+        //             "name": "",
+        //             "boundingbox": [
+        //                 "12.9896251",
+        //                 "12.9903375",
+        //                 "77.6525387",
+        //                 "77.6538333"
+        //             ],
+        //             "coordinates": null,
+        //             "lon": "77.65240277777778",
+        //             "lat": "12.989738888888889",
+        //             "city_district": "Bengaluru Central City Corporation",
+        //             "state_district": "Bengaluru Urban",
+        //             "ISO3166-2-lvl4": "IN-KA",
+        //             "country_code": "in",
+        //             "place_id": 233528628,
+        //             "osm_type": "way",
+        //             "osm_id": 148042611,
+        //             "class": "amenity",
+        //             "place_rank": 30,
+        //             "addresstype": "amenity",
+        //             "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
+        //         },
+        //         "createdAt": "2025-11-11T11:32:59.174+00:00",
+        //         "updatedAt": "2025-11-11T11:32:59.502+00:00"
+        //     },
+        //     "topic": "",
+        //     "script": [],
+        //     "type": "Stone",
+        //     "distance": null,
+        //     "rating": 0.0,
+        //     "userrating": []
+        // },
         {
             "_id": "6913215f05959ad242fe9762",
             "user_id": "691320ae05959ad242fe9761",
@@ -315,70 +447,70 @@ const mockDiscoveryPosts = {
             "rating": 0.0,
             "userrating": []
         },
-        {
-            "_id": "6913219a05959ad242fe9764",
-            "user_id": "691320ae05959ad242fe9761",
-            "createdAt": "2025-11-11T11:44:26.365+00:00",
-            "updatedAt": "2025-11-11T11:44:27.012+00:00",
-            "images": {
-                "thumbnailImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Inscription_of_Hammurabi_King_of_Babylon.jpg/1280px-Inscription_of_Hammurabi_King_of_Babylon.jpg?20190403112554",
-                "image": [
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Inscription_of_Hammurabi_King_of_Babylon.jpg/1280px-Inscription_of_Hammurabi_King_of_Babylon.jpg?20190403112554"
-                ]
-            },
-            "description": {
-                "title": "Babylon inscription",
-                "subject": null,
-                "description": null,
-                "scriptLanguage": null,
-                "language": null,
-                "englishTranslation": null,
-                "upvote": 0,
-                "geolocation": {
-                    "amenity": "",
-                    "road": "Swamy Vivekananda Road",
-                    "neighbourhood": "Benniganahalli",
-                    "suburb": "Baiyyappanahalli",
-                    "city": "Bengaluru",
-                    "county": "Bangalore East",
-                    "state": "Karnataka",
-                    "postcode": "560033",
-                    "country": "India",
-                    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
-                    "type": "parking",
-                    "importance": 7.094453345536E-5,
-                    "name": "",
-                    "boundingbox": [
-                        "12.9896251",
-                        "12.9903375",
-                        "77.6525387",
-                        "77.6538333"
-                    ],
-                    "coordinates": null,
-                    "lon": "77.6524388888889",
-                    "lat": "12.989819444444443",
-                    "city_district": "Bengaluru Central City Corporation",
-                    "state_district": "Bengaluru Urban",
-                    "ISO3166-2-lvl4": "IN-KA",
-                    "country_code": "in",
-                    "place_id": 232325775,
-                    "osm_type": "way",
-                    "osm_id": 148042611,
-                    "class": "amenity",
-                    "place_rank": 30,
-                    "addresstype": "amenity",
-                    "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
-                },
-                "createdAt": "2025-11-11T11:44:26.365+00:00",
-                "updatedAt": "2025-11-11T11:44:27.012+00:00"
-            },
-            "topic": "",
-            "script": [],
-            "type": "Stone",
-            "distance": null,
-            "rating": 0.0,
-            "userrating": []
-        },
+        // {
+        //     "_id": "6913219a05959ad242fe9764",
+        //     "user_id": "691320ae05959ad242fe9761",
+        //     "createdAt": "2025-11-11T11:44:26.365+00:00",
+        //     "updatedAt": "2025-11-11T11:44:27.012+00:00",
+        //     "images": {
+        //         "thumbnailImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Inscription_of_Hammurabi_King_of_Babylon.jpg/1280px-Inscription_of_Hammurabi_King_of_Babylon.jpg?20190403112554",
+        //         "image": [
+        //             "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Inscription_of_Hammurabi_King_of_Babylon.jpg/1280px-Inscription_of_Hammurabi_King_of_Babylon.jpg?20190403112554"
+        //         ]
+        //     },
+        //     "description": {
+        //         "title": "Babylon inscription",
+        //         "subject": null,
+        //         "description": null,
+        //         "scriptLanguage": null,
+        //         "language": null,
+        //         "englishTranslation": null,
+        //         "upvote": 0,
+        //         "geolocation": {
+        //             "amenity": "",
+        //             "road": "Swamy Vivekananda Road",
+        //             "neighbourhood": "Benniganahalli",
+        //             "suburb": "Baiyyappanahalli",
+        //             "city": "Bengaluru",
+        //             "county": "Bangalore East",
+        //             "state": "Karnataka",
+        //             "postcode": "560033",
+        //             "country": "India",
+        //             "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        //             "type": "parking",
+        //             "importance": 7.094453345536E-5,
+        //             "name": "",
+        //             "boundingbox": [
+        //                 "12.9896251",
+        //                 "12.9903375",
+        //                 "77.6525387",
+        //                 "77.6538333"
+        //             ],
+        //             "coordinates": null,
+        //             "lon": "77.6524388888889",
+        //             "lat": "12.989819444444443",
+        //             "city_district": "Bengaluru Central City Corporation",
+        //             "state_district": "Bengaluru Urban",
+        //             "ISO3166-2-lvl4": "IN-KA",
+        //             "country_code": "in",
+        //             "place_id": 232325775,
+        //             "osm_type": "way",
+        //             "osm_id": 148042611,
+        //             "class": "amenity",
+        //             "place_rank": 30,
+        //             "addresstype": "amenity",
+        //             "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
+        //         },
+        //         "createdAt": "2025-11-11T11:44:26.365+00:00",
+        //         "updatedAt": "2025-11-11T11:44:27.012+00:00"
+        //     },
+        //     "topic": "",
+        //     "script": [],
+        //     "type": "Stone",
+        //     "distance": null,
+        //     "rating": 0.0,
+        //     "userrating": []
+        // },
         {
             "_id": "691481c31320a08c6c576ca4",
             "user_id": "6911806ed23e86bbb9cb8ce2",
@@ -387,11 +519,13 @@ const mockDiscoveryPosts = {
             "images": {
                 "thumbnailImage": "https://s7g10.scene7.com/is/image/rcu/rock-art-inscriptions-blog-full-03?$Responsive$&fit=stretch&fmt=webp&wid=1920",
                 "image": [
-                    "https://s7g10.scene7.com/is/image/rcu/rock-art-inscriptions-blog-full-03?$Responsive$&fit=stretch&fmt=webp&wid=1920"
+                    "https://s7g10.scene7.com/is/image/rcu/rock-art-inscriptions-blog-full-03?$Responsive$&fit=stretch&fmt=webp&wid=1920",
+                    "https://www.shutterstock.com/shutterstock/photos/1927668710/display_1500/stock-photo-inscriptions-of-tamil-language-carved-on-the-stone-walls-at-brihadeeswarar-temple-in-thanjavur-1927668710.jpg",
+
                 ]
             },
             "description": {
-                "title": "\"><script>alert('Hello!')</script>",
+                "title": "Hoysala inscription",
                 "subject": null,
                 "description": null,
                 "scriptLanguage": null,
@@ -403,7 +537,7 @@ const mockDiscoveryPosts = {
                     "road": "100 Feet Road",
                     "neighbourhood": "Old Binnamangala",
                     "suburb": "Indiranagar",
-                    "city": "Bengaluru Central City Corporation",
+                    "city": "Bengaluru",
                     "county": "Bangalore North",
                     "state": "Karnataka",
                     "postcode": "560038",
@@ -467,7 +601,41 @@ const mockDiscoveryPosts = {
                 "language": null,
                 "englishTranslation": null,
                 "upvote": 0,
-                "geolocation": null,
+                "geolocation": {
+                    "amenity": "",
+                    "road": "Swamy Vivekananda Road",
+                    "neighbourhood": "Benniganahalli",
+                    "suburb": "Baiyyappanahalli",
+                    "city": "Bengaluru",
+                    "county": "Bangalore East",
+                    "state": "Karnataka",
+                    "postcode": "560033",
+                    "country": "India",
+                    "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+                    "type": "parking",
+                    "importance": 7.094453345536E-5,
+                    "name": "",
+                    "boundingbox": [
+                        "12.9896251",
+                        "12.9903375",
+                        "77.6525387",
+                        "77.6538333"
+                    ],
+                    "coordinates": null,
+                    "lon": "77.65240277777778",
+                    "lat": "12.989738888888889",
+                    "city_district": "Bengaluru Central City Corporation",
+                    "state_district": "Bengaluru Urban",
+                    "ISO3166-2-lvl4": "IN-KA",
+                    "country_code": "in",
+                    "place_id": 233528628,
+                    "osm_type": "way",
+                    "osm_id": 148042611,
+                    "class": "amenity",
+                    "place_rank": 30,
+                    "addresstype": "amenity",
+                    "display_name": "Swamy Vivekananda Road, Benniganahalli, Baiyyappanahalli, Bengaluru Central City Corporation, Bengaluru, Bangalore East, Bengaluru Urban, Karnataka, 560033, India"
+                },
                 "createdAt": "2025-11-13T06:22:34.197+00:00",
                 "updatedAt": "2025-11-17T06:32:47.730+00:00"
             },

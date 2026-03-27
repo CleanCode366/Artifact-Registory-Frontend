@@ -2,6 +2,7 @@ import { apiClient } from "@/utils/http/clients/backendApiClientGeneral";
 import { Award, BookOpen, Globe, Users } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const Statistics: React.FC = () => {
     const statistics = [
@@ -47,11 +48,22 @@ const Statistics: React.FC = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     {Statistics.map((stat, index) => {
                         const IconComponent = stat.icon;
+                        if (stat.label === "totalPosts") {
+                            return (
+                                <NavLink to={`/feed`} key={index} className="">
+                                    <div className="text-center p-6 bg-primary-background/50 rounded-xl backdrop-blur-sm border border-slate-700/50 secondary-text-dark cursor-pointer">
+                                        <IconComponent className={`w-8 h-8 mx-auto mb-3 ${stat.color}`} />
+                                        <div className="sm:text-3xl font-bold mb-1 md:text-2xl">{stat.value}</div>
+                                        <div className="secondary-text-dark ag-courses-item_date-box">{stat.label.replace(/([A-Z])/g, ' $1').trim().replace(/\b\w/g, char => char.toUpperCase())}</div>
+                                    </div>
+                                </NavLink>
+                            );
+                        }
                         return (
                             <div key={index} className="text-center p-6 bg-primary-background/50 rounded-xl backdrop-blur-sm border border-slate-700/50 secondary-text-dark cursor-pointer">
                                 <IconComponent className={`w-8 h-8 mx-auto mb-3 ${stat.color}`} />
                                 <div className="sm:text-3xl font-bold mb-1 md:text-2xl">{stat.value}</div>
-                                <div className="secondary-text-dark wrap-break-word">{stat.label}</div>
+                                <div className="secondary-text-dark ag-courses-item_date-box">{stat.label.replace(/([A-Z])/g, ' $1').trim().replace(/\b\w/g, char => char.toUpperCase())}</div>
                             </div>
                         );
                     })}

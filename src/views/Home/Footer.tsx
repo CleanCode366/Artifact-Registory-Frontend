@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
                             <li className="footer-link-items"><a href="#" className="footer-link-item-anchor transition-colors hover:text-yellow-400">Contact</a></li>
                         </ul>
                     </div> */}
-                    <div className="flex justify-around footer-links-container-mob">
+                    {/* <div className="flex justify-around footer-links-container-mob">
                         <div>
                             <h5 className="font-semibold mb-4 text-primary-text dark:text-white">Platform</h5>
                             <ul className="space-y-2 text-white dark:text-gray-300 footer-links">
@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
                                 <li className="footer-link-items"><a href="#" className="footer-link-item-anchor transition-colors hover:text-yellow-400">Contact</a></li>
                             </ul>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="border-t border-white-700 dark:border-white mt-12 pt-8 text-center text-primary-text dark:text-white">

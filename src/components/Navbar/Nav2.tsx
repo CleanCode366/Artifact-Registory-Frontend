@@ -136,6 +136,7 @@ const Navbar = () => {
           top: 0,
           // zIndex: (theme) => theme.zIndex.appBar + 2,
         }}
+        className=""
       >
         <Container maxWidth="xl">
           <Toolbar

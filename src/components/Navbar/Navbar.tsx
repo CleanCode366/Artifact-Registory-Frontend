@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
   const linksToShow = authenticated ? protectedLinks : publicLinks;
 
   return (
-    <nav className="flex flex-row justify-between bg-secondary-background p-4 text-primary-text px-16">
+    <nav className="flex borderRed flex-row justify-between bg-secondary-background p-4 text-primary-text px-16">
       <div>
         <NavLink to="/home" end className="flex gap-4 justify-between">
           <img src={logo} alt="company Logo" className="h-11" />

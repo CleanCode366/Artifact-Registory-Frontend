@@ -62,7 +62,7 @@ const Statistics: React.FC = () => {
                                         <IconComponent className={`w-8 h-8 mx-auto mb-3 text-white ag-courses-item_icon-box`} />
                                         {/* <IconComponent className={`w-8 h-8 mx-auto mb-3 ${stat.color} `} /> */}
                                         <div className="text-3xl font-bold mb-1 ag-courses-item_title">{stat.value}</div>
-                                        <div className="secondary-text-dark ag-courses-item_date-box">{stat.label}</div>
+                                        <div className="secondary-text-dark ag-courses-item_date-box">{stat.label.replace(/([A-Z])/g, ' $1').trim().replace(/\b\w/g, char => char.toUpperCase())}</div>
                                     </div>
                                 </NavLink>
                             )
@@ -75,7 +75,7 @@ const Statistics: React.FC = () => {
                                 <IconComponent className={`w-8 h-8 mx-auto mb-3 text-white ag-courses-item_icon-box`} />
                                 {/* <IconComponent className={`w-8 h-8 mx-auto mb-3 ${stat.color} `} /> */}
                                 <div className="text-3xl font-bold mb-1 ag-courses-item_title">{stat.value}</div>
-                                <div className="secondary-text-dark ag-courses-item_date-box">{stat.label}</div>
+                                <div className="secondary-text-dark ag-courses-item_date-box">{stat.label.replace(/([A-Z])/g, ' $1').trim().replace(/\b\w/g, char => char.toUpperCase())}</div>
                             </div>
                         );
                     })}

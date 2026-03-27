@@ -16,7 +16,7 @@ function App() {
 
     <div className={`${styles["root-background"]} ${styles["root-background-right"]}`}>
       <AuthProvider>
-        <LanguageProvider>
+        <LanguageProvider style={{zIndex: 99999999}}>
           <CustomTranslate />
           {/* <GoogleTranslate/> */}
             <RouterProvider router={router} />
