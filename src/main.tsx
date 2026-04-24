@@ -6,8 +6,8 @@ import './index.css';
 import { enablePhonetic } from "./services/inputInterceptor.ts";
 import { initServiceWorker } from './utils/serviceWorkerRegistration.ts';
 import { SnackbarProvider } from 'notistack';
-import { PWAUpdateNotification } from './components/PWAUpdateNotification.tsx';
-import { OfflineIndicator, PWAInstallBanner } from './components/PWABanners.tsx';
+import { PWAUpdateNotification } from './components/PWAComponents/PWAUpdateNotification.tsx';
+import { OfflineIndicator, PWAInstallBanner } from './components/PWAComponents/PWABanners.tsx';
 
 enablePhonetic();
 
