@@ -1,0 +1,80 @@
+{
+  "name": "CDAC Bangalore - Inscription Analyzer",
+  "short_name": "CDAC Inscriptions",
+  "description": "A Progressive Web App for analyzing and viewing historical inscriptions",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "categories": ["productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/cdacroundlogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/cdacroundlogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/cdacroundlogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/cdacroundlogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/cdacroundlogo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/cdacroundlogo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View Inscriptions",
+      "short_name": "Inscriptions",
+      "description": "Browse inscription gallery",
+      "url": "/gallery",
+      "icons": [
+        {
+          "src": "/cdacroundlogo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "short_name": "Upload",
+      "description": "Upload new inscription",
+      "url": "/upload",
+      "icons": [
+        {
+          "src": "/cdacroundlogo.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

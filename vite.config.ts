@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { defineConfig } from 'vite';
 import removeConsole from "vite-plugin-remove-console";
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   base: '/',
@@ -33,6 +34,55 @@ export default defineConfig({
       includes: ["log", "warn", "error", "debug"],
     }),
     tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      strategies: 'generateSW',
+      manifest: {
+        name: 'CDAC Bangalore - Inscription Analyzer',
+        short_name: 'CDAC Inscriptions',
+        description: 'A Progressive Web App for analyzing and viewing historical inscriptions',
+        theme_color: '#1976d2',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        orientation: 'portrait-primary',
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,jpg,jpeg,gif,webp,woff,woff2,ttf,eot}'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\.*/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 5 * 60, // 5 minutes
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/cdn\.*/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'cdn-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+        ],
+      },
+      devOptions: {
+        enabled: true,
+        navigateFallback: 'index.html',
+        suppressWarnings: true,
+      },
+    }),
   ],
 
   css: {
@@ -43,7 +93,6 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      // 🔴 REQUIRED FOR MUI + styled-components
       '@mui/styled-engine': '@mui/styled-engine-sc',
 
       '@': path.resolve(__dirname, './src'),
