@@ -3,7 +3,7 @@ name: Frontend PR Validation
 on:
   pull_request:
     branches:
-      - develop
+      - dev
       - main
 
 jobs:

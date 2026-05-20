@@ -3,7 +3,7 @@ name: Accessibility Checks
 on:
   pull_request:
     branches:
-      - develop
+      - dev
       - main
 
 jobs:
