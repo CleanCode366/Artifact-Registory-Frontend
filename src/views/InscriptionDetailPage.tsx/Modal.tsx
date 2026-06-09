@@ -17,6 +17,10 @@ interface ModelProps {
 }
 
 const extractErrorMessageFromPayload = (payload: unknown): string | null => {
+    if (typeof payload === "string" && payload.trim()) {
+        return payload.trim();
+    }
+
     if (!payload || typeof payload !== "object") return null;
 
     const payloadRecord = payload as Record<string, unknown>;
@@ -39,6 +43,18 @@ const extractErrorMessageFromPayload = (payload: unknown): string | null => {
     return null;
 };
 
+const mapHttpStatusToFriendlyMessage = (status?: number): string | null => {
+    if (!status) return null;
+
+    if (status === 400) return "Unable to post comment. Please review your input and try again.";
+    if (status === 401 || status === 403) return "Your session has expired. Please log in again.";
+    if (status === 404) return "Requested resource was not found.";
+    if (status === 422) return "Unable to process your request. Please review your input and try again.";
+    if (status === 429) return "Too many requests. Please wait a moment and try again.";
+    if (status >= 500) return "Service unavailable, please try again later.";
+    return null;
+};
+
 const resolveRequestErrorMessage = (error: unknown, fallback: string): string => {
     if (error && typeof error === "object") {
         const errorRecord = error as Record<string, unknown>;
@@ -50,12 +66,25 @@ const resolveRequestErrorMessage = (error: unknown, fallback: string): string =>
 
         const directMessage = errorRecord.message;
         if (typeof directMessage === "string" && directMessage.trim()) {
-            return directMessage.trim();
+            const trimmedDirectMessage = directMessage.trim();
+            if (/request failed with status code\s+\d+/i.test(trimmedDirectMessage)) {
+                const status = typeof response?.status === "number" ? response.status : undefined;
+                return mapHttpStatusToFriendlyMessage(status) ?? fallback;
+            }
+            return trimmedDirectMessage;
         }
+
+        const status = typeof response?.status === "number" ? response.status : undefined;
+        const friendlyStatusMessage = mapHttpStatusToFriendlyMessage(status);
+        if (friendlyStatusMessage) return friendlyStatusMessage;
     }
 
     if (error instanceof Error && error.message.trim()) {
-        return error.message.trim();
+        const trimmedMessage = error.message.trim();
+        if (/request failed with status code\s+\d+/i.test(trimmedMessage)) {
+            return fallback;
+        }
+        return trimmedMessage;
     }
 
     return fallback;
@@ -88,18 +117,21 @@ const extractModerationReason = (message: string): string | null => {
     if (!trimmedMessage) return null;
 
     const normalizedMessage = trimmedMessage.toLowerCase();
-    const moderationSignals = [
-        "moderation",
-        "inappropriate",
-        "profan",
-        "bad word",
+        const moderationSignals = [
+            "moderation",
+            "inappropriate",
+            "profan",
+            "bad word",
         "blocked word",
         "forbidden word",
         "offensive language",
         "abusive language",
-        "policy violation",
-        "banned word",
-    ];
+            "policy violation",
+            "banned word",
+            "content failed moderation",
+            "rejected",
+            "not saved",
+        ];
 
     if (!moderationSignals.some((signal) => normalizedMessage.includes(signal))) {
         return null;
@@ -229,6 +261,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
             const moderationReason = extractModerationReason(message);
             if (moderationReason) {
                 setErrorMsg(moderationReason);
+                onPostError?.(moderationReason);
             } else {
                 onPostError?.(message);
             }
@@ -259,7 +292,7 @@ const Model: React.FC<ModelProps> = ({ postId, display, onClose, onDescriptionAd
                         onClick={(e) => e.stopPropagation()}
                     >
 
-                        <div className="w-full">
+                        <div className="w-full ">
                             <TextField
                                 label="Description"
                                 placeholder="This inscription belongs to the 12th century temple walls."
