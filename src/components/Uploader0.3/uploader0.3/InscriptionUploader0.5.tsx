@@ -31,6 +31,7 @@ import type { GeoInfo } from "../types/types";
 // import { getEnvConfig } from "../config/env";
 import getCurrentLocation from "../utils/Camera/getCurrentLocation";
 import verifyGPSInImage from "../utils/GPS/verifyGPSInImage";
+import embedGPSIntoImage from "../utils/GPS/embedGPSIntoImage";
 import { extractCoordinates } from "../Services/ocrService";
 import { suggestionApiClient } from "@/utils/http/clients/suggestionApi.client";
 import piexifjs from "piexifjs";
@@ -116,6 +117,29 @@ const dataUrlToFile = async (dataUrl: string, fileName: string) => {
   return new File([blob], fileName, {
     type: blob.type || "image/jpeg",
   });
+};
+
+const embedGpsCoordinatesInFile = async (
+  imageDataUrl: string,
+  file: File,
+  latitude: number,
+  longitude: number
+): Promise<File> => {
+  if (!imageDataUrl.startsWith("data:image/jpeg;base64,")) {
+    console.warn("Cannot embed GPS EXIF into non-JPEG image:", file.name);
+    return file;
+  }
+
+  try {
+    const updatedDataUrl = embedGPSIntoImage(imageDataUrl, latitude, longitude, new Date());
+    if (updatedDataUrl === imageDataUrl) {
+      return file;
+    }
+    return await dataUrlToFile(updatedDataUrl, file.name);
+  } catch (error) {
+    console.error("Failed to embed GPS coordinates into file:", error);
+    return file;
+  }
 };
 
 const rotateImageDataUrl = (dataUrl: string, degrees = 90): Promise<string> =>
@@ -303,15 +327,13 @@ const buildGpsStatusMessage = (
   source: GpsCoordinateSource,
   coordinates: { latitude: string; longitude: string }
 ) => {
-  const coordinateText = `lat= ${coordinates.latitude} ; long = ${coordinates.longitude}`;
+  const coordinateText = `lat=${coordinates.latitude}; long=${coordinates.longitude}`;
 
   if (source === "ocr") {
-    return `${fileName}: GPS location successfully obtained`;
-    // return `${fileName}: GPS location obtained using OCR : ${coordinateText}`;
+    return `${fileName}: GPS location successfully obtained (${coordinateText})`;
   }
 
-  // return `${fileName}: GPS location successfully obtained from EXIF data : ${coordinateText}`;
-  return `${fileName}: GPS location successfully obtained`;
+  return `${fileName}: GPS location successfully obtained (${coordinateText})`;
 };
 
 const EnhancedInscriptionUploaderV5: React.FC = () => {
@@ -322,7 +344,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
-  const [hasGeoData, setHasGeoData] = useState<boolean | null>(null);
+  const [, setHasGeoData] = useState<boolean | null>(null);
   const [geoInfo, setGeoInfo] = useState<GeoInfo | null>(null);
   const [isCheckingStone, setIsCheckingStone] = useState(false);
   const [stoneCheckResult, setStoneCheckResult] = useState<string | null>(null);
@@ -648,8 +670,10 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
         break;
       }
 
+      let processedFile: File = file;
+
       try {
-        const preview = await readFileAsDataUrl(file);
+        const preview = await readFileAsDataUrl(processedFile);
         const isStone = await checkStone(preview);
         if (!isStone) {
           messages.push(`${file.name}: not a stone inscription`);
@@ -700,6 +724,17 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
               };
               gpsCoordinatesForMessage = gpsCoordinateFromBatch;
 
+              try {
+                processedFile = await embedGpsCoordinatesInFile(
+                  preview,
+                  processedFile,
+                  ocrResult.latitude,
+                  ocrResult.longitude
+                );
+              } catch (error) {
+                console.error("Failed to write OCR GPS into EXIF:", error);
+              }
+
               console.log(
                 "[OCR] Coordinates extracted:",
                 gpsCoordinateFromBatch
@@ -748,7 +783,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
             buildGpsStatusMessage(
               file.name,
               gpsCoordinateSource,
-              gpsCoordinatesForMessage || gpsCoordinateFromBatch
+              gpsCoordinatesForMessage || gpsCoordinateFromBatch!
             )
           );
         } else if (gpsResult.hasGPS) {
@@ -757,7 +792,7 @@ const EnhancedInscriptionUploaderV5: React.FC = () => {
 
         pendingImages.push({
           id: createImageId(),
-          file,
+          file: processedFile,
           preview,
         });
       } catch {
